@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
+import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
 
@@ -26,15 +26,15 @@ public class test extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        fR  = hardwareMap.get(DcMotor.class, "fr");
-        fL = hardwareMap.get(DcMotor.class, "fl");
-        bR  = hardwareMap.get(DcMotor.class, "br");
-        bL = hardwareMap.get(DcMotor.class, "bl");
+        fR  = hardwareMap.get(DcMotor.class, "fR");
+        fL = hardwareMap.get(DcMotor.class, "fL");
+        bR  = hardwareMap.get(DcMotor.class, "bR");
+        bL = hardwareMap.get(DcMotor.class, "bL");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        fR.setDirection(DcMotor.Direction.FORWARD);
-        fL.setDirection(DcMotor.Direction.REVERSE);
+        fR.setDirection(DcMotor.Direction.REVERSE);
+        fL.setDirection(DcMotor.Direction.FORWARD);
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
 
