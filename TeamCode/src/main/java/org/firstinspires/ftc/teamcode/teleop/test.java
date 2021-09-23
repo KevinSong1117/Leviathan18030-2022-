@@ -58,7 +58,7 @@ public class test extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     public DcMotor fL;
     public DcMotor fR;
-    public DcMotor bL;
+    public DcMotor bL; // instantiates motor variables
     public DcMotor bR;
 
 
@@ -73,7 +73,7 @@ public class test extends OpMode
         bR = hardwareMap.get(DcMotor.class, "bR");
 
         fR.setDirection(DcMotor.Direction.FORWARD);
-        fL.setDirection(DcMotor.Direction.REVERSE);
+        fL.setDirection(DcMotor.Direction.REVERSE);   // Initiates the motors
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
 
@@ -100,7 +100,7 @@ public class test extends OpMode
     @Override
     public void loop() {
         double x = gamepad1.right_stick_x;
-        double y = gamepad1.left_stick_y;
+        double y = gamepad1.left_stick_y;    //
         double turn = gamepad1.left_stick_x;
         double magnitude = Math.hypot(x, y);
 
