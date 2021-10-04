@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -31,13 +36,19 @@ public class auto extends OpMode
     public DcMotor fR;
     public DcMotor bL;
     public DcMotor bR;
+    public SensorBNO055IMU imu;
+    LinearOpMode opmode;
+    Orientation angles;
+
+
 
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
-    public void init() {
+    public void init(LinearOpMode lOpmode) {
+        opmode = lOpmode;
         fL = hardwareMap.get(DcMotor.class, "fL");
         fR = hardwareMap.get(DcMotor.class, "fR");
         bL = hardwareMap.get(DcMotor.class, "bL");
@@ -48,15 +59,15 @@ public class auto extends OpMode
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
 
-        fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        imu = (SensorBNO055IMU) opmode.hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
 
-        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        imu.initialize(parameters);
+
     }
 
     /*
@@ -64,11 +75,45 @@ public class auto extends OpMode
      */
     @Override
     public void init_loop() {
+
     }
 
     /*
      * Code to run ONCE when the driver hits PLAY
      */
+    public double getEncoderAvg(){
+        double flEncoder = fL.getCurrentPosition();
+        double frEncoder = fR.getCurrentPosition();
+        double blEncoder = bL.getCurrentPosition();
+        double brEncoder = bR.getCurrentPosition();
+
+        double ret = flEncoder + frEncoder + blEncoder + brEncoder;
+        ret /= 4;
+
+        return ret;
+    }
+
+    public void moveForBack(double distance, double direction){    //takes two variables, one for the direction
+                                                                   // goal and one for the distance traveled
+        double sEncoder = getEncoderAvg();
+
+        while(getEncoderAvg() - sEncoder < distance){ // Runs as long as the encoding average - the
+            fL.setPower(direction * .5);              // encoding start is less than the target
+            fR.setPower(direction * .5); // Sets the power of the motors to currently half the power
+            bL.setPower(direction * .5);
+            bR.setPower(direction * .5);
+        }
+        fL.setPower(0);
+        fR.setPower(0); // Sets the power of the motors to currently half the power
+        bL.setPower(0);
+        bR.setPower(0);
+    }
+    public void botTurning( int degree){ //direction is to know if it will
+                                                                  // turn left or right, degree is to know the amount which it turns
+        double sEncoder = getEncoderAvg();
+        Orientation angle = imu.get
+
+    }
     @Override
     public void start() {
         runtime.reset();
@@ -79,41 +124,8 @@ public class auto extends OpMode
      */
     @Override
     public void loop() {
-        double x = gamepad1.right_stick_x;
-        double y = gamepad1.left_stick_y;
-        double turn = gamepad1.left_stick_x;
-        double magnitude = Math.hypot(x, y);
 
-        double fl = y + turn - x;
-        double fr = y - turn - x;
-        double bl = y + turn + x;
-        double br = y - turn + x;
 
-        double max = 0;
-        max = Math.max(Math.abs(fl), Math.abs(br));
-        max = Math.max(Math.abs(fr), max);
-        max = Math.max(Math.abs(bl), max);
-
-        //only normalize if mag isnt 0 because if it is, we want to turn and will always be from 0-1
-        if (magnitude != 0) {
-            //Divide everything by max (it's positive so we don't need to worry
-            //about signs)
-            //multiply by input magnitude as it represents true speed (from 0-1) that we want robot to move at
-            fl = (fl / max) * magnitude;
-            fr = (fr / max) * magnitude;
-            bl = (bl / max) * magnitude;
-            br = (br / max) * magnitude;
-        }
-        telemetry.addData("fl: ", fl);
-        telemetry.addData("fr: ", fr);
-        telemetry.addData("bl: ", bl);
-        telemetry.addData("br ", br);
-        telemetry.update();
-
-        fL.setPower(fl);
-        fR.setPower(fr);
-        bL.setPower(-bl);
-        bR.setPower(-br);
     }
 
     /*

@@ -124,7 +124,7 @@ public class test extends OpMode
             left = turn;                   // Sets the power to -1 in half the motors to change
             right = turn * -1;              // Directions in which it turns
         }
-        
+
 
 
 
