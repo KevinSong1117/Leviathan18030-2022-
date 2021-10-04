@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -26,7 +29,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="teleop", group="teleop")
+@Autonomous(name="auto", group="auto")
 
 public class auto extends OpMode
 {
@@ -36,9 +39,10 @@ public class auto extends OpMode
     public DcMotor fR;
     public DcMotor bL;
     public DcMotor bR;
-    public SensorBNO055IMU imu;
+    public BNO055IMU imu;
     LinearOpMode opmode;
     Orientation angles;
+    float curHeading;
 
 
 
@@ -46,7 +50,7 @@ public class auto extends OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
-    @Override
+
     public void init(LinearOpMode lOpmode) {
         opmode = lOpmode;
         fL = hardwareMap.get(DcMotor.class, "fL");
@@ -59,7 +63,7 @@ public class auto extends OpMode
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
 
-        imu = (SensorBNO055IMU) opmode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu = opmode.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -67,6 +71,11 @@ public class auto extends OpMode
         parameters.loggingEnabled = false;
 
         imu.initialize(parameters);
+
+    }
+
+    @Override
+    public void init() {
 
     }
 
@@ -92,6 +101,13 @@ public class auto extends OpMode
 
         return ret;
     }
+    private void checkOrientation() {
+        // read the orientation of the robot
+        angles = this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        this.imu.getPosition();
+        // and save the heading
+        curHeading = angles.firstAngle;
+    }
 
     public void moveForBack(double distance, double direction){    //takes two variables, one for the direction
                                                                    // goal and one for the distance traveled
@@ -110,8 +126,8 @@ public class auto extends OpMode
     }
     public void botTurning( int degree){ //direction is to know if it will
                                                                   // turn left or right, degree is to know the amount which it turns
-        double sEncoder = getEncoderAvg();
-        Orientation angle = imu.get
+        
+
 
     }
     @Override
