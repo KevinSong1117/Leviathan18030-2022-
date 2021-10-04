@@ -103,22 +103,16 @@ public class test extends OpMode
         double y = gamepad1.left_stick_y;    // gets the stick values for both variables
         double turn = gamepad1.right_stick_x;
 
-        double fl = 0;
-        double fr = 0;
-        double bl = 0;                     // Instantiates variables
-        double br = 0;
+        double left = 0;
+        double right = 0;                     // Instantiates variables
 
         if(y > .1 || y < -.1){            // If statement to detect which stick is being used
-            fl = y;                       // Used .1 to give it a deadzone to account for errors
-            fr = y;
-            bl = y;
-            br = y;
+            left = y;                       // Used .1 to give it a deadzone to account for errors
+            right = y;
         }
         else{
-            fl = turn;
-            fr = turn;
-            bl = turn * -1;               // Sets the power to -1 in half the motors to change
-            br = turn * -1;               // Directions in which it turns
+            left = turn;                   // Sets the power to -1 in half the motors to change
+            right = turn * -1;              // Directions in which it turns
         }
         
 
@@ -126,16 +120,16 @@ public class test extends OpMode
 
         //only normalize if mag isnt 0 because if it is, we want to turn and will always be from 0-1
 
-        telemetry.addData("fl: ", fl);
-        telemetry.addData("fr: ", fr);
-        telemetry.addData("bl: ", bl);
-        telemetry.addData("br ", br);
+        telemetry.addData("fl: ", fL);
+        telemetry.addData("fr: ", fR);
+        telemetry.addData("bl: ", bL);
+        telemetry.addData("br ", bR);
         telemetry.update();
 
-        fL.setPower(fl * .5);
-        fR.setPower(fr * .5); // Sets the power of the motors to currently half the power
-        bL.setPower(bl * .5);
-        bR.setPower(br * .5);
+        fL.setPower(left * .5);
+        fR.setPower(right * .5); // Sets the power of the motors to currently half the power
+        bL.setPower(left * .5);
+        bR.setPower(right * .5);
     }
 
     /*
