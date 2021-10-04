@@ -106,7 +106,7 @@ public class auto extends OpMode
         angles = this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         this.imu.getPosition();
         // and save the heading
-        curHeading = angles.firstAngle;
+        curHeading = angles.firstAngle; //Gets the orientation of the robot
     }
 
     public void moveForBack(double distance, double direction){    //takes two variables, one for the direction
@@ -124,10 +124,37 @@ public class auto extends OpMode
         bL.setPower(0);
         bR.setPower(0);
     }
-    public void botTurning( int degree){ //direction is to know if it will
-                                                                  // turn left or right, degree is to know the amount which it turns
-        
+    public void botTurning( boolean direction, float degree){ //direction is to know if it will
+    // turn left or right, degree is to know the amount which it turns. Positive is right
+        checkOrientation();
+        float start = curHeading;// Gets the current heading
 
+        if(direction){
+            while (curHeading < start + degree){ // turns left
+                fL.setPower(.5);
+                fR.setPower(-.5);
+                bL.setPower(.5);
+                bR.setPower(-.5);
+                checkOrientation();
+            }
+            fL.setPower(0);
+            fR.setPower(0);
+            bL.setPower(0);
+            bR.setPower(0);
+        }
+        else{
+            while (curHeading > start - degree){ // turns right
+                fL.setPower(-.5);
+                fR.setPower(.5);
+                bL.setPower(-.5);
+                bR.setPower(.5);
+                checkOrientation();
+            }
+            fL.setPower(0);
+            fR.setPower(0);
+            bL.setPower(0);
+            bR.setPower(0);
+        }
 
     }
     @Override
