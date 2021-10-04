@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -99,41 +100,42 @@ public class test extends OpMode
      */
     @Override
     public void loop() {
-        double x = gamepad1.right_stick_x;
-        double y = gamepad1.left_stick_y;    //
-        double turn = gamepad1.left_stick_x;
-        double magnitude = Math.hypot(x, y);
+        double y = gamepad1.left_stick_y;    // gets the stick values for both variables
+        double turn = gamepad1.right_stick_x;
 
-        double fl = y + turn - x;
-        double fr = y - turn - x;
-        double bl = y + turn + x;
-        double br = y - turn + x;
+        double fl = 0;
+        double fr = 0;
+        double bl = 0;                     // Instantiates variables
+        double br = 0;
 
-        double max = 0;
-        max = Math.max(Math.abs(fl), Math.abs(br));
-        max = Math.max(Math.abs(fr), max);
-        max = Math.max(Math.abs(bl), max);
+        if(y > .1 || y < -.1){            // If statement to detect which stick is being used
+            fl = y;                       // Used .1 to give it a deadzone to account for errors
+            fr = y;
+            bl = y;
+            br = y;
+        }
+        else{
+            fl = turn;
+            fr = turn;
+            bl = turn * -1;               // Sets the power to -1 in half the motors to change
+            br = turn * -1;               // Directions in which it turns
+        }
+        
+
+
 
         //only normalize if mag isnt 0 because if it is, we want to turn and will always be from 0-1
-        if (magnitude != 0) {
-            //Divide everything by max (it's positive so we don't need to worry
-            //about signs)
-            //multiply by input magnitude as it represents true speed (from 0-1) that we want robot to move at
-            fl = (fl / max) * magnitude;
-            fr = (fr / max) * magnitude;
-            bl = (bl / max) * magnitude;
-            br = (br / max) * magnitude;
-        }
+
         telemetry.addData("fl: ", fl);
         telemetry.addData("fr: ", fr);
         telemetry.addData("bl: ", bl);
         telemetry.addData("br ", br);
         telemetry.update();
 
-        fL.setPower(fl);
-        fR.setPower(fr);
-        bL.setPower(-bl);
-        bR.setPower(-br);
+        fL.setPower(fl * .5);
+        fR.setPower(fr * .5); // Sets the power of the motors to currently half the power
+        bL.setPower(bl * .5);
+        bR.setPower(br * .5);
     }
 
     /*
