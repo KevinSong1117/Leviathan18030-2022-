@@ -110,37 +110,22 @@ public class test extends OpMode
      */
     @Override
     public void loop() {
-        double y = gamepad1.left_stick_y;    // gets the stick values for both variables
-        double turn = gamepad1.right_stick_x;
-
-        double left = 0;
-        double right = 0;                     // Instantiates variables
-
-        if(y > .1 || y < -.1){            // If statement to detect which stick is being used
-            left = y;                       // Used .1 to give it a deadzone to account for errors
-            right = y;
-        }
-        else{
-            left = turn;                   // Sets the power to -1 in half the motors to change
-            right = turn * -1;              // Directions in which it turns
-        }
+        double drive = -gamepad1.left_stick_y;
+        double turn  =  gamepad1.right_stick_x;
+        double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+        double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
 
-
-
-        //only normalize if mag isnt 0 because if it is, we want to turn and will always be from 0-1
+        fL.setPower(leftPower * .5);
+        fR.setPower(rightPower * .5); // Sets the power of the motors to currently half the power
+        bL.setPower(leftPower * .5);
+        bR.setPower(rightPower * .5);
 
         telemetry.addData("fl: ", fL);
         telemetry.addData("fr: ", fR);
         telemetry.addData("bl: ", bL);
         telemetry.addData("br ", bR);
         telemetry.update();
-
-        fL.setPower(left * .5);
-        fR.setPower(right * .5); // Sets the power of the motors to currently half the power
-        bL.setPower(left * .5);
-        bR.setPower(right * .5);
-        // me when
     }
 
     /*
