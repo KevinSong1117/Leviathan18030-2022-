@@ -30,9 +30,9 @@ public class vision {
     private final int RED_LOW = 100;
     private final int GREEN_LOW = 150;
     private final int BLUE_LOW = 100;
-    private final int RED_HIGH = 210;
-    private final int GREEN_HIGH = 250;
-    private final int BLUE_HIGH = 270;
+    private final int RED_HIGH = 150;
+    private final int GREEN_HIGH = 200;
+    private final int BLUE_HIGH = 150;
 
     public vision(LinearOpMode opMode) {
 
