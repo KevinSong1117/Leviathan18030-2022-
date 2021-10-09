@@ -32,10 +32,14 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -61,6 +65,10 @@ public class test extends OpMode
     public DcMotor fR;
     public DcMotor bL; // instantiates motor variables
     public DcMotor bR;
+    public DcMotor LL;
+    public DcMotor LR;
+    public CRServo IR;
+    public CRServo IL;
 
 
     /*
@@ -72,21 +80,32 @@ public class test extends OpMode
         fR = hardwareMap.get(DcMotor.class, "fR");
         bL = hardwareMap.get(DcMotor.class, "bL");
         bR = hardwareMap.get(DcMotor.class, "bR");
+        LR = hardwareMap.get(DcMotor.class, "LR");
+        LL = hardwareMap.get(DcMotor.class, "LL");
+        IR = hardwareMap.get(CRServo.class, "IR");
+        IL = hardwareMap.get(CRServo.class, "IL");
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);   // Initiates the motors
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
+        LL.setDirection(DcMotor.Direction.FORWARD);
+        LR.setDirection(DcMotor.Direction.REVERSE);
+
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        LL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        LR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
     }
 
@@ -126,6 +145,27 @@ public class test extends OpMode
         telemetry.addData("bl: ", bL);
         telemetry.addData("br ", bR);
         telemetry.update();
+
+        if (gamepad1.x)
+        {
+            IR.setDirection(CRServo.Direction.FORWARD);
+            IL.setDirection(CRServo.Direction.REVERSE);
+            IR.setPower(1);
+            IL.setPower(1);
+        }
+        if (gamepad1.a)
+        {
+            IR.setDirection(CRServo.Direction.FORWARD);
+            IL.setDirection(CRServo.Direction.REVERSE);
+            IR.setPower(-1);
+            IL.setPower(-1);
+        }
+        if(gamepad1.b)
+        {
+            IR.setPower(0);
+            IR.setPower(0);
+        }
+
     }
 
     /*
