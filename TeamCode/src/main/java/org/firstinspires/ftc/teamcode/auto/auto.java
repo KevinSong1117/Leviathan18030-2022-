@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -40,30 +42,33 @@ public class auto extends OpMode
     public DcMotor bL;
     public DcMotor bR;
     public BNO055IMU imu;
-    LinearOpMode opmode;
     Orientation angles;
     float curHeading;
-
-
-
+    public CRServo inLeft;
+    public CRServo inRight;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
 
     public void init(LinearOpMode lOpmode) {
-        opmode = lOpmode;
         fL = hardwareMap.get(DcMotor.class, "fL");
         fR = hardwareMap.get(DcMotor.class, "fR");
         bL = hardwareMap.get(DcMotor.class, "bL");
         bR = hardwareMap.get(DcMotor.class, "bR");
+
+        inLeft = hardwareMap.get(CRServo.class, "inLeft Servo");
+        inRight = hardwareMap.get(CRServo.class, "inRight Servo");
+
+        inLeft.setDirection(CRServo.Direction.FORWARD);
+        inRight.setDirection(CRServo.Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
 
-        imu = opmode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu = lOpmode.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -124,40 +129,39 @@ public class auto extends OpMode
         bL.setPower(0);
         bR.setPower(0);
     }
-    public void botTurning( boolean direction, float degree){ //direction is to know if it will
-    // turn left or right, degree is to know the amount which it turns. Positive is right
+    public void botTurning( boolean direction, float degree) { //direction is to know if it will
+        // turn left or right, degree is to know the amount which it turns. Positive is right
         checkOrientation();
         float start = curHeading;// Gets the current heading
 
-        if(direction){
-            while (curHeading < start + degree){ // turns left
+        if (direction) {
+            while (curHeading > start - degree) { // turns left
                 fL.setPower(.5);
                 fR.setPower(-.5);
                 bL.setPower(.5);
                 bR.setPower(-.5);
                 checkOrientation();
             }
-            fL.setPower(0);
-            fR.setPower(0);
-            bL.setPower(0);
-            bR.setPower(0);
         }
-        else{
-            while (curHeading > start - degree){ // turns right
+        else {
+            while (curHeading < start + degree) { // turns right
                 fL.setPower(-.5);
                 fR.setPower(.5);
                 bL.setPower(-.5);
                 bR.setPower(.5);
                 checkOrientation();
             }
-            fL.setPower(0);
-            fR.setPower(0);
-            bL.setPower(0);
-            bR.setPower(0);
         }
+        fL.setPower(0);
+        fR.setPower(0);
+        bL.setPower(0);
+        bR.setPower(0);
+    }
+    public void carousel(){
+        inLeft.setPower(1);
+        inRight.setPower(-1);
 
     }
-    @Override
     public void start() {
         runtime.reset();
     }
