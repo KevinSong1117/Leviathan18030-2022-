@@ -16,172 +16,54 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Parameters;
 
-
-public class vision {
-    private LinearOpMode opMode;
-
-    private VuforiaLocalizer vuforia;
-    private Parameters parameters;
-    private CameraDirection CAMERA_CHOICE = CameraDirection.BACK; // This is the camera opposite the screen.
-    private static final boolean PHONE_IS_PORTRAIT = false;
-    private static final String VUFORIA_KEY = "AcELeNr/////AAABmeg7NUNcDkPigDGNImdu5slLREdKn/q+qfajHBypycR0JUZYbfU0q2yZeSud79LJ2DS9uhr7Gu0xDM0DQZ36GRQDgMRwB8lf9TGZFQcoHq4kVAjAoEByEorXCzQ54ITCextAucpL2njKT/1IJxgREr6/axNEL2evyKSpOKoNOISKR6tkP6H3Ygd+FHm2tF/rsUCJHN5bTXrbRbwt5t65O7oJ6Wm8Foz1npbFI0bsD60cug4CpC/Ovovt2usxIRG8cpoQX49eA2jPRRLGXN8y1Nhh9Flr0poOkYoCExWo2iVunAGOwuCdB/rp/+2rkLBfWPvzQzrN9yBBP0JVJZ4biNQ41qqiuVvlc31O9xEvbKHt";
+import java.util.ArrayList;
 
 
-    private final int RED_LOW = 100;
-    private final int GREEN_LOW = 150;
-    private final int BLUE_LOW = 100;
-    private final int RED_HIGH = 150;
-    private final int GREEN_HIGH = 200;
-    private final int BLUE_HIGH = 150;
+public class vision extends LinearOpMode {
 
-    public vision(LinearOpMode opMode) {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
 
+    VuforiaLocalizer vuforia;
+    LinearOpMode opMode;
+    String pos = "notFound";
+
+    public vision(LinearOpMode opMode){
         this.opMode = opMode;
-
-        // Configures Vuforia with the wanted camera
-        int cameraMonitorViewId = this.opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", this.opMode.hardwareMap.appContext.getPackageName());
-        Parameters params = new Parameters(cameraMonitorViewId);
-
-        params.vuforiaLicenseKey = VUFORIA_KEY;
-        params.cameraName = opMode.hardwareMap.get(WebcamName.class, "Webcam");
-        //params.cameraDirection = CameraDirection.DEFAULT;
-        //params.cameraDirection = ;
-        //Orientation
-        //phone
+        VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters();
+        params.vuforiaLicenseKey = "AQvLCbX/////AAABmTGnnsC2rUXvp1TAuiOSac0ZMvc3GKI93tFoRn4jPzB3uSMiwj75PNfUU6MaVsNZWczJYOep8LvDeM/3hf1+zO/3w31n1qJTtB2VHle8+MHWNVbNzXKLqfGSdvXK/wYAanXG2PBSKpgO1Fv5Yg27eZfIR7QOh7+J1zT1iKW/VmlsVSSaAzUSzYpfLufQDdE2wWQYrs8ObLq2kC37CeUlJ786gywyHts3Mv12fWCSdTH5oclkaEXsVC/8LxD1m+gpbRc2KC0BXnlwqwA2VqPSFU91vD8eCcD6t2WDbn0oJas31PcooBYWM6UgGm9I2plWazlIok72QG/kOYDh4yXOT4YXp1eYh864e8B7mhM3VclQ";
+        params.cameraName = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
         vuforia = ClassFactory.getInstance().createVuforia(params);
-
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); // Format returns 2 bytes per pixel in GGGBBBBB RRRRRGGG format (little-endian)
-        vuforia.setFrameQueueCapacity(4);
-        vuforia.enableConvertFrameToBitmap();
-
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
+        vuforia.setFrameQueueCapacity(4); //tells VuforiaLocalizer to only store one frame at a time
     }
 
-    public int ringCount(char side) {
-        Bitmap bitmap = null;
-        try {
-            bitmap = getBitmap();
-        } catch (InterruptedException e) {
-            opMode.telemetry.addData("ERROR", "Flaming jesus with fiery fibroids");
-            opMode.telemetry.update();
-        }
-
-        int x;
-        if (side == 'b') //blue side
-        {
-            x = bitmap.getWidth() - 5;
-        } else //red side
-        {
-            x = 50;
-        }
-        opMode.telemetry.addData("side", side);
-        opMode.telemetry.addData("x", x);
-        opMode.telemetry.update();
-
-        int highY = 8964;
-        int lowY = 0;
-        for (int y = bitmap.getHeight() - 10; y > 20; y--) {
-            int orangeCount = 0;
-            for (int currentY = y; currentY > (y - 10); currentY--)
-            {
-                if (isGreen(bitmap.getPixel(x, currentY)))
-                {
-                    orangeCount++;
-                }
-            }
-
-            if (orangeCount >= 4) {
-                highY = y;
-                break;
-            }
-        }
-
-
-        opMode.telemetry.update();
-
-        if (highY == 8964) //No orange found
-        {
-            return 0;
-        }
-        else if (highY <= 100)
-        {
-            return 0;
-        }
-        else {
-            for (int y = highY - 100; y <= highY - 10; y++) {
-
-
-                int orangeCount = 0;
-                for (int currentY = y; currentY < (y + 10); currentY++) {
-                    if (isGreen(bitmap.getPixel(x, currentY)))
-                        orangeCount++;
-                }
-                if (orangeCount >= 4) {
-                    lowY = y;
-                    break;
-                }
-            }
-
-            int yRange = highY - lowY;
-            //return yRange;
-            /*
-            opMode.telemetry.addData("highY", highY);
-            opMode.telemetry.addData("lowY", lowY);
-            opMode.telemetry.addData("yRange", yRange);
-            opMode.telemetry.update();
-            */
-
-            if (yRange < 65)
-            {
-                return 1;
-            } else {
-                return 4;
-            }
-        }
-    }
-
-    public boolean isGreen(int pixel){
-        return (RED_LOW <= red(pixel) && red(pixel) <= RED_HIGH && GREEN_LOW <= green(pixel) &&
-                green(pixel) <= GREEN_HIGH && BLUE_LOW <= blue(pixel) && blue(pixel) <= BLUE_HIGH);
-    }
-
-    public Bitmap getBitmap() throws InterruptedException {
-
-        VuforiaLocalizer.CloseableFrame picture;
-        picture = vuforia.getFrameQueue().take();
-        Image rgb = picture.getImage(1);
-
-        long numImages = picture.getNumImages();
-
-        //opMode.telemetry.addData("Num images", numImages);
-        //opMode.telemetry.update();
-
+    public Bitmap getImage() throws InterruptedException {
+        VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
+        long numImages = frame.getNumImages();
+        Image rgb = null;
         for (int i = 0; i < numImages; i++) {
-
-            int format = picture.getImage(i).getFormat();
-            if (format == PIXEL_FORMAT.RGB565) {
-                rgb = picture.getImage(i);
+            Image img = frame.getImage(i);
+            int fmt = img.getFormat();
+            if (fmt == PIXEL_FORMAT.RGB565) {
+                rgb = frame.getImage(i);
                 break;
             }
-
-            /*else {
-                opMode.telemetry.addData("correct RGB format ", format);
-            }*/
         }
-
-        Bitmap imageBitmap = Bitmap.createBitmap(rgb.getWidth(), rgb.getHeight(), Bitmap.Config.RGB_565);
-        imageBitmap.copyPixelsFromBuffer(rgb.getPixels());
-
-        //opMode.telemetry.addData("Image width", imageBitmap.getWidth());
-        //opMode.telemetry.addData("Image height", imageBitmap.getHeight());
-        //opMode.telemetry.update();
-        //opMode.sleep(500);
-
-        picture.close();
-
-
-        return imageBitmap;
+        Bitmap bm = Bitmap.createBitmap(rgb.getWidth(), rgb.getHeight(), Bitmap.Config.RGB_565);
+        bm.copyPixelsFromBuffer(rgb.getPixels());
+        return bm;
     }
 
+    public String getTeamMarkerPos() throws InterruptedException {
+        Bitmap rgbImage = getImage();
+        ArrayList<Integer> xValues = new ArrayList<>();
+        ArrayList<Integer> yValues = new ArrayList<>();
+
+        return pos;
+    }
 
 }
 
