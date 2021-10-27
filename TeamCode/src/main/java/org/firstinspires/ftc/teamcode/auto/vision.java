@@ -40,6 +40,7 @@ public class vision extends LinearOpMode {
         vuforia.setFrameQueueCapacity(4); //tells VuforiaLocalizer to only store one frame at a time
     }
 
+
     public Bitmap getImage() throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
         long numImages = frame.getNumImages();
@@ -63,6 +64,10 @@ public class vision extends LinearOpMode {
         ArrayList<Integer> yValues = new ArrayList<>();
 
         return pos;
+    }
+
+    public boolean isGreen() {
+
     }
 
 }
