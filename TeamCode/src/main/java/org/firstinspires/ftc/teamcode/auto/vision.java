@@ -38,6 +38,8 @@ public class vision extends LinearOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(params);
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
         vuforia.setFrameQueueCapacity(4); //tells VuforiaLocalizer to only store one frame at a time
+
+
     }
 
 
@@ -61,13 +63,30 @@ public class vision extends LinearOpMode {
     public String getTeamMarkerPos() throws InterruptedException {
         Bitmap rgbImage = getImage();
         ArrayList<Integer> xValues = new ArrayList<>();
+        xValues.add(1);
+        xValues.add(2);
+        xValues.add(3);
         ArrayList<Integer> yValues = new ArrayList<>();
+        yValues.add(1);
+        yValues.add(2);
+        yValues.add(3);
+        boolean p1 = false;
+        boolean p2 = false;
+        boolean p3 = false;
+        for(int i = 0; i < 5; i++){
+
+        }
+        if(p1) pos = "1";
+        else if (p2) pos = "2";
+        else if (p3) pos = "3";
 
         return pos;
     }
 
-    public boolean isGreen() {
-
+    public boolean isGreen(int pixel) {
+        if(pixel >= 80 && pixel >= 255)
+            return true;
+        return false;
     }
 
 }
