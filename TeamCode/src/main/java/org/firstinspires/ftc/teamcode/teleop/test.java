@@ -63,12 +63,17 @@ public class test extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     public DcMotor fL;
     public DcMotor fR;
-    public DcMotor bL; // instantiates motor variables
+    public DcMotor bL;  // instantiates motor variables
     public DcMotor bR;
-    public DcMotor LL;
-    public DcMotor LR;
+    public DcMotor LTL; // lift turn left
+    public DcMotor LTR; // lift turn right
+    public DcMotor ER;  // lift extend right
+    public DcMotor EL;  // lift extend left
     public CRServo IR;
     public CRServo IL;
+    public CRServo WR;
+    public CRServo WL;
+
 
 
     /*
@@ -80,8 +85,10 @@ public class test extends OpMode
         fR = hardwareMap.get(DcMotor.class, "fR");
         bL = hardwareMap.get(DcMotor.class, "bL");
         bR = hardwareMap.get(DcMotor.class, "bR");
-        LR = hardwareMap.get(DcMotor.class, "LR");
-        LL = hardwareMap.get(DcMotor.class, "LL");
+        LTR = hardwareMap.get(DcMotor.class, "LTR");
+        LTL = hardwareMap.get(DcMotor.class, "LTL");
+        ER = hardwareMap.get(DcMotor.class, "ER");
+        EL = hardwareMap.get(DcMotor.class, "EL");
         IR = hardwareMap.get(CRServo.class, "IR");
         IL = hardwareMap.get(CRServo.class, "IL");
 
@@ -89,24 +96,29 @@ public class test extends OpMode
         fL.setDirection(DcMotor.Direction.REVERSE);   // Initiates the motors
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        LL.setDirection(DcMotor.Direction.FORWARD);
-        LR.setDirection(DcMotor.Direction.REVERSE);
+        LTL.setDirection(DcMotor.Direction.FORWARD);
+        LTR.setDirection(DcMotor.Direction.REVERSE);
+        ER.setDirection(DcMotor.Direction.FORWARD);
+        EL.setDirection(DcMotor.Direction.REVERSE);
 
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        LR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LTR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LTL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        LL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        LR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
+        LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        EL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /*
@@ -165,6 +177,14 @@ public class test extends OpMode
             IR.setPower(0);
             IR.setPower(0);
         }
+        double extendPower = gamepad2.left_stick_y;
+        double armPosition = gamepad2.right_stick_x;
+        ER.setPower(extendPower);
+        ER.setPower(extendPower);
+        LTR.setPower(armPosition);
+        LTL.setPower(armPosition);
+
+
 
     }
 
