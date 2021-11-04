@@ -71,8 +71,8 @@ public class test extends OpMode
     public DcMotor EL;  // lift extend left
     public CRServo IR;
     public CRServo IL;
-    public CRServo WR;
-    public CRServo WL;
+    public CRServo WR;  // Wrist Right
+    public CRServo WL;  // Wrist Left
 
 
 
@@ -91,6 +91,8 @@ public class test extends OpMode
         EL = hardwareMap.get(DcMotor.class, "EL");
         IR = hardwareMap.get(CRServo.class, "IR");
         IL = hardwareMap.get(CRServo.class, "IL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);   // Initiates the motors
@@ -100,6 +102,8 @@ public class test extends OpMode
         LTR.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.FORWARD);
         EL.setDirection(DcMotor.Direction.REVERSE);
+        WR.setDirection(DcMotor.Direction.FORWARD);
+        WL.setDirection(DcMotor.Direction.REVERSE);
 
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -113,12 +117,11 @@ public class test extends OpMode
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         EL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 
     /*

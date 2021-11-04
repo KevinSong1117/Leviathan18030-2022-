@@ -96,7 +96,7 @@ public class vision extends LinearOpMode {
     }
 
     public boolean isGreen(int pixel) {
-        return green(pixel) >=80;
+        return green(pixel) >=100;
     }
 
 }

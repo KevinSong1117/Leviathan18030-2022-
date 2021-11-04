@@ -37,36 +37,46 @@ public class auto extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    public DcMotor fL;
-    public DcMotor fR;
-    public DcMotor bL;
-    public DcMotor bR;
+    public DcMotor FL;
+    public DcMotor FR;
+    public DcMotor BL;  // instantiates motor variables
+    public DcMotor BR;
+    public DcMotor LTL; // lift turn left
+    public DcMotor LTR; // lift turn right
+    public DcMotor ER;  // lift extend right
+    public DcMotor EL;  // lift extend left
+    public CRServo IR;
+    public CRServo IL;
+    public CRServo WR;  // Wrist Right
+    public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
     Orientation angles;
     float curHeading;
-    public CRServo inLeft;
-    public CRServo inRight;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
 
     public void init(LinearOpMode lOpmode) {
-        fL = hardwareMap.get(DcMotor.class, "fL");
-        fR = hardwareMap.get(DcMotor.class, "fR");
-        bL = hardwareMap.get(DcMotor.class, "bL");
-        bR = hardwareMap.get(DcMotor.class, "bR");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        LTL = hardwareMap.get(DcMotor.class, "LTL");
+        LTR = hardwareMap.get(DcMotor.class, "LTR");
+        ER = hardwareMap.get(DcMotor.class, "EL");
+        EL = hardwareMap.get(DcMotor.class, "ER");
 
-        inLeft = hardwareMap.get(CRServo.class, "inLeft Servo");
-        inRight = hardwareMap.get(CRServo.class, "inRight Servo");
+        IR = hardwareMap.get(CRServo.class, "IR");
+        IL = hardwareMap.get(CRServo.class, "IL");
 
-        inLeft.setDirection(CRServo.Direction.FORWARD);
-        inRight.setDirection(CRServo.Direction.REVERSE);
+        IL.setDirection(CRServo.Direction.FORWARD);
+        IR.setDirection(CRServo.Direction.REVERSE);
 
-        fR.setDirection(DcMotor.Direction.FORWARD);
-        fL.setDirection(DcMotor.Direction.REVERSE);
-        bR.setDirection(DcMotor.Direction.FORWARD);
-        bL.setDirection(DcMotor.Direction.REVERSE);
+        FR.setDirection(DcMotor.Direction.FORWARD);
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.FORWARD);
+        BL.setDirection(DcMotor.Direction.REVERSE);
 
         imu = lOpmode.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -96,10 +106,10 @@ public class auto extends OpMode
      * Code to run ONCE when the driver hits PLAY
      */
     public double getEncoderAvg(){
-        double flEncoder = fL.getCurrentPosition();
-        double frEncoder = fR.getCurrentPosition();
-        double blEncoder = bL.getCurrentPosition();
-        double brEncoder = bR.getCurrentPosition();
+        double flEncoder = FL.getCurrentPosition();
+        double frEncoder = FR.getCurrentPosition();
+        double blEncoder = BL.getCurrentPosition();
+        double brEncoder = BR.getCurrentPosition();
 
         double ret = flEncoder + frEncoder + blEncoder + brEncoder;
         ret /= 4;
@@ -119,15 +129,15 @@ public class auto extends OpMode
         double sEncoder = getEncoderAvg();
 
         while(getEncoderAvg() - sEncoder < distance){ // Runs as long as the encoding average - the
-            fL.setPower(direction * .5);              // encoding start is less than the target
-            fR.setPower(direction * .5); // Sets the power of the motors to currently half the power
-            bL.setPower(direction * .5);
-            bR.setPower(direction * .5);
+            FL.setPower(direction * .5);              // encoding start is less than the target
+            FR.setPower(direction * .5); // Sets the power of the motors to currently half the power
+            BL.setPower(direction * .5);
+            BR.setPower(direction * .5);
         }
-        fL.setPower(0);
-        fR.setPower(0); // Sets the power of the motors to currently half the power
-        bL.setPower(0);
-        bR.setPower(0);
+        FL.setPower(0);
+        FR.setPower(0); // Sets the power of the motors to currently half the power
+        BL.setPower(0);
+        BR.setPower(0);
     }
     public void botTurning( boolean direction, float degree) { //direction is to know if it will
         // turn left or right, degree is to know the amount which it turns. Positive is right
@@ -136,30 +146,30 @@ public class auto extends OpMode
 
         if (direction) {
             while (curHeading > start - degree) { // turns left
-                fL.setPower(.5);
-                fR.setPower(-.5);
-                bL.setPower(.5);
-                bR.setPower(-.5);
+                FL.setPower(.5);
+                FR.setPower(-.5);
+                BL.setPower(.5);
+                BR.setPower(-.5);
                 checkOrientation();
             }
         }
         else {
             while (curHeading < start + degree) { // turns right
-                fL.setPower(-.5);
-                fR.setPower(.5);
-                bL.setPower(-.5);
-                bR.setPower(.5);
+                FL.setPower(-.5);
+                FR.setPower(.5);
+                BL.setPower(-.5);
+                BR.setPower(.5);
                 checkOrientation();
             }
         }
-        fL.setPower(0);
-        fR.setPower(0);
-        bL.setPower(0);
-        bR.setPower(0);
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
     }
     public void carousel(){
-        inLeft.setPower(1);
-        inRight.setPower(-1);
+        IL.setPower(1);
+        IR.setPower(-1);
 
     }
     public void start() {
