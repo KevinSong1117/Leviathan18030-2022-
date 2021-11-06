@@ -155,10 +155,8 @@ public class test extends OpMode
         bL.setPower(leftPower * .5);
         bR.setPower(rightPower * .5);
 
-        telemetry.addData("fl: ", fL);
-        telemetry.addData("fr: ", fR);
-        telemetry.addData("bl: ", bL);
-        telemetry.addData("br ", bR);
+        telemetry.addData("Left: ", leftPower);
+        telemetry.addData("Right: ", rightPower);
         telemetry.update();
 
         if (gamepad1.x)
@@ -183,7 +181,7 @@ public class test extends OpMode
         double extendPower = gamepad2.left_stick_y;
         double armPosition = gamepad2.right_stick_x;
         ER.setPower(extendPower);
-        ER.setPower(extendPower);
+        ER.setPower(-extendPower);
         LTR.setPower(armPosition);
         LTL.setPower(armPosition);
 
