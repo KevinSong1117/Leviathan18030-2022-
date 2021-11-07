@@ -31,12 +31,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="auto", group="auto")
+@Autonomous(name="auto", group="newauto")
 
-public class auto extends LinearOpMode
+public class newauto extends LinearOpMode
 {
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
     public DcMotor FL;
     public DcMotor FR;
     public DcMotor BL;  // instantiates motor variables
@@ -57,7 +56,7 @@ public class auto extends LinearOpMode
      * Code to run ONCE when the driver hits INIT
      */
 
-    public void init(LinearOpMode lOpmode) {
+    public void runOpmode(LinearOpMode lOpmode) {
         FL = hardwareMap.get(DcMotor.class, "FL");
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
@@ -91,22 +90,7 @@ public class auto extends LinearOpMode
 
     }
 
-    @Override
-    public void init() {
 
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
     public double getEncoderAvg(){
         double flEncoder = FL.getCurrentPosition();
         double frEncoder = FR.getCurrentPosition();
@@ -127,7 +111,7 @@ public class auto extends LinearOpMode
     }
 
     public void moveForBack(double distance, double direction){    //takes two variables, one for the direction
-                                                                   // goal and one for the distance traveled
+        // goal and one for the distance traveled
         double sEncoder = getEncoderAvg();
 
         while(getEncoderAvg() - sEncoder < distance){ // Runs as long as the encoding average - the
@@ -173,25 +157,6 @@ public class auto extends LinearOpMode
         IL.setPower(1);
         IR.setPower(-1);
 
-    }
-    public void start() {
-        runtime.reset();
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-
-
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
     }
 
 }

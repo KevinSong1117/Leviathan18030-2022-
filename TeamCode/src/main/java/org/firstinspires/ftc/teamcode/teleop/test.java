@@ -57,7 +57,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opM
 
 @TeleOp(name="teleop", group="teleop")
 
-public class test extends OpMode
+public  class test extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -173,15 +173,15 @@ public class test extends OpMode
             IR.setPower(-1);
             IL.setPower(-1);
         }
-        if(gamepad1.b)
-        {
-            IR.setPower(0);
-            IR.setPower(0);
-        }
+
         double extendPower = gamepad2.left_stick_y;
         double armPosition = gamepad2.right_stick_x;
+        // test this for extending lift
         ER.setPower(extendPower);
-        ER.setPower(-extendPower);
+        // moving the right motor towards the front of robot = retract
+        // moving the left motor towards the back of the robot = extend
+        EL.setPower(-extendPower);
+
         LTR.setPower(armPosition);
         LTL.setPower(armPosition);
 
