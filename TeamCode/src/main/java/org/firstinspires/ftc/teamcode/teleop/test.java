@@ -150,7 +150,7 @@ public  class test extends OpMode
     public void loop() {
 
         double limitPower = .8; // percent of power
-        double drive = -gamepad1.left_stick_y;
+        double drive = gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
@@ -164,7 +164,7 @@ public  class test extends OpMode
 
         else {
             FL.setPower(leftPower * limitPower);
-            FR.setPower(rightPower * limitPower); // Sets the power of the motors to currently half the power
+            FR.setPower(rightPower * limitPower); // Sets the power of the motors to currently 80%
             BL.setPower(leftPower * limitPower);
             BR.setPower(rightPower * limitPower);
         }
