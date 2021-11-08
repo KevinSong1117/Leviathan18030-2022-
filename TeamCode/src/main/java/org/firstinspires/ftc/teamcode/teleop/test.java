@@ -39,6 +39,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.auto.Sensors;
+
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 /**
@@ -81,29 +83,33 @@ public  class test extends OpMode
      */
     @Override
     public void init() {
-        fL = hardwareMap.get(DcMotor.class, "fL");
-        fR = hardwareMap.get(DcMotor.class, "fR");
-        bL = hardwareMap.get(DcMotor.class, "bL");
-        bR = hardwareMap.get(DcMotor.class, "bR");
-        LTR = hardwareMap.get(DcMotor.class, "LTR");
+        fL = hardwareMap.get(DcMotor.class, "FL");
+        fR = hardwareMap.get(DcMotor.class, "FR");
+        bL = hardwareMap.get(DcMotor.class, "BL");
+        bR = hardwareMap.get(DcMotor.class, "BR");
         LTL = hardwareMap.get(DcMotor.class, "LTL");
-        ER = hardwareMap.get(DcMotor.class, "ER");
-        EL = hardwareMap.get(DcMotor.class, "EL");
+        LTR = hardwareMap.get(DcMotor.class, "LTR");
+        ER = hardwareMap.get(DcMotor.class, "EL");
+        EL = hardwareMap.get(DcMotor.class, "ER");
+
         IR = hardwareMap.get(CRServo.class, "IR");
         IL = hardwareMap.get(CRServo.class, "IL");
-        WR = hardwareMap.get(CRServo.class, "WR");
-        WL = hardwareMap.get(CRServo.class, "WL");
+        WR = hardwareMap.get(CRServo.class, "IR");
+        WL = hardwareMap.get(CRServo.class, "IL");
+
+        IL.setDirection(CRServo.Direction.FORWARD);
+        IR.setDirection(CRServo.Direction.REVERSE);
+        WR.setDirection(CRServo.Direction.FORWARD);
+        WL.setDirection(CRServo.Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
-        fL.setDirection(DcMotor.Direction.REVERSE);   // Initiates the motors
+        fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        LTL.setDirection(DcMotor.Direction.FORWARD);
-        LTR.setDirection(DcMotor.Direction.REVERSE);
-        ER.setDirection(DcMotor.Direction.FORWARD);
-        EL.setDirection(DcMotor.Direction.REVERSE);
-        WR.setDirection(DcMotor.Direction.FORWARD);
-        WL.setDirection(DcMotor.Direction.REVERSE);
+        EL.setDirection(DcMotor.Direction.FORWARD);
+        ER.setDirection(DcMotor.Direction.REVERSE);
+        LTR.setDirection(DcMotor.Direction.FORWARD);
+        LTL.setDirection(DcMotor.Direction.REVERSE);
 
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -145,36 +151,59 @@ public  class test extends OpMode
     @Override
     public void loop() {
 
+        double limitPower = .8; // percent of power
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
+        if (leftPower < 0.1 || rightPower < 0.1){
+            fL.setPower(0);
+            fR.setPower(0); // Sets the power of the motors to zero when the power is small
+            bL.setPower(0);
+            bR.setPower(0);
+        }
 
-        fL.setPower(leftPower * .5);
-        fR.setPower(rightPower * .5); // Sets the power of the motors to currently half the power
-        bL.setPower(leftPower * .5);
-        bR.setPower(rightPower * .5);
+        else {
+            fL.setPower(leftPower * limitPower);
+            fR.setPower(rightPower * limitPower); // Sets the power of the motors to currently half the power
+            bL.setPower(leftPower * limitPower);
+            bR.setPower(rightPower * limitPower);
+        }
 
         telemetry.addData("Left: ", leftPower);
         telemetry.addData("Right: ", rightPower);
         telemetry.update();
+        telemetry.update();
+        // tests encoder
+        telemetry.addData("fl", fL.getCurrentPosition());
+        telemetry.addData("fr", fR.getCurrentPosition());
+        telemetry.addData("bl", bL.getCurrentPosition());
+        telemetry.addData("br", bR.getCurrentPosition());
+        telemetry.update();
+        double power = 0;
+        if(gamepad2.a){
+            power = .5;
+            telemetry.addData("power: ", power);
+            IR.setPower(power);
+            IL.setPower(power);
 
-        if (gamepad1.x)
-        {
-            IR.setDirection(CRServo.Direction.FORWARD);
-            IL.setDirection(CRServo.Direction.REVERSE);
-            IR.setPower(1);
-            IL.setPower(1);
         }
-        if (gamepad1.a)
-        {
-            IR.setDirection(CRServo.Direction.FORWARD);
-            IL.setDirection(CRServo.Direction.REVERSE);
-            IR.setPower(-1);
-            IL.setPower(-1);
+        if(gamepad2.b){
+            power = -.5;
+            telemetry.addData("power: ", power);
+            IR.setPower(power);
+            IL.setPower(power);
         }
 
+        if(gamepad2.x) {
+            WR.setPower(.1);
+            WL.setPower(.1);
+        }
+        if(gamepad2.y) {
+            WR.setPower(-.1);
+            WL.setPower(-.1);
+        }
         double extendPower = gamepad2.left_stick_y;
         double armPosition = gamepad2.right_stick_x;
         // test this for extending lift

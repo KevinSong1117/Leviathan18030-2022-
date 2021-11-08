@@ -28,10 +28,8 @@ public class testing extends LinearOpMode {
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo IL;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
-    Sensors gyro;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,11 +43,9 @@ public class testing extends LinearOpMode {
         EL = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        IL = hardwareMap.get(CRServo.class, "IL");
-        WR = hardwareMap.get(CRServo.class, "IR");
-        WL = hardwareMap.get(CRServo.class, "IL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
-        IL.setDirection(CRServo.Direction.FORWARD);
         IR.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
@@ -96,26 +92,18 @@ public class testing extends LinearOpMode {
         double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
-        if (leftPower < 0.1 || rightPower < 0.1){
-            fL.setPower(0);
-            fR.setPower(0); // Sets the power of the motors to zero when the power is small
-            bL.setPower(0);
-            bR.setPower(0);
-        }
 
-        else {
-            fL.setPower(leftPower * limitPower);
-            fR.setPower(rightPower * limitPower); // Sets the power of the motors to currently half the power
-            bL.setPower(leftPower * limitPower);
-            bR.setPower(rightPower * limitPower);
-        }
+        fL.setPower(leftPower * limitPower);
+        fR.setPower(rightPower * limitPower); // Sets the power of the motors to currently half the power
+        bL.setPower(leftPower * limitPower);
+        bR.setPower(rightPower * limitPower);
+
 
         telemetry.addData("Left: ", leftPower);
         telemetry.addData("Right: ", rightPower);
         telemetry.update();
         while(opModeIsActive()){
             // test gyro
-            telemetry.addData("angle: ", gyro.getAngle());
             telemetry.update();
         }
         while(opModeIsActive()){
@@ -127,18 +115,16 @@ public class testing extends LinearOpMode {
             telemetry.update();
         }
         double power = 0;
-        if(gamepad1.a){
+        if(gamepad2.a){
             power = .5;
             telemetry.addData("power: ", power);
             IR.setPower(power);
-            IL.setPower(power);
 
         }
-        if(gamepad1.b){
+        if(gamepad2.b){
             power = -.5;
             telemetry.addData("power: ", power);
             IR.setPower(power);
-            IL.setPower(power);
         }
 
         if(gamepad2.x) {
@@ -155,7 +141,7 @@ public class testing extends LinearOpMode {
         ER.setPower(extendPower);
         // moving the right motor towards the front of robot = retract
         // moving the left motor towards the back of the robot = extend
-        EL.setPower(-extendPower);
+        EL.setPower(extendPower);
 
         LTR.setPower(armPosition);
         LTL.setPower(armPosition);
