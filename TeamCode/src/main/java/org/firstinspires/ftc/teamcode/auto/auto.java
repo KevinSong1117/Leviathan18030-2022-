@@ -33,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @Autonomous(name="auto", group="auto")
 
-public class auto extends LinearOpMode
+public class auto extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -87,7 +87,6 @@ public class auto extends LinearOpMode
 
         imu.initialize(parameters);
 
-        v = new vision(this);
 
     }
 
@@ -174,6 +173,7 @@ public class auto extends LinearOpMode
         IR.setPower(-1);
 
     }
+    @Override
     public void start() {
         runtime.reset();
     }
