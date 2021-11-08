@@ -63,16 +63,15 @@ public  class test extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    public DcMotor fL;
-    public DcMotor fR;
-    public DcMotor bL;  // instantiates motor variables
-    public DcMotor bR;
+    public DcMotor FL;
+    public DcMotor FR;
+    public DcMotor BL;  // instantiates motor variables
+    public DcMotor BR;
     public DcMotor LTL; // lift turn left
     public DcMotor LTR; // lift turn right
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo IL;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
 
@@ -83,46 +82,45 @@ public  class test extends OpMode
      */
     @Override
     public void init() {
-        fL = hardwareMap.get(DcMotor.class, "FL");
-        fR = hardwareMap.get(DcMotor.class, "FR");
-        bL = hardwareMap.get(DcMotor.class, "BL");
-        bR = hardwareMap.get(DcMotor.class, "BR");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
         LTL = hardwareMap.get(DcMotor.class, "LTL");
         LTR = hardwareMap.get(DcMotor.class, "LTR");
         ER = hardwareMap.get(DcMotor.class, "EL");
         EL = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        IL = hardwareMap.get(CRServo.class, "IL");
-        WR = hardwareMap.get(CRServo.class, "IR");
-        WL = hardwareMap.get(CRServo.class, "IL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
-        IL.setDirection(CRServo.Direction.FORWARD);
+
         IR.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
-        fR.setDirection(DcMotor.Direction.FORWARD);
-        fL.setDirection(DcMotor.Direction.REVERSE);
-        bR.setDirection(DcMotor.Direction.FORWARD);
-        bL.setDirection(DcMotor.Direction.REVERSE);
+        FR.setDirection(DcMotor.Direction.FORWARD);
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.FORWARD);
+        BL.setDirection(DcMotor.Direction.REVERSE);
         EL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
         LTR.setDirection(DcMotor.Direction.FORWARD);
         LTL.setDirection(DcMotor.Direction.REVERSE);
 
 
-        fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         LTR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LTL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         EL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -158,17 +156,17 @@ public  class test extends OpMode
         double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
         if (leftPower < 0.1 || rightPower < 0.1){
-            fL.setPower(0);
-            fR.setPower(0); // Sets the power of the motors to zero when the power is small
-            bL.setPower(0);
-            bR.setPower(0);
+            FL.setPower(0);
+            FR.setPower(0); // Sets the power of the motors to zero when the power is small
+            BL.setPower(0);
+            BR.setPower(0);
         }
 
         else {
-            fL.setPower(leftPower * limitPower);
-            fR.setPower(rightPower * limitPower); // Sets the power of the motors to currently half the power
-            bL.setPower(leftPower * limitPower);
-            bR.setPower(rightPower * limitPower);
+            FL.setPower(leftPower * limitPower);
+            FR.setPower(rightPower * limitPower); // Sets the power of the motors to currently half the power
+            BL.setPower(leftPower * limitPower);
+            BR.setPower(rightPower * limitPower);
         }
 
         telemetry.addData("Left: ", leftPower);
@@ -176,24 +174,22 @@ public  class test extends OpMode
         telemetry.update();
         telemetry.update();
         // tests encoder
-        telemetry.addData("fl", fL.getCurrentPosition());
-        telemetry.addData("fr", fR.getCurrentPosition());
-        telemetry.addData("bl", bL.getCurrentPosition());
-        telemetry.addData("br", bR.getCurrentPosition());
+        telemetry.addData("fl", FL.getCurrentPosition());
+        telemetry.addData("fr", FR.getCurrentPosition());
+        telemetry.addData("bl", BL.getCurrentPosition());
+        telemetry.addData("br", BR.getCurrentPosition());
         telemetry.update();
         double power = 0;
         if(gamepad2.a){
             power = .5;
             telemetry.addData("power: ", power);
             IR.setPower(power);
-            IL.setPower(power);
 
         }
         if(gamepad2.b){
             power = -.5;
             telemetry.addData("power: ", power);
             IR.setPower(power);
-            IL.setPower(power);
         }
 
         if(gamepad2.x) {
