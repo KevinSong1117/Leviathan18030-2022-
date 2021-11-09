@@ -72,8 +72,9 @@ public  class test extends OpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo WR;  // Wrist Right
-    public CRServo WL;  // Wrist Left
+    public Servo WR;  // Wrist Right
+    public Servo WL;  // Wrist Left
+
 
 
 
@@ -92,13 +93,13 @@ public  class test extends OpMode
         EL = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(CRServo.class, "WR");
-        WL = hardwareMap.get(CRServo.class, "WL");
+        WR = hardwareMap.get(Servo.class, "WR");
+        WL = hardwareMap.get(Servo.class, "WL");
 
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(CRServo.Direction.FORWARD);
-        WL.setDirection(CRServo.Direction.REVERSE);
+        WR.setDirection(Servo.Direction.FORWARD);
+        WL.setDirection(Servo.Direction.REVERSE);
 
         FR.setDirection(DcMotor.Direction.FORWARD);
         FL.setDirection(DcMotor.Direction.REVERSE);
@@ -150,27 +151,16 @@ public  class test extends OpMode
     public void loop() {
 
         double limitPower = .8; // percent of power
-        double drive = gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        double leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        double rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        double driveL = gamepad1.left_stick_y;
+        double driveR  =  gamepad1.right_stick_y;
+        BL.setPower(driveL);
+        BR.setPower(driveR * -1);
+        FL.setPower(driveL);
+        FR.setPower(driveR * -1);
 
-        if (leftPower < 0.1 || rightPower < 0.1){
-            FL.setPower(0);
-            FR.setPower(0); // Sets the power of the motors to zero when the power is small
-            BL.setPower(0);
-            BR.setPower(0);
-        }
 
-        else {
-            FL.setPower(leftPower * limitPower);
-            FR.setPower(rightPower * limitPower); // Sets the power of the motors to currently 80%
-            BL.setPower(leftPower * limitPower);
-            BR.setPower(rightPower * limitPower);
-        }
-
-        telemetry.addData("Left: ", leftPower);
-        telemetry.addData("Right: ", rightPower);
+        telemetry.addData("Left: ", driveL);
+        telemetry.addData("Right: ", driveR);
         telemetry.update();
         telemetry.update();
         // tests encoder
@@ -191,28 +181,31 @@ public  class test extends OpMode
             telemetry.addData("power: ", power);
             IR.setPower(power);
         }
-
+        if(gamepad2.right_bumper){
+            IR.setPower(0);
+        }
         if(gamepad2.x) {
-            WR.setPower(.1);
-            WL.setPower(.1);
+            WR.setDirection(Servo.Direction.REVERSE);
+            WL.setDirection(Servo.Direction.FORWARD);
         }
         if(gamepad2.y) {
-            WR.setPower(-.1);
-            WL.setPower(-.1);
+            WR.setDirection(Servo.Direction.FORWARD);
+            WL.setDirection(Servo.Direction.REVERSE);
+        }
+        if(gamepad2.left_bumper){
+            WR.setPosition(0);
+            WL.setPosition(0);
         }
         double extendPower = gamepad2.left_stick_y;
-        double armPosition = gamepad2.right_stick_x;
+        double armPosition = gamepad2.right_stick_y;
         // test this for extending lift
         ER.setPower(extendPower);
         // moving the right motor towards the front of robot = retract
         // moving the left motor towards the back of the robot = extend
-        EL.setPower(-extendPower);
+        EL.setPower(extendPower);
 
         LTR.setPower(armPosition);
         LTL.setPower(armPosition);
-
-
-
     }
 
     /*
