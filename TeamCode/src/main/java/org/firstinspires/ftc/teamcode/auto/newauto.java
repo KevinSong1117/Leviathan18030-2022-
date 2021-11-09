@@ -130,6 +130,9 @@ public class newauto extends LinearOpMode
             telemetry.addData("pos", position);
         }
 
+        movePIDFGyro(10,.5,0,0,0,.25,3);
+        turnHeading(90,.5,0,0,0,.25,3);
+
 
     }
 

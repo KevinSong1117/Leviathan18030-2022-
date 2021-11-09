@@ -31,6 +31,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+@Autonomous(name="auto", group="auto")
 
 public class auto extends OpMode
 {
@@ -105,6 +106,12 @@ public class auto extends OpMode
     /*
      * Code to run ONCE when the driver hits PLAY
      */
+    @Override
+    public void start() {
+        runtime.reset();
+        moveForBack(100, 1);
+        botTurning(false, 90);
+    }
     public double getEncoderAvg(){
         double flEncoder = FL.getCurrentPosition();
         double frEncoder = FR.getCurrentPosition();
@@ -172,10 +179,7 @@ public class auto extends OpMode
         IR.setPower(-1);
 
     }
-    @Override
-    public void start() {
-        runtime.reset();
-    }
+
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
