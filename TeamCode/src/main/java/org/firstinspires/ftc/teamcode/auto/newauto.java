@@ -45,13 +45,12 @@ public class newauto extends LinearOpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo IL;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
     Orientation angles;
     float curHeading;
-    public vision v;
+    //public vision v;
     LinearOpMode opMode;
     ElapsedTime timer;
     Sensors gyro;
@@ -79,11 +78,9 @@ public class newauto extends LinearOpMode
         EL = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        IL = hardwareMap.get(CRServo.class, "IL");
-        WR = hardwareMap.get(CRServo.class, "IR");
-        WL = hardwareMap.get(CRServo.class, "IL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
-        IL.setDirection(CRServo.Direction.FORWARD);
         IR.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
@@ -107,14 +104,16 @@ public class newauto extends LinearOpMode
 
         imu.initialize(parameters);
 
-        v = new vision(this);
+        //v = new vision(this);
 
         waitForStart();
-        String position = v.getTeamMarkerPos();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        //String position = v.getTeamMarkerPos();
 
         // see if the team element is in the 3 different positions
         // if the camera dose not detect the team element it will only do other tasks
-        if(position.equals("1")){
+        /*if(position.equals("1")){
             telemetry.addData("pos", position);
         }
 
@@ -128,14 +127,11 @@ public class newauto extends LinearOpMode
 
         else{
             telemetry.addData("pos", position);
-        }
-
-        movePIDFGyro(10,.5,0,0,0,.25,3);
-        turnHeading(90,.5,0,0,0,.25,3);
-
+        }*/
+        moveForBack(1000, -1);
+        botTurning(1, 500);
 
     }
-
 
     public double getEncoderAvg(){
         double flEncoder = fL.getCurrentPosition();
@@ -156,24 +152,21 @@ public class newauto extends LinearOpMode
         curHeading = angles.firstAngle; //Gets the orientation of the robot
     }
 
-    public void moveForBack(double distance, double direction){    //takes two variables, one for the direction
+    public void moveForBack(long distance, double direction){    //takes two variables, one for the direction
         // goal and one for the distance traveled
-        double sEncoder = getEncoderAvg();
-
-        while(getEncoderAvg() - sEncoder < distance){ // Runs as long as the encoding average - the
-            fL.setPower(direction * .5);              // encoding start is less than the target
-            fR.setPower(direction * .5); // Sets the power of the motors to currently half the power
-            bL.setPower(direction * .5);
-            bR.setPower(direction * .5);
-        }
+        fL.setPower(direction * .9);              // encoding start is less than the target
+        fR.setPower(-direction); // Sets the power of the motors to currently half the power
+        bL.setPower(direction * .9);
+        bR.setPower(-direction);
+        sleep(distance);
         fL.setPower(0);
-        fR.setPower(0); // Sets the power of the motors to currently half the power
+        fR.setPower(0);
         bL.setPower(0);
         bR.setPower(0);
     }
-    public void botTurning( boolean direction, float degree) { //direction is to know if it will
+    public void botTurning( double direction, long degree) { //direction is to know if it will
         // turn left or right, degree is to know the amount which it turns. Positive is right
-        checkOrientation();
+        /* checkOrientation();
         float start = curHeading;// Gets the current heading
 
         if (direction) {
@@ -194,13 +187,18 @@ public class newauto extends LinearOpMode
                 checkOrientation();
             }
         }
+        */
+        fL.setPower(direction * .9);
+        fR.setPower(direction );
+        bL.setPower(direction * .9);
+        bR.setPower(direction);
+        sleep(degree);
         fL.setPower(0);
         fR.setPower(0);
         bL.setPower(0);
         bR.setPower(0);
     }
     public void carousel(){
-        IL.setPower(1);
         IR.setPower(-1);
 
     }

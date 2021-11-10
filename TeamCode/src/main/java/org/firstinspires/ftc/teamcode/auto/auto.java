@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -31,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="auto", group="auto")
+@Autonomous(name="auto1", group="auto1")
 
 public class auto extends OpMode
 {
@@ -46,7 +48,7 @@ public class auto extends OpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo IL;
+
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
@@ -57,7 +59,8 @@ public class auto extends OpMode
      * Code to run ONCE when the driver hits INIT
      */
 
-    public void init(LinearOpMode lOpmode) {
+
+    public void init() {
         FL = hardwareMap.get(DcMotor.class, "FL");
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
@@ -66,11 +69,16 @@ public class auto extends OpMode
         LTR = hardwareMap.get(DcMotor.class, "LTR");
         ER = hardwareMap.get(DcMotor.class, "EL");
         EL = hardwareMap.get(DcMotor.class, "ER");
-
         IR = hardwareMap.get(CRServo.class, "IR");
-        IL = hardwareMap.get(CRServo.class, "IL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
-        IL.setDirection(CRServo.Direction.FORWARD);
+
+        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         IR.setDirection(CRServo.Direction.REVERSE);
 
         FR.setDirection(DcMotor.Direction.FORWARD);
@@ -78,7 +86,7 @@ public class auto extends OpMode
         BR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.REVERSE);
 
-        imu = lOpmode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -86,13 +94,6 @@ public class auto extends OpMode
         parameters.loggingEnabled = false;
 
         imu.initialize(parameters);
-
-
-    }
-
-    @Override
-    public void init() {
-
     }
 
     /*
@@ -109,14 +110,15 @@ public class auto extends OpMode
     @Override
     public void start() {
         runtime.reset();
-        moveForBack(100, 1);
-        botTurning(false, 90);
+        outTake();
+
+
     }
     public double getEncoderAvg(){
-        double flEncoder = FL.getCurrentPosition();
-        double frEncoder = FR.getCurrentPosition();
-        double blEncoder = BL.getCurrentPosition();
-        double brEncoder = BR.getCurrentPosition();
+        int flEncoder = FL.getCurrentPosition();
+        int frEncoder = FR.getCurrentPosition();
+        int blEncoder = BL.getCurrentPosition();
+        int brEncoder = BR.getCurrentPosition();
 
         double ret = flEncoder + frEncoder + blEncoder + brEncoder;
         ret /= 4;
@@ -131,18 +133,16 @@ public class auto extends OpMode
         curHeading = angles.firstAngle; //Gets the orientation of the robot
     }
 
-    public void moveForBack(double distance, double direction){    //takes two variables, one for the direction
+    public void moveForBack(double time, double direction){    //takes two variables, one for the direction
                                                                    // goal and one for the distance traveled
-        double sEncoder = getEncoderAvg();
 
-        while(getEncoderAvg() - sEncoder < distance){ // Runs as long as the encoding average - the
-            FL.setPower(direction * .5);              // encoding start is less than the target
-            FR.setPower(direction * .5); // Sets the power of the motors to currently half the power
-            BL.setPower(direction * .5);
-            BR.setPower(direction * .5);
-        }
+        FL.setPower(direction * direction);              // encoding start is less than the target
+        FR.setPower(direction * -direction); // Sets the power of the motors to currently half the power
+        BL.setPower(direction * direction);
+        BR.setPower(direction * -direction);
+
         FL.setPower(0);
-        FR.setPower(0); // Sets the power of the motors to currently half the power
+        FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
     }
@@ -154,18 +154,18 @@ public class auto extends OpMode
         if (direction) {
             while (curHeading > start - degree) { // turns left
                 FL.setPower(.5);
-                FR.setPower(-.5);
+                FR.setPower(.5);
                 BL.setPower(.5);
-                BR.setPower(-.5);
+                BR.setPower(.5);
                 checkOrientation();
             }
         }
         else {
             while (curHeading < start + degree) { // turns right
                 FL.setPower(-.5);
-                FR.setPower(.5);
+                FR.setPower(-.5);
                 BL.setPower(-.5);
-                BR.setPower(.5);
+                BR.setPower(-.5);
                 checkOrientation();
             }
         }
@@ -174,9 +174,11 @@ public class auto extends OpMode
         BL.setPower(0);
         BR.setPower(0);
     }
-    public void carousel(){
-        IL.setPower(1);
-        IR.setPower(-1);
+    public void outTake(){
+
+        WR.setPower(.1);
+        WL.setPower(.1);
+        IR.setPower(-.5);
 
     }
 
@@ -186,7 +188,6 @@ public class auto extends OpMode
      */
     @Override
     public void loop() {
-
 
     }
 

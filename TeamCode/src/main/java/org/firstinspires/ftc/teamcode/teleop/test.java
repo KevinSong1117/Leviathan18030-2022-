@@ -72,8 +72,8 @@ public  class test extends OpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public Servo WR;  // Wrist Right
-    public Servo WL;  // Wrist Left
+    public CRServo WR;  // Wrist Right
+    public CRServo WL;  // Wrist Left
 
 
 
@@ -93,13 +93,13 @@ public  class test extends OpMode
         EL = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(Servo.class, "WR");
-        WL = hardwareMap.get(Servo.class, "WL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(Servo.Direction.FORWARD);
-        WL.setDirection(Servo.Direction.REVERSE);
+        WR.setDirection(CRServo.Direction.FORWARD);
+        WL.setDirection(CRServo.Direction.REVERSE);
 
         FR.setDirection(DcMotor.Direction.FORWARD);
         FL.setDirection(DcMotor.Direction.REVERSE);
@@ -126,6 +126,8 @@ public  class test extends OpMode
         EL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        WR.setDirection(CRServo.Direction.REVERSE);
+        WL.setDirection(CRServo.Direction.FORWARD);
 
     }
 
@@ -152,11 +154,20 @@ public  class test extends OpMode
 
         double limitPower = .8; // percent of power
         double driveL = gamepad1.left_stick_y;
-        double driveR  =  gamepad1.right_stick_y;
-        BL.setPower(driveL);
-        BR.setPower(driveR * -1);
-        FL.setPower(driveL);
-        FR.setPower(driveR * -1);
+        double driveR  =  gamepad1.right_stick_x;
+        if(gamepad1.right_stick_x > -.1 && gamepad1.right_stick_x < .1){
+            BL.setPower(driveL);
+            BR.setPower(driveL * -1);
+            FL.setPower(driveL);
+            FR.setPower(driveL * -1);
+        }
+        else{
+            BL.setPower(driveR);
+            BR.setPower(driveR);
+            FL.setPower(driveR);
+            FR.setPower(driveR);
+        }
+
 
 
         telemetry.addData("Left: ", driveL);
@@ -170,6 +181,7 @@ public  class test extends OpMode
         telemetry.addData("br", BR.getCurrentPosition());
         telemetry.update();
         double power = 0;
+        double position = 0;
         if(gamepad2.a){
             power = .5;
             telemetry.addData("power: ", power);
@@ -181,21 +193,23 @@ public  class test extends OpMode
             telemetry.addData("power: ", power);
             IR.setPower(power);
         }
-        if(gamepad2.right_bumper){
+        if(gamepad2.x){
             IR.setPower(0);
         }
-        if(gamepad2.x) {
-            WR.setDirection(Servo.Direction.REVERSE);
-            WL.setDirection(Servo.Direction.FORWARD);
+        if(gamepad2.right_bumper) {
+            position = .3;
+            WR.setPower(position);
+            WR.setPower(position);
         }
-        if(gamepad2.y) {
-            WR.setDirection(Servo.Direction.FORWARD);
-            WL.setDirection(Servo.Direction.REVERSE);
+        WR.setPower(0);
+        WR.setPower(0);
+        if(gamepad2.left_bumper) {
+            position = -.3;
+            WR.setPower(position);
+            WL.setPower(position);
         }
-        if(gamepad2.left_bumper){
-            WR.setPosition(0);
-            WL.setPosition(0);
-        }
+        WR.setPower(position);
+        WR.setPower(position);
         double extendPower = gamepad2.left_stick_y;
         double armPosition = gamepad2.right_stick_y;
         // test this for extending lift
@@ -203,6 +217,11 @@ public  class test extends OpMode
         // moving the right motor towards the front of robot = retract
         // moving the left motor towards the back of the robot = extend
         EL.setPower(extendPower);
+        if(armPosition <= .1 && armPosition >= -.1){
+            armPosition = 0;
+            LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
 
         LTR.setPower(armPosition);
         LTL.setPower(armPosition);

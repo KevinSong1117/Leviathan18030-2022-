@@ -76,13 +76,7 @@ public class testing extends LinearOpMode {
         LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-       /*while(LTR.getCurrentPosition() < 500 && LTL.getCurrentPosition() < 500){
-           LTR.setPower(.1);
-           LTL.setPower(.1);
 
-       }
-       LTR.setPower(0);
-       LTL.setPower(0);*/
 
         waitForStart();
 
