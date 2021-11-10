@@ -128,8 +128,9 @@ public class newauto extends LinearOpMode
         else{
             telemetry.addData("pos", position);
         }*/
+        moveForBack(500, -1);
+        botTurning(1, 400);
         moveForBack(1000, -1);
-        botTurning(1, 500);
 
     }
 
@@ -188,8 +189,8 @@ public class newauto extends LinearOpMode
             }
         }
         */
-        fL.setPower(direction);
-        fR.setPower(direction );
+        fL.setPower(direction );
+        fR.setPower(direction);
         bL.setPower(direction );
         bR.setPower(direction);
         sleep(degree);
