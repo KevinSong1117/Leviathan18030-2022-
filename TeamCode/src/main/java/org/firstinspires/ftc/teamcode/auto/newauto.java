@@ -154,9 +154,9 @@ public class newauto extends LinearOpMode
 
     public void moveForBack(long distance, double direction){    //takes two variables, one for the direction
         // goal and one for the distance traveled
-        fL.setPower(direction * .9);              // encoding start is less than the target
+        fL.setPower(direction );              // encoding start is less than the target
         fR.setPower(-direction); // Sets the power of the motors to currently half the power
-        bL.setPower(direction * .9);
+        bL.setPower(direction);
         bR.setPower(-direction);
         sleep(distance);
         fL.setPower(0);
@@ -188,9 +188,9 @@ public class newauto extends LinearOpMode
             }
         }
         */
-        fL.setPower(direction * .9);
+        fL.setPower(direction);
         fR.setPower(direction );
-        bL.setPower(direction * .9);
+        bL.setPower(direction );
         bR.setPower(direction);
         sleep(degree);
         fL.setPower(0);
