@@ -163,53 +163,43 @@ public  class test extends OpMode
         }
 
         if (gamepad2.left_bumper){
-            WR.setPosition(.3);
-            WL.setPosition(.3);
+            // straight
+            WR.setPosition(.15);
+            WL.setPosition(.15);
         }
         if (gamepad2.right_bumper){
-            WR.setPosition(.7);
-            WL.setPosition(.7);
+            // up
+            WR.setPosition(.9);
+            WL.setPosition(.9);
         }
 
 
 
-        telemetry.addData("Left: ", driveL);
-        telemetry.addData("Right: ", driveR);
-        telemetry.update();
-        telemetry.update();
-        // tests encoder
-        telemetry.addData("fl", FL.getCurrentPosition());
-        telemetry.addData("fr", FR.getCurrentPosition());
-        telemetry.addData("bl", BL.getCurrentPosition());
-        telemetry.addData("br", BR.getCurrentPosition());
-        telemetry.update();
+
         double power = 0;
         double position = 0;
         if(gamepad2.a){
             power = .5;
-            telemetry.addData("power: ", power);
             IR.setPower(power);
 
         }
         if(gamepad2.b){
             power = -.5;
-            telemetry.addData("power: ", power);
             IR.setPower(power);
         }
         if(gamepad2.x){
             IR.setPower(0);
         }
 
-        telemetry.addData("Wrist Power :", position);
         double extendPower = gamepad2.left_stick_y;
         // some sort of sine fucntion so that it is negative on the right and positive on the left
-        double staticPower = -0.2;
+        double staticPower = -0.10;
 
         // test this for extending lift
         // Static equilibrium (free body diagram and phy shi)
-        ER.setPower(staticPower + extendPower * .45);
-        telemetry.addData("Lift Power :", extendPower);
-        telemetry.addData("Lift position :", ER.getCurrentPosition());
+        ER.setPower(staticPower + extendPower * .30);
+        telemetry.addData("Lift position ", ER.getCurrentPosition());
+        telemetry.update();
 
         // moving the right motor towards the front of robot = retract
         // moving the left motor towards the back of the robot = extend

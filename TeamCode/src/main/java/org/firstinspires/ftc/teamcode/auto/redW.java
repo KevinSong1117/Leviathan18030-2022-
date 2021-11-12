@@ -31,6 +31,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+@Autonomous(name="redW", group="redW")
 
 public class redW extends LinearOpMode
 {
@@ -99,17 +100,17 @@ public class redW extends LinearOpMode
 
         imu.initialize(parameters);
 
-        //v = new vision(this);
+        vision v = new vision(this);
 
         waitForStart();
-        WR.setPower(.5);
-        WL.setPower(.5);
-        //String position = v.getTeamMarkerPos();
+
+        String position = v.getTeamMarkerPos();
 
         // see if the team element is in the 3 different positions
         // if the camera dose not detect the team element it will only do other tasks
         /*if(position.equals("1")){
             telemetry.addData("pos", position);
+
         }
 
         else if(position.equals("2")){

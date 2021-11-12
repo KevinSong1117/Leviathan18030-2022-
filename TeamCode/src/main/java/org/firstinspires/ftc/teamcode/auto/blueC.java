@@ -31,6 +31,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+@Autonomous(name="blueC", group="blueC")
 
 public class blueC extends LinearOpMode
 {
@@ -72,7 +73,7 @@ public class blueC extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "EL");
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
@@ -97,15 +98,38 @@ public class blueC extends LinearOpMode
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
 
-        imu.initialize(parameters);
+        vision v = new vision(this);
 
-        //v = new vision(this);
+        imu.initialize(parameters);
 
         waitForStart();
 
+        //String position = v.getTeamMarkerPos();
+
+        // see if the team element is in the 3 different positions
+        // if the camera dose not detect the team element it will only do other tasks
+        /*if(position.equals("1")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else if(position.equals("2")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else if(position.equals("3")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else{
+            telemetry.addData("pos", position);
+        }*/
         moveForward(500, .5);
         turn(90, .5);
         moveForward(500, .5);
+
 
     }
 
