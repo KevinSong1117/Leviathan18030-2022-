@@ -72,8 +72,8 @@ public  class test extends OpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo WR;  // Wrist Right
-    public CRServo WL;  // Wrist Left
+    public Servo WR;  // Wrist Right
+    public Servo WL;  // Wrist Left
 
 
 
@@ -87,47 +87,38 @@ public  class test extends OpMode
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
-        LTL = hardwareMap.get(DcMotor.class, "LTL");
-        LTR = hardwareMap.get(DcMotor.class, "LTR");
-        ER = hardwareMap.get(DcMotor.class, "EL");
-        EL = hardwareMap.get(DcMotor.class, "ER");
+
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(CRServo.class, "WR");
-        WL = hardwareMap.get(CRServo.class, "WL");
+        WR = hardwareMap.get(Servo.class, "WR");
+        WL = hardwareMap.get(Servo.class, "WL");
 
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(CRServo.Direction.FORWARD);
-        WL.setDirection(CRServo.Direction.REVERSE);
+        WR.setDirection(Servo.Direction.FORWARD);
+        WL.setDirection(Servo.Direction.REVERSE);
 
         FR.setDirection(DcMotor.Direction.FORWARD);
         FL.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.REVERSE);
-        EL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
-        LTR.setDirection(DcMotor.Direction.FORWARD);
-        LTL.setDirection(DcMotor.Direction.REVERSE);
 
 
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        LTR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LTL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        EL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        WR.setDirection(CRServo.Direction.REVERSE);
-        WL.setDirection(CRServo.Direction.FORWARD);
+        WR.setDirection(Servo.Direction.REVERSE);
+        WL.setDirection(Servo.Direction.FORWARD);
 
     }
 
@@ -168,6 +159,15 @@ public  class test extends OpMode
             FR.setPower(driveR);
         }
 
+        if (gamepad1.left_bumper){
+            WR.setPosition(.36);
+            WL.setPosition(.13);
+        }
+        if (gamepad1.right_bumper){
+            WR.setPosition(.7);
+            WL.setPosition(.4);
+        }
+
 
 
         telemetry.addData("Left: ", driveL);
@@ -196,35 +196,20 @@ public  class test extends OpMode
         if(gamepad2.x){
             IR.setPower(0);
         }
-        if(gamepad2.right_bumper) {
-            position = .3;
-            WR.setPower(position);
-            WR.setPower(position);
-        }
-        WR.setPower(0);
-        WR.setPower(0);
-        if(gamepad2.left_bumper) {
-            position = -.3;
-            WR.setPower(position);
-            WL.setPower(position);
-        }
-        WR.setPower(position);
-        WR.setPower(position);
+
+        telemetry.addData("Wrist Power :", position);
         double extendPower = gamepad2.left_stick_y;
-        double armPosition = gamepad2.right_stick_y;
+        double staticPower = -0.2;
+
         // test this for extending lift
-        ER.setPower(extendPower);
+        // Static equilibrium (free body diagram and phy shi)
+        ER.setPower(staticPower + extendPower * .45);
+        telemetry.addData("Lift Power :", extendPower);
+        telemetry.addData("Lift position :", ER.getCurrentPosition());
+
         // moving the right motor towards the front of robot = retract
         // moving the left motor towards the back of the robot = extend
-        EL.setPower(extendPower);
-        if(armPosition <= .1 && armPosition >= -.1){
-            armPosition = 0;
-            LTR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            LTL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
 
-        LTR.setPower(armPosition);
-        LTL.setPower(armPosition);
     }
 
     /*

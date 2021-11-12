@@ -31,9 +31,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="auto", group="newauto")
 
-public class newauto extends LinearOpMode
+public class redW extends LinearOpMode
 {
     // Declare OpMode members.
     public DcMotor fL;
@@ -72,10 +71,8 @@ public class newauto extends LinearOpMode
         fR = hardwareMap.get(DcMotor.class, "FR");
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
-        LTL = hardwareMap.get(DcMotor.class, "LTL");
-        LTR = hardwareMap.get(DcMotor.class, "LTR");
+
         ER = hardwareMap.get(DcMotor.class, "EL");
-        EL = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
@@ -89,10 +86,8 @@ public class newauto extends LinearOpMode
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.FORWARD);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        EL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
-        LTR.setDirection(DcMotor.Direction.FORWARD);
-        LTL.setDirection(DcMotor.Direction.REVERSE);
+
 
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
@@ -222,16 +217,14 @@ public class newauto extends LinearOpMode
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         opMode.idle();
     }
-    public void startMotors(double fl, double fr, double bl, double br) {
-        fR.setPower(fr);
-        fL.setPower(fl);
-        bL.setPower(bl);
-        bR.setPower(br);
+    public void startMotors(double right, double left) {
+        fR.setPower(right);
+        fL.setPower(left);
+        bL.setPower(left);
+        bR.setPower(right);
 
-        opMode.telemetry.addData("fl", fl);
-        opMode.telemetry.addData("fr", fr);
-        opMode.telemetry.addData("bl", bl);
-        opMode.telemetry.addData("br", br);
+        opMode.telemetry.addData("left power", left);
+        opMode.telemetry.addData("right power", right);
         opMode.telemetry.update();
     }
     public void stopMotors() {
@@ -316,26 +309,26 @@ public class newauto extends LinearOpMode
 
             if (difference > .4){
                 if (power > 0) {
-                    startMotors((power + f), (power + f), (power + f), (power + f));
+                    startMotors((power + f), (power + f));
                 }
                 else {
-                    startMotors((power - f), (power - f), (power - f), (power - f));
+                    startMotors((power - f), (power - f));
                 }
             }
             else if(difference < -.5){
                 if (power > 0) {
-                    startMotors((power + f), (power + f), (power + f), (power + f));
+                    startMotors((power + f), (power + f));
                 }
                 else {
-                    startMotors((power - f), (power - f), (power - f), (power - f));
+                    startMotors((power - f),(power - f));
                 }
             }
             else{
                 if (power > 0) {
-                    startMotors(power + f, power + f, power + f, power + f);
+                    startMotors(power + f,  power + f);
                 }
                 else {
-                    startMotors(power - f, power - f, power - f, power - f);
+                    startMotors(power - f,power - f);
                 }
             }
 
@@ -391,13 +384,13 @@ public class newauto extends LinearOpMode
                 if (Math.abs(kp) < .0001){
                     power = 0 * proportional + ki * integral + kd * derivative;
                 }
-                startMotors(-power - f, power + f, -power - f, power + f);
+                startMotors(-power - f, power + f);
             }
             else{
                 if (Math.abs(kp) < .0001){
                     power = 0 * proportional + ki * integral + kd * derivative;
                 }
-                startMotors(-power + f, power - f, -power + f, power - f);
+                startMotors(-power + f, power - f);
             }
 
             if (Math.abs(error) < threshold){
