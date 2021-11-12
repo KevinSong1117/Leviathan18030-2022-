@@ -75,6 +75,8 @@ public class testing extends LinearOpMode {
             telemetry.update();
 
         }
+        WR.scaleRange(.36,.68);
+        WL.scaleRange(.13,.38);
 
 //left straight = .13
         //right straight = .36

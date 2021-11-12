@@ -102,7 +102,7 @@ public  class test extends OpMode
         FR.setDirection(DcMotor.Direction.FORWARD);
         FL.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.FORWARD);
-        BL.setDirection(DcMotor.Direction.REVERSE);
+        BL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
 
 
@@ -119,6 +119,8 @@ public  class test extends OpMode
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WR.setDirection(Servo.Direction.REVERSE);
         WL.setDirection(Servo.Direction.FORWARD);
+        WR.scaleRange(.36,.68);
+        WL.scaleRange(.13,.38);
 
     }
 
@@ -159,13 +161,13 @@ public  class test extends OpMode
             FR.setPower(driveR);
         }
 
-        if (gamepad1.left_bumper){
-            WR.setPosition(.36);
-            WL.setPosition(.13);
+        if (gamepad2.left_bumper){
+            WR.setPosition(0);
+            WL.setPosition(0);
         }
-        if (gamepad1.right_bumper){
-            WR.setPosition(.7);
-            WL.setPosition(.4);
+        if (gamepad2.right_bumper){
+            WR.setPosition(1);
+            WL.setPosition(1);
         }
 
 

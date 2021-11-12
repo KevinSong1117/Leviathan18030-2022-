@@ -85,7 +85,7 @@ public class redC extends LinearOpMode
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.FORWARD);
-        bL.setDirection(DcMotor.Direction.REVERSE);
+        bL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
 
 
@@ -102,31 +102,42 @@ public class redC extends LinearOpMode
         //v = new vision(this);
 
         waitForStart();
-        WR.setPower(.5);
-        WL.setPower(.5);
-        //String position = v.getTeamMarkerPos();
 
-        // see if the team element is in the 3 different positions
-        // if the camera dose not detect the team element it will only do other tasks
-        /*if(position.equals("1")){
-            telemetry.addData("pos", position);
+        moveForward(500, .5);
+        turn(270, .5);
+        moveForward(500, .5);
+
+    }
+
+    public void moveForward(double tics, double power){
+        resetEncoder();
+        while (getTic() < tics){
+            fL.setPower(power);              // encoding start is less than the target
+            fR.setPower(power); // Sets the power of the motors to currently half the power
+            bL.setPower(power);
+            bR.setPower(power);
         }
+        stopMotors();
+    }
 
-        else if(position.equals("2")){
-            telemetry.addData("pos", position);
+    public void turn(double degree, double power){
+        if(angleWrapDeg(degree - gyro.getAngle()) > 0){
+            while(angleWrapDeg(degree - gyro.getAngle()) > 0){
+                fL.setPower(-power);
+                fR.setPower(power);
+                bL.setPower(-power);
+                bR.setPower(power);
+            }
         }
-
-        else if(position.equals("3")){
-            telemetry.addData("pos", position);
-        }
-
         else{
-            telemetry.addData("pos", position);
-        }*/
-        moveForBack(500, -1);
-        botTurning(1, 400);
-        moveForBack(1000, -1);
-
+            while(angleWrapDeg(degree - gyro.getAngle()) < 0){
+                fL.setPower(power);
+                fR.setPower(-power);
+                bL.setPower(power);
+                bR.setPower(-power);
+            }
+        }
+        stopMotors();
     }
 
     public double getEncoderAvg(){
@@ -309,10 +320,10 @@ public class redC extends LinearOpMode
 
             if (difference > .4){
                 if (power > 0) {
-                    startMotors((power + f), (power + f));
+                    startMotors((power + f), (power + f) * .8);
                 }
                 else {
-                    startMotors((power - f), (power - f));
+                    startMotors((power - f) * .8, (power - f));
                 }
             }
             else if(difference < -.5){
@@ -359,8 +370,8 @@ public class redC extends LinearOpMode
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
 
-        double initialAngleDiff = angleWrapDeg(initialHeading - finalAngle);
-        double error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
+        double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
+        double error = initialAngleDiff;
         double pastError = error;
 
         double integral = 0;
