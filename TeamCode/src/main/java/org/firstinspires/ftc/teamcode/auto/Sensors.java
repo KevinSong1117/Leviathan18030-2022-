@@ -19,6 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.Locale;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 
 @Disabled                            // Comment this out to add to the opmode list
 public class Sensors

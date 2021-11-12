@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -45,8 +46,8 @@ public class blueW extends LinearOpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo WR;  // Wrist Right
-    public CRServo WL;  // Wrist Left
+    public Servo WR;  // Wrist Right
+    public Servo WL;  // Wrist Left
     public BNO055IMU imu;
     Orientation angles;
     float curHeading;
@@ -73,22 +74,38 @@ public class blueW extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "EL");
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(CRServo.class, "WR");
-        WL = hardwareMap.get(CRServo.class, "WL");
+        WR = hardwareMap.get(Servo.class, "WR");
+        WL = hardwareMap.get(Servo.class, "WL");
+        gyro = new Sensors(this);
+
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(CRServo.Direction.FORWARD);
-        WL.setDirection(CRServo.Direction.REVERSE);
+        WR.setDirection(Direction.FORWARD);
+        WL.setDirection(Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.FORWARD);
-        bL.setDirection(DcMotor.Direction.REVERSE);
+        bL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
 
+
+        fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        WR.setDirection(Direction.REVERSE);
+        WL.setDirection(Direction.FORWARD);
 
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
@@ -98,36 +115,70 @@ public class blueW extends LinearOpMode
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
 
+        //vision v = new vision(this);
+
         imu.initialize(parameters);
 
-        //v = new vision(this);
-
         waitForStart();
-        WR.setPower(.5);
-        WL.setPower(.5);
+
         //String position = v.getTeamMarkerPos();
 
         // see if the team element is in the 3 different positions
         // if the camera dose not detect the team element it will only do other tasks
         /*if(position.equals("1")){
             telemetry.addData("pos", position);
+            moveForward(500, .5);
         }
 
         else if(position.equals("2")){
             telemetry.addData("pos", position);
+            moveForward(500, .5);
         }
 
         else if(position.equals("3")){
             telemetry.addData("pos", position);
+            moveForward(500, .5);
         }
 
         else{
             telemetry.addData("pos", position);
         }*/
-        moveForBack(500, -1);
-        botTurning(1, 400);
-        moveForBack(1000, -1);
+        moveForward(850, .5);
+        turn(65, .5);
+        moveForward(1500, .8);
 
+
+    }
+
+    public void moveForward(double tics, double power){
+        resetEncoder();
+        while (getTic() < tics){
+            fL.setPower(power);              // encoding start is less than the target
+            fR.setPower(power); // Sets the power of the motors to currently half the power
+            bL.setPower(power);
+            bR.setPower(power);
+        }
+        stopMotors();
+    }
+
+    public void turn(double degree, double power){
+        if(angleWrapDeg(degree - gyro.getAngle()) > 0){
+            while(angleWrapDeg(degree - gyro.getAngle()) > 0){
+                fL.setPower(-power);
+                fR.setPower(power);
+                bL.setPower(-power);
+                bR.setPower(power);
+            }
+        }
+        else{
+            while(angleWrapDeg(degree - gyro.getAngle()) < 0){
+                fL.setPower(power);
+                fR.setPower(-power);
+                bL.setPower(power);
+                bR.setPower(-power);
+            }
+        }
+        stopMotors();
     }
 
     public double getEncoderAvg(){
@@ -201,22 +252,14 @@ public class blueW extends LinearOpMode
     }
     public void resetEncoder() {
         fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         bL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         bR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
     }
     public void startMotors(double right, double left) {
         fR.setPower(right);
@@ -310,10 +353,10 @@ public class blueW extends LinearOpMode
 
             if (difference > .4){
                 if (power > 0) {
-                    startMotors((power + f), (power + f));
+                    startMotors((power + f), (power + f) * .8);
                 }
                 else {
-                    startMotors((power - f), (power - f));
+                    startMotors((power - f) * .8, (power - f));
                 }
             }
             else if(difference < -.5){
@@ -360,8 +403,8 @@ public class blueW extends LinearOpMode
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
 
-        double initialAngleDiff = angleWrapDeg(initialHeading - finalAngle);
-        double error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
+        double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
+        double error = initialAngleDiff;
         double pastError = error;
 
         double integral = 0;

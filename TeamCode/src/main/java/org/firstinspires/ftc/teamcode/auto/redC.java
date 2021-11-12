@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -30,8 +31,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name="redC", group="redC")
 
+@Autonomous(name="redC", group="redC")
 
 public class redC extends LinearOpMode
 {
@@ -45,8 +46,8 @@ public class redC extends LinearOpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public CRServo WR;  // Wrist Right
-    public CRServo WL;  // Wrist Left
+    public Servo WR;  // Wrist Right
+    public Servo WL;  // Wrist Left
     public BNO055IMU imu;
     Orientation angles;
     float curHeading;
@@ -73,15 +74,17 @@ public class redC extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "EL");
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(CRServo.class, "WR");
-        WL = hardwareMap.get(CRServo.class, "WL");
+        WR = hardwareMap.get(Servo.class, "WR");
+        WL = hardwareMap.get(Servo.class, "WL");
+        gyro = new Sensors(this);
+
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(CRServo.Direction.FORWARD);
-        WL.setDirection(CRServo.Direction.REVERSE);
+        WR.setDirection(Direction.FORWARD);
+        WL.setDirection(Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
@@ -89,6 +92,20 @@ public class redC extends LinearOpMode
         bL.setDirection(DcMotor.Direction.FORWARD);
         ER.setDirection(DcMotor.Direction.REVERSE);
 
+
+        fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        WR.setDirection(Direction.REVERSE);
+        WL.setDirection(Direction.FORWARD);
 
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
@@ -98,15 +115,38 @@ public class redC extends LinearOpMode
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
 
-        imu.initialize(parameters);
+        //vision v = new vision(this);
 
-        //v = new vision(this);
+        imu.initialize(parameters);
 
         waitForStart();
 
-        moveForward(500, .5);
-        turn(270, .5);
-        moveForward(500, .5);
+        //String position = v.getTeamMarkerPos();
+
+        // see if the team element is in the 3 different positions
+        // if the camera dose not detect the team element it will only do other tasks
+        /*if(position.equals("1")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else if(position.equals("2")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else if(position.equals("3")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else{
+            telemetry.addData("pos", position);
+        }*/
+        moveForward(1070, .5);
+        turn(52, .5);
+        moveForward(800, .8);
+
 
     }
 
@@ -212,22 +252,14 @@ public class redC extends LinearOpMode
     }
     public void resetEncoder() {
         fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         bL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
         bR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
     }
     public void startMotors(double right, double left) {
         fR.setPower(right);
