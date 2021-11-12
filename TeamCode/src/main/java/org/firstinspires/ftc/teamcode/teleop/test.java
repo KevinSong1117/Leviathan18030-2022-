@@ -119,6 +119,7 @@ public  class test extends OpMode
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WR.setDirection(Servo.Direction.REVERSE);
         WL.setDirection(Servo.Direction.FORWARD);
+
         WR.scaleRange(.36,.68);
         WL.scaleRange(.13,.38);
 
@@ -149,25 +150,25 @@ public  class test extends OpMode
         double driveL = gamepad1.left_stick_y;
         double driveR  =  gamepad1.right_stick_x;
         if(gamepad1.right_stick_x > -.1 && gamepad1.right_stick_x < .1){
-            BL.setPower(driveL);
-            BR.setPower(driveL * -1);
-            FL.setPower(driveL);
-            FR.setPower(driveL * -1);
-        }
-        else{
             BL.setPower(driveR);
             BR.setPower(driveR);
             FL.setPower(driveR);
             FR.setPower(driveR);
         }
+        else{
+            BL.setPower(driveL);
+            BR.setPower(driveL * -1);
+            FL.setPower(driveL);
+            FR.setPower(driveL * -1);
+        }
 
         if (gamepad2.left_bumper){
-            WR.setPosition(0);
-            WL.setPosition(0);
+            WR.setPosition(.3);
+            WL.setPosition(.3);
         }
         if (gamepad2.right_bumper){
-            WR.setPosition(1);
-            WL.setPosition(1);
+            WR.setPosition(.7);
+            WL.setPosition(.7);
         }
 
 
@@ -201,6 +202,7 @@ public  class test extends OpMode
 
         telemetry.addData("Wrist Power :", position);
         double extendPower = gamepad2.left_stick_y;
+        // some sort of sine fucntion so that it is negative on the right and positive on the left
         double staticPower = -0.2;
 
         // test this for extending lift
