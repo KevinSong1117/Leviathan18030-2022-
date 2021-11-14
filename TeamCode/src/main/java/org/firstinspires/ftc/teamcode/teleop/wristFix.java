@@ -29,19 +29,12 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.auto.Sensors;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -57,9 +50,9 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opM
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="teleop", group="teleop")
+@TeleOp(name="teleopFix", group="wristFix")
 
-public  class test extends OpMode
+public  class wristFix extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -72,8 +65,8 @@ public  class test extends OpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public Servo WR;  // Wrist Right
-    public Servo WL;  // Wrist Left
+    public CRServo WR;  // Wrist Right
+    public CRServo WL;  // Wrist Left
 
 
 
@@ -91,13 +84,13 @@ public  class test extends OpMode
         ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(Servo.class, "WR");
-        WL = hardwareMap.get(Servo.class, "WL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
 
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(Servo.Direction.FORWARD);
-        WL.setDirection(Servo.Direction.REVERSE);
+        WR.setDirection(CRServo.Direction.FORWARD);
+        WL.setDirection(CRServo.Direction.REVERSE);
 
         FR.setDirection(DcMotor.Direction.FORWARD);
         FL.setDirection(DcMotor.Direction.REVERSE);
@@ -117,11 +110,10 @@ public  class test extends OpMode
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        WR.setDirection(Servo.Direction.REVERSE);
-        WL.setDirection(Servo.Direction.FORWARD);
 
-        WR.scaleRange(.36,.68);
-        WL.scaleRange(.13,.38);
+
+        //WR.scaleRange(.36,.68);
+        //WL.scaleRange(.13,.38);
 
     }
 
@@ -164,14 +156,20 @@ public  class test extends OpMode
 
         if (gamepad2.left_bumper){
             // straight
-            WR.setPosition(.15);
-            WL.setPosition(.15);
+            WR.setPower(.5);
+            WL.setPower(.5);
+
+
         }
+        WR.setPower(.1);
+        WL.setPower(.1);
         if (gamepad2.right_bumper){
             // up
-            WR.setPosition(.9);
-            WL.setPosition(.9);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
         }
+        WR.setPower(.1);
+        WL.setPower(.1);
 
         double power = 0;
         double position = 0;

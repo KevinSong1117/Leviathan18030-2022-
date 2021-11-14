@@ -151,34 +151,40 @@ public class redC extends LinearOpMode
     }
 
     public void moveForward(double tics, double power){
-        resetEncoder();
-        while (getTic() < tics){
-            fL.setPower(power);              // encoding start is less than the target
-            fR.setPower(power); // Sets the power of the motors to currently half the power
-            bL.setPower(power);
-            bR.setPower(power);
+        while (!isStopRequested() && opModeIsActive()) {
+            resetEncoder();
+            while (getTic() < tics) {
+                fL.setPower(power);              // encoding start is less than the target
+                fR.setPower(power); // Sets the power of the motors to currently half the power
+                bL.setPower(power);
+                bR.setPower(power);
+            }
+            stopMotors();
+            break;
         }
-        stopMotors();
     }
 
     public void turn(double degree, double power){
-        if(angleWrapDeg(degree - gyro.getAngle()) > 0){
-            while(angleWrapDeg(degree - gyro.getAngle()) > 0){
-                fL.setPower(-power);
-                fR.setPower(power);
-                bL.setPower(-power);
-                bR.setPower(power);
+        while (opModeIsActive() && !isStopRequested()) {
+            if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
+                while (angleWrapDeg(degree - gyro.getAngle()) > 0) {
+                    fL.setPower(-power);
+                    fR.setPower(power);
+                    bL.setPower(-power);
+                    bR.setPower(power);
+                }
+
+            } else {
+                while (angleWrapDeg(degree - gyro.getAngle()) < 0) {
+                    fL.setPower(power);
+                    fR.setPower(-power);
+                    bL.setPower(power);
+                    bR.setPower(-power);
+                }
             }
+            stopMotors();
+            break;
         }
-        else{
-            while(angleWrapDeg(degree - gyro.getAngle()) < 0){
-                fL.setPower(power);
-                fR.setPower(-power);
-                bL.setPower(power);
-                bR.setPower(-power);
-            }
-        }
-        stopMotors();
     }
 
     public double getEncoderAvg(){
