@@ -176,26 +176,35 @@ public  class test extends OpMode
         double power = 0;
         double position = 0;
         if(gamepad2.a){
-            power = .5;
+            power = .6;
             IR.setPower(power);
 
         }
         if(gamepad2.b){
-            power = -.5;
+            power = -.6;
             IR.setPower(power);
         }
         if(gamepad2.x){
             IR.setPower(0);
         }
 
-        double extendPower = gamepad2.left_stick_y;
+        double extendPower;
         // some sort of sine function so that it is negative on the right and positive on the left
-        double staticPower = -0.10;
+        double staticPower;
 
         // test this for extending lift
         // Static equilibrium (free body diagram and phy shi)
-        ER.setPower(staticPower + (extendPower * .55));
-        telemetry.addData("Lift position ", ER.getCurrentPosition());
+        if(gamepad2.left_stick_y > .1){
+            staticPower = -.0005;
+            extendPower = gamepad2.right_stick_y ;
+        }
+        else{
+            staticPower = -.1;
+            extendPower = gamepad2.left_stick_y;
+        }
+        ER.setPower(staticPower + (extendPower * .35));
+        telemetry.addData("Lift position ", ER.getPower());
+        telemetry.addData("encoder", ER.getCurrentPosition());
         telemetry.update();
 
         // moving the right motor towards the front of robot = retract
