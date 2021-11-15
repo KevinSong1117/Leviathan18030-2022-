@@ -189,12 +189,12 @@ public  class test extends OpMode
         }
 
         double extendPower = gamepad2.left_stick_y;
-        // some sort of sine fucntion so that it is negative on the right and positive on the left
+        // some sort of sine function so that it is negative on the right and positive on the left
         double staticPower = -0.10;
 
         // test this for extending lift
         // Static equilibrium (free body diagram and phy shi)
-        ER.setPower(staticPower + extendPower * .35);
+        ER.setPower(staticPower + (extendPower * .55));
         telemetry.addData("Lift position ", ER.getCurrentPosition());
         telemetry.update();
 
