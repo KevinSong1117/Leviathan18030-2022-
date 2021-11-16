@@ -161,18 +161,15 @@ public  class wristFix extends OpMode
 
 
         }
-        WR.setPower(.1);
-        WL.setPower(.1);
+
         if (gamepad2.right_bumper){
             // up
             WR.setPower(-.5);
             WL.setPower(-.5);
         }
-        WR.setPower(.1);
-        WL.setPower(.1);
 
         double power = 0;
-        double position = 0;
+
         if(gamepad2.a){
             power = .5;
             IR.setPower(power);
@@ -186,14 +183,23 @@ public  class wristFix extends OpMode
             IR.setPower(0);
         }
 
-        double extendPower = gamepad2.left_stick_y;
-        // some sort of sine fucntion so that it is negative on the right and positive on the left
-        double staticPower = -0.10;
+        double extendPower;
+        // some sort of sine function so that it is negative on the right and positive on the left
+        double staticPower;
 
         // test this for extending lift
         // Static equilibrium (free body diagram and phy shi)
-        ER.setPower(staticPower + extendPower * .35);
-        telemetry.addData("Lift position ", ER.getCurrentPosition());
+        if(gamepad2.left_stick_y > .1){
+            staticPower = -.0005;
+            extendPower = gamepad2.right_stick_y ;
+        }
+        else{
+            staticPower = -.1;
+            extendPower = gamepad2.left_stick_y;
+        }
+        ER.setPower(staticPower + (extendPower * .35));
+        telemetry.addData("Lift position ", ER.getPower());
+        telemetry.addData("encoder", ER.getCurrentPosition());
         telemetry.update();
 
         // moving the right motor towards the front of robot = retract
