@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -55,6 +56,8 @@ public class blueC extends LinearOpMode
     LinearOpMode opMode;
     ElapsedTime timer;
     Sensors gyro;
+    public DcMotor DG;
+
 
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
@@ -80,6 +83,10 @@ public class blueC extends LinearOpMode
         WR = hardwareMap.get(Servo.class, "WR");
         WL = hardwareMap.get(Servo.class, "WL");
         gyro = new Sensors(this);
+        DG = hardwareMap.get(DcMotor.class, "DG");
+        DG.setDirection((DcMotorSimple.Direction.FORWARD));
+        DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         IR.setDirection(CRServo.Direction.REVERSE);
@@ -88,8 +95,8 @@ public class blueC extends LinearOpMode
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
-        bR.setDirection(DcMotor.Direction.FORWARD);
-        bL.setDirection(DcMotor.Direction.FORWARD);
+        bR.setDirection(DcMotor.Direction.REVERSE);
+        bL.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.REVERSE);
 
 
@@ -119,6 +126,7 @@ public class blueC extends LinearOpMode
 
         imu.initialize(parameters);
 
+
         waitForStart();
 
         //String position = v.getTeamMarkerPos();
@@ -143,11 +151,17 @@ public class blueC extends LinearOpMode
         else{
             telemetry.addData("pos", position);
         }*/
-        moveForward(1070, .5);
+        /*moveForward(1070, .5);
         turn(-57, .5);
-        moveForward(800, .8);
+        moveForward(800, .8);*/
 
 
+        movePIDFGyro(50,.75,0,0,.14,.25,.25);
+        turnHeading(90,.1,0,0,.11,.25,.5);
+
+    }
+
+    public void spinDucks(double power, double time){
 
     }
 
@@ -273,10 +287,9 @@ public class blueC extends LinearOpMode
         fL.setPower(left);
         bL.setPower(left);
         bR.setPower(right);
-
-        opMode.telemetry.addData("left power", left);
-        opMode.telemetry.addData("right power", right);
-        opMode.telemetry.update();
+        telemetry.addData("right power", right);
+        telemetry.addData("left power", left);
+        telemetry.update();
     }
     public void stopMotors() {
         fR.setPower(0);
@@ -337,14 +350,13 @@ public class blueC extends LinearOpMode
         boolean atSetpoint = false;
 
 
-        while (timeAtSetPoint < time && !opMode.isStopRequested()) {
+        while (timeAtSetPoint < time) {
             if (inches < 0){
                 error = inches + getTic() / COUNTS_PER_INCH;
             }
             else{
                 error = inches - getTic() / COUNTS_PER_INCH;
             }
-            opMode.telemetry.addData("error", error);
 
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
@@ -354,8 +366,7 @@ public class blueC extends LinearOpMode
             double derivative = (error - pastError) / dt;
 
             double power = kp * proportional + ki * integral + kd * derivative;
-            opMode.telemetry.addData("power", power);
-            opMode.telemetry.update();
+
             double difference = gyro.angleDiff(initialHeading);
 
             if (difference > .4){
@@ -420,7 +431,7 @@ public class blueC extends LinearOpMode
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
 
-        while (!opMode.isStopRequested() && timeAtSetPoint < time) {
+        while (timeAtSetPoint < time) {
             error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
 
             currentTime = timer.milliseconds();
