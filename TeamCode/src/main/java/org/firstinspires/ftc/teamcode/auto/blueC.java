@@ -161,11 +161,13 @@ public class blueC extends LinearOpMode
 
     }
 
-    public void spinDucks(double power, double time){
-
+    public void spinDucks(double power, double time) {
+        DG.setPower(power);
+        sleep(time);
+        DG.setPower(0);
     }
 
-    public void moveForward(double tics, double power){
+    public void moveForward(double tics, double power) {
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
             while (getTic() < tics) {
