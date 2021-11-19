@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -67,6 +68,7 @@ public  class wristFix extends OpMode
     public CRServo IR;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
+    public DcMotor DG;
 
 
 
@@ -86,23 +88,26 @@ public  class wristFix extends OpMode
         IR = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
+        DG = hardwareMap.get(DcMotor.class, "DG");
 
 
         IR.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
-        FR.setDirection(DcMotor.Direction.FORWARD);
-        FL.setDirection(DcMotor.Direction.REVERSE);
+        FR.setDirection(DcMotor.Direction.REVERSE);
+        FL.setDirection(DcMotor.Direction.FORWARD);
         BR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.FORWARD);
-        ER.setDirection(DcMotor.Direction.REVERSE);
+        ER.setDirection(DcMotor.Direction.FORWARD);
+        DG.setDirection((DcMotorSimple.Direction.FORWARD));
 
 
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -110,6 +115,7 @@ public  class wristFix extends OpMode
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         //WR.scaleRange(.36,.68);
@@ -167,6 +173,13 @@ public  class wristFix extends OpMode
             WR.setPower(-.5);
             WL.setPower(-.5);
         }
+        if(gamepad2.right_trigger > .5){
+            DG.setPower(gamepad2.right_trigger * .5);
+        }
+        if(gamepad2.left_trigger > .5){
+            DG.setPower(gamepad2.left_trigger * -.5);
+        }
+
 
         double power = 0;
 
