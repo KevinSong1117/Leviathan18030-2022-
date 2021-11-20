@@ -157,11 +157,12 @@ public class blueC extends LinearOpMode
 
 
         movePIDFGyro(50,.75,0,0,.14,.25,.25);
-        turnHeading(90,.1,0,0,.11,.25,.5);
+        turnHeading(90,.35,0,0.45,.11,.25,.5);
+        spinDucks(.3,1000);
 
     }
 
-    public void spinDucks(double power, double time) {
+    public void spinDucks(double power, long time) {
         DG.setPower(power);
         sleep(time);
         DG.setPower(0);
