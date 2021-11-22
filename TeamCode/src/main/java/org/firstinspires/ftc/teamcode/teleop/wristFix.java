@@ -61,10 +61,7 @@ public  class wristFix extends OpMode
     public DcMotor FR;
     public DcMotor BL;  // instantiates motor variables
     public DcMotor BR;
-    public DcMotor LTL; // lift turn left
-    public DcMotor LTR; // lift turn right
     public DcMotor ER;  // lift extend right
-    public DcMotor EL;  // lift extend left
     public CRServo IR;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left

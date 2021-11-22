@@ -61,17 +61,11 @@ public  class test extends OpMode
     public DcMotor FR;
     public DcMotor BL;  // instantiates motor variables
     public DcMotor BR;
-    public DcMotor LTL; // lift turn left
-    public DcMotor LTR; // lift turn right
     public DcMotor ER;  // lift extend right
-    public DcMotor EL;  // lift extend left
     public CRServo IR;
     public Servo WR;  // Wrist Right
     public Servo WL;  // Wrist Left
     public DcMotor DG;
-
-
-
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -90,7 +84,6 @@ public  class test extends OpMode
         WL = hardwareMap.get(Servo.class, "WL");
         DG = hardwareMap.get(DcMotor.class, "DG");
 
-
         IR.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(Servo.Direction.FORWARD);
         WL.setDirection(Servo.Direction.REVERSE);
@@ -102,13 +95,11 @@ public  class test extends OpMode
         ER.setDirection(DcMotor.Direction.FORWARD);
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
 
-
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -116,20 +107,15 @@ public  class test extends OpMode
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
         //WR.scaleRange(.36,.68);
         //WL.scaleRange(.13,.38);
-
     }
-
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
     public void init_loop() {
     }
-
     /*
      * Code to run ONCE when the driver hits PLAY
      */
@@ -137,7 +123,6 @@ public  class test extends OpMode
     public void start() {
         runtime.reset();
     }
-
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -164,8 +149,6 @@ public  class test extends OpMode
             // straight
             WR.setPosition(.5);
             WL.setPosition(.5);
-
-
         }
 
         if (gamepad2.right_bumper){
@@ -173,13 +156,12 @@ public  class test extends OpMode
             WR.setPosition(-.5);
             WL.setPosition(-.5);
         }
-        if(gamepad2.right_trigger > .5){
-            DG.setPower(gamepad2.right_trigger * .5);
+        if(gamepad1.left_bumper){
+            DG.setPower(.4);
         }
-        if(gamepad2.left_trigger > .5){
-            DG.setPower(gamepad2.left_trigger * -.5);
+        if(gamepad1.right_bumper){
+            DG.setPower(-.4);
         }
-
 
         double power = 0;
 
@@ -219,7 +201,6 @@ public  class test extends OpMode
         // moving the left motor towards the back of the robot = extend
 
     }
-
     /*
      * Code to run ONCE after the driver hits STOP
      */

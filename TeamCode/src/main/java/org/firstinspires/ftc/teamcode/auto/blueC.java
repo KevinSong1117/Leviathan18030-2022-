@@ -58,17 +58,14 @@ public class blueC extends LinearOpMode
     Sensors gyro;
     public DcMotor DG;
 
-
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-
     /*
      * Code to run ONCE when the driver hits INIT
      */
-
     @Override
     public void runOpMode() throws InterruptedException  {
         timer = new ElapsedTime();
@@ -88,7 +85,6 @@ public class blueC extends LinearOpMode
         DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         IR.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(Direction.FORWARD);
         WL.setDirection(Direction.REVERSE);
@@ -99,12 +95,10 @@ public class blueC extends LinearOpMode
         bL.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.REVERSE);
 
-
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -114,40 +108,30 @@ public class blueC extends LinearOpMode
         WR.setDirection(Direction.REVERSE);
         WL.setDirection(Direction.FORWARD);
 
-
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-
         //vision v = new vision(this);
-
         imu.initialize(parameters);
-
-
         waitForStart();
-
         //String position = v.getTeamMarkerPos();
-
         // see if the team element is in the 3 different positions
         // if the camera dose not detect the team element it will only do other tasks
         /*if(position.equals("1")){
             telemetry.addData("pos", position);
             moveForward(500, .5);
         }
-
         else if(position.equals("2")){
             telemetry.addData("pos", position);
             moveForward(500, .5);
         }
-
         else if(position.equals("3")){
             telemetry.addData("pos", position);
             moveForward(500, .5);
         }
-
         else{
             telemetry.addData("pos", position);
         }*/
@@ -155,11 +139,9 @@ public class blueC extends LinearOpMode
         turn(-57, .5);
         moveForward(800, .8);*/
 
-
         movePIDFGyro(50,.75,0,0,.14,.25,.25);
         turnHeading(90,.35,0,0.45,.11,.25,.5);
         spinDucks(.3,1000);
-
     }
 
     public void spinDucks(double power, long time) {
