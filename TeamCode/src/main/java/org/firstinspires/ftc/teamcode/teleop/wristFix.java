@@ -165,16 +165,24 @@ public  class wristFix extends OpMode
 
         }
 
-        if (gamepad2.right_bumper){
+        else if (gamepad2.right_bumper){
             // up
             WR.setPower(-.5);
             WL.setPower(-.5);
         }
-        if(gamepad2.right_trigger > .5){
-            DG.setPower(gamepad2.right_trigger * .5);
+        else {
+            WR.setPower(0);
+            WL.setPower(0);
         }
-        if(gamepad2.left_trigger > .5){
-            DG.setPower(gamepad2.left_trigger * -.5);
+        if(gamepad1.right_trigger > .5){
+            DG.setPower(gamepad1.right_trigger * .5);
+        }
+
+        if(gamepad1.left_trigger > .5){
+            DG.setPower(gamepad1.left_trigger * -.5);
+        }
+        if(gamepad1.right_bumper){
+            DG.setPower(0);
         }
 
 
@@ -204,7 +212,7 @@ public  class wristFix extends OpMode
             extendPower = gamepad2.right_stick_y ;
         }
         else{
-            staticPower = -.1;
+            staticPower = -.15;
             extendPower = gamepad2.left_stick_y;
         }
         ER.setPower(staticPower + (extendPower * .35));

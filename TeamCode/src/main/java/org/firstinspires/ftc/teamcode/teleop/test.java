@@ -147,14 +147,14 @@ public  class test extends OpMode
 
         if (gamepad2.left_bumper){
             // straight
-            WR.setPosition(.5);
-            WL.setPosition(.5);
+            WR.setPosition(1 );
+            WL.setPosition(1);
         }
 
         if (gamepad2.right_bumper){
             // up
-            WR.setPosition(-.5);
-            WL.setPosition(-.5);
+            WR.setPosition(-1);
+            WL.setPosition(-1);
         }
         if(gamepad1.left_bumper){
             DG.setPower(.4);
