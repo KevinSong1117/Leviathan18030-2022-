@@ -38,8 +38,6 @@ public class vision extends LinearOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(params);
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true); //enables RGB565 format for the image
         vuforia.setFrameQueueCapacity(4); //tells VuforiaLocalizer to only store one frame at a time
-
-
     }
 
 
@@ -71,7 +69,6 @@ public class vision extends LinearOpMode {
             {
                 spot1+=1;
             }
-
         }
         for(int i = 190; i < 210; i++){
             if(isGreen(rgbImage.getPixel(01,i)))

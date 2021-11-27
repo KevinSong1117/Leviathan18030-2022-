@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -13,11 +15,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
+import org.firstinspires.ftc.teamcode.auto.vision;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
+import static android.graphics.Color.green;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -50,6 +60,7 @@ public class blueC extends LinearOpMode
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
+    private vision vision;
     Orientation angles;
     float curHeading;
     public vision v;
@@ -58,17 +69,18 @@ public class blueC extends LinearOpMode
     Sensors gyro;
     public DcMotor DG;
 
+
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
     @Override
     public void runOpMode() throws InterruptedException  {
+        //throw new UnsupportedOperationException();
         timer = new ElapsedTime();
+        vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
         fR = hardwareMap.get(DcMotor.class, "FR");
         bL = hardwareMap.get(DcMotor.class, "BL");
@@ -87,7 +99,6 @@ public class blueC extends LinearOpMode
 
         IR.setDirection(CRServo.Direction.REVERSE);
 
-
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
@@ -105,32 +116,22 @@ public class blueC extends LinearOpMode
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-        vision v = new vision(this);
         imu.initialize(parameters);
 
-        String position = v.getTeamMarkerPos();
-        // see if the team element is in the 3 different positions
-        // if the camera dose not detect the team element it will only do other tasks
-        /*while(!isStarted()) {
-            position = v.getTeamMarkerPos();
-            if (position.equals("1")) {
-                telemetry.addData("pos", position);
-            } else if (position.equals("2")) {
-                telemetry.addData("pos", position);
-            } else if (position.equals("3")) {
-                telemetry.addData("pos", position);
-            } else {
-                telemetry.addData("pos", position);
-            }
+        String position = vision.getTeamMarkerPos();
+
+        while(!opModeIsActive()){
+            position = vision.getTeamMarkerPos();
+            telemetry.addData("position", position);
             telemetry.update();
-        }*/
+        }
+
         waitForStart();
 
         /*moveForward(1070, .5);

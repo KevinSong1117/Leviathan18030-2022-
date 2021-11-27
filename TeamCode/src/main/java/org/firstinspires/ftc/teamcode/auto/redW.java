@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -8,15 +10,24 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
+import org.firstinspires.ftc.teamcode.auto.vision;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
+import static android.graphics.Color.green;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -46,15 +57,18 @@ public class redW extends LinearOpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public Servo WR;  // Wrist Right
-    public Servo WL;  // Wrist Left
+    public CRServo WR;  // Wrist Right
+    public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
+    private vision vision;
     Orientation angles;
     float curHeading;
-    //public vision v;
+    public vision v;
     LinearOpMode opMode;
     ElapsedTime timer;
     Sensors gyro;
+    public DcMotor DG;
+
 
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
@@ -62,13 +76,11 @@ public class redW extends LinearOpMode
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
-
     @Override
     public void runOpMode() throws InterruptedException  {
+        //throw new UnsupportedOperationException();
         timer = new ElapsedTime();
+        vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
         fR = hardwareMap.get(DcMotor.class, "FR");
         bL = hardwareMap.get(DcMotor.class, "BL");
@@ -77,36 +89,32 @@ public class redW extends LinearOpMode
         ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(Servo.class, "WR");
-        WL = hardwareMap.get(Servo.class, "WL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
-
+        DG = hardwareMap.get(DcMotor.class, "DG");
+        DG.setDirection((DcMotorSimple.Direction.FORWARD));
+        DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(Direction.FORWARD);
-        WL.setDirection(Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
-        bR.setDirection(DcMotor.Direction.FORWARD);
-        bL.setDirection(DcMotor.Direction.FORWARD);
+        bR.setDirection(DcMotor.Direction.REVERSE);
+        bL.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.REVERSE);
-
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        WR.setDirection(Direction.REVERSE);
-        WL.setDirection(Direction.FORWARD);
-
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -114,10 +122,15 @@ public class redW extends LinearOpMode
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-
-        //vision v = new vision(this);
-
         imu.initialize(parameters);
+
+        String position = vision.getTeamMarkerPos();
+
+        while(!opModeIsActive()){
+            position = vision.getTeamMarkerPos();
+            telemetry.addData("position", position);
+            telemetry.update();
+        }
 
         waitForStart();
 
