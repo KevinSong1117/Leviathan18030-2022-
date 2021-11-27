@@ -63,7 +63,6 @@ public class blueC extends LinearOpMode
     private vision vision;
     Orientation angles;
     float curHeading;
-    public vision v;
     LinearOpMode opMode;
     ElapsedTime timer;
     Sensors gyro;
@@ -126,11 +125,12 @@ public class blueC extends LinearOpMode
 
         String position = vision.getTeamMarkerPos();
 
-        while(!opModeIsActive()){
+        while(!isStarted()){
             position = vision.getTeamMarkerPos();
             telemetry.addData("position", position);
             telemetry.update();
         }
+        
 
         waitForStart();
 
@@ -138,12 +138,10 @@ public class blueC extends LinearOpMode
         turn(-57, .5);
         moveForward(800, .8);*/
 
-        movePIDFGyro(50,.75,0,0,.14,.25,.25);
-        turnHeading(90,.01,0,0,.11,.25,.5);
-        spinDucks(.3,1000);
+
     }
 
-    public void spinDucks(double power, long time) {
+    public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
         DG.setPower(power);
         sleep(time);
         DG.setPower(0);
@@ -160,6 +158,54 @@ public class blueC extends LinearOpMode
             }
             stopMotors();
             break;
+        }
+    }
+    public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
+        ER.setPower(-.1 + (.7));
+        sleep(height);
+        ER.setPower(-.2);
+    }
+    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(.5);
+        sleep(3000);
+        IR.setPower(0);
+    }
+    public void down(){ //Sets power so that arm slowly goes down
+        ER.setPower(-.0005 + (-.1 * .35));
+    }
+    public void deliverA(String level){
+        if(level.equals("1")){
+            lift(300);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            moveForward(300, .5);
+            deliver();
+            moveForward(300, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+        }
+        else if(level.equals("2")){
+            lift(700);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            moveForward(600, .5);
+            deliver();
+            moveForward(600, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+        }
+        else{
+            lift(500);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            moveForward(900, .5);
+            deliver();
+            moveForward(900, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
         }
     }
 
@@ -205,56 +251,7 @@ public class blueC extends LinearOpMode
         curHeading = angles.firstAngle; //Gets the orientation of the robot
     }
 
-    public void moveForBack(long distance, double direction){    //takes two variables, one for the direction
-        // goal and one for the distance traveled
-        fL.setPower(direction );              // encoding start is less than the target
-        fR.setPower(-direction); // Sets the power of the motors to currently half the power
-        bL.setPower(direction);
-        bR.setPower(-direction);
-        sleep(distance);
-        fL.setPower(0);
-        fR.setPower(0);
-        bL.setPower(0);
-        bR.setPower(0);
-    }
-    public void botTurning( double direction, long degree) { //direction is to know if it will
-        // turn left or right, degree is to know the amount which it turns. Positive is right
-        /* checkOrientation();
-        float start = curHeading;// Gets the current heading
 
-        if (direction) {
-            while (curHeading > start - degree) { // turns left
-                fL.setPower(.5);
-                fR.setPower(-.5);
-                bL.setPower(.5);
-                bR.setPower(-.5);
-                checkOrientation();
-            }
-        }
-        else {
-            while (curHeading < start + degree) { // turns right
-                fL.setPower(-.5);
-                fR.setPower(.5);
-                bL.setPower(-.5);
-                bR.setPower(.5);
-                checkOrientation();
-            }
-        }
-        */
-        fL.setPower(direction );
-        fR.setPower(direction);
-        bL.setPower(direction );
-        bR.setPower(direction);
-        sleep(degree);
-        fL.setPower(0);
-        fR.setPower(0);
-        bL.setPower(0);
-        bR.setPower(0);
-    }
-    public void carousel(){
-        IR.setPower(-1);
-
-    }
     public void resetEncoder() {
         fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -314,7 +311,7 @@ public class blueC extends LinearOpMode
         return correctAngle;
     }
 
-    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
         timer.reset();
         resetEncoder();
 
@@ -395,7 +392,7 @@ public class blueC extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }
+    }*/
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 

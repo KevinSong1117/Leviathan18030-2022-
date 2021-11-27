@@ -116,7 +116,7 @@ public class blueCv2 extends LinearOpMode
         moveForward(800, .8);*/
         moveForward(200, -.5);
         turn(90, .5);
-        deliverA(3);
+        deliverA("3");
 
 
     }
@@ -153,8 +153,8 @@ public class blueCv2 extends LinearOpMode
     public void down(){ //Sets power so that arm slowly goes down
         ER.setPower(-.0005 + (-.1 * .35));
     }
-    public void deliverA(int level){
-        if(level == 1){
+    public void deliverA(String level){
+        if(level.equals("1")){
             lift(300);
             WR.setPower(-.5);
             WL.setPower(-.5);
@@ -165,7 +165,7 @@ public class blueCv2 extends LinearOpMode
             WR.setPower(.5);
             WL.setPower(.5);
         }
-        else if(level == 2){
+        else if(level.equals("2")){
             lift(700);
             WR.setPower(-.5);
             WL.setPower(-.5);

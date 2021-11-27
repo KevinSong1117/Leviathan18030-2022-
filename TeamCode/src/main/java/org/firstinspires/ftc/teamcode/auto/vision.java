@@ -19,15 +19,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Para
 import java.util.ArrayList;
 
 
-public class vision extends LinearOpMode {
+public class vision {
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        throw new UnsupportedOperationException();
-    }
 
-    VuforiaLocalizer vuforia;
     LinearOpMode opMode;
+    VuforiaLocalizer vuforia;
     String pos = "notFound";
 
     public vision(LinearOpMode opMode){
@@ -64,20 +60,20 @@ public class vision extends LinearOpMode {
         int spot1 = 0;
         int spot2 = 0;
         int spot3 = 0;
-        for(int i = 190; i < 210; i++){
-            if(isGreen(rgbImage.getPixel(10,i)))
+        for(int i = 220; i < 360; i++){
+            if(isGreen(rgbImage.getPixel(7,i)))
             {
                 spot1+=1;
             }
         }
-        for(int i = 190; i < 210; i++){
-            if(isGreen(rgbImage.getPixel(01,i)))
+        for(int i = 220; i < 360; i++){
+            if(isGreen(rgbImage.getPixel(316,i)))
             {
                 spot2+=1;
             }
         }
-        for(int i = 190; i < 210; i++){
-            if(isGreen(rgbImage.getPixel(10,i)))
+        for(int i = 220; i < 360; i++){
+            if(isGreen(rgbImage.getPixel(625,i)))
             {
                 spot3+=1;
             }
@@ -93,7 +89,24 @@ public class vision extends LinearOpMode {
     }
 
     public boolean isGreen(int pixel) {
-        return green(pixel) >=100;
+        return green(pixel) <= 125;
+    }
+    public void getColor(int x, int y)throws InterruptedException{
+
+        Bitmap rgbImage = getImage();
+
+        int pixel = rgbImage.getPixel(x, y);
+        // w = 640
+        // h = 480
+        opMode.telemetry.addData("w", rgbImage.getWidth());
+        opMode.telemetry.addData("h", rgbImage.getHeight());
+
+        opMode.telemetry.addData("red", red(pixel));
+        opMode.telemetry.addData("green", green(pixel));
+
+        opMode.telemetry.addData("blue", blue(pixel));
+        opMode.telemetry.update();
+
     }
 
 }
