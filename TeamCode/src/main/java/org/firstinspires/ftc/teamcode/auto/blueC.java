@@ -47,12 +47,12 @@ public class blueC extends LinearOpMode
     public DcMotor ER;  // lift extend right
     public DcMotor EL;  // lift extend left
     public CRServo IR;
-    public Servo WR;  // Wrist Right
-    public Servo WL;  // Wrist Left
+    public CRServo WR;  // Wrist Right
+    public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
     Orientation angles;
     float curHeading;
-    //public vision v;
+    public vision v;
     LinearOpMode opMode;
     ElapsedTime timer;
     Sensors gyro;
@@ -77,8 +77,8 @@ public class blueC extends LinearOpMode
         ER = hardwareMap.get(DcMotor.class, "ER");
 
         IR = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(Servo.class, "WR");
-        WL = hardwareMap.get(Servo.class, "WL");
+        WR = hardwareMap.get(CRServo.class, "WR");
+        WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
         DG = hardwareMap.get(DcMotor.class, "DG");
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
@@ -86,8 +86,7 @@ public class blueC extends LinearOpMode
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         IR.setDirection(CRServo.Direction.REVERSE);
-        WR.setDirection(Direction.FORWARD);
-        WL.setDirection(Direction.REVERSE);
+
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
@@ -105,8 +104,7 @@ public class blueC extends LinearOpMode
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        WR.setDirection(Direction.REVERSE);
-        WL.setDirection(Direction.FORWARD);
+
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -114,33 +112,33 @@ public class blueC extends LinearOpMode
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-        //vision v = new vision(this);
+        vision v = new vision(this);
         imu.initialize(parameters);
-        waitForStart();
-        //String position = v.getTeamMarkerPos();
+
+        String position = v.getTeamMarkerPos();
         // see if the team element is in the 3 different positions
         // if the camera dose not detect the team element it will only do other tasks
-        /*if(position.equals("1")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-        else if(position.equals("2")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-        else if(position.equals("3")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-        else{
-            telemetry.addData("pos", position);
+        /*while(!isStarted()) {
+            position = v.getTeamMarkerPos();
+            if (position.equals("1")) {
+                telemetry.addData("pos", position);
+            } else if (position.equals("2")) {
+                telemetry.addData("pos", position);
+            } else if (position.equals("3")) {
+                telemetry.addData("pos", position);
+            } else {
+                telemetry.addData("pos", position);
+            }
+            telemetry.update();
         }*/
+        waitForStart();
+
         /*moveForward(1070, .5);
         turn(-57, .5);
         moveForward(800, .8);*/
 
         movePIDFGyro(50,.75,0,0,.14,.25,.25);
-        turnHeading(90,.35,0,0.45,.11,.25,.5);
+        turnHeading(90,.01,0,0,.11,.25,.5);
         spinDucks(.3,1000);
     }
 

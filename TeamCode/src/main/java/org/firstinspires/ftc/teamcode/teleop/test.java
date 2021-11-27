@@ -159,8 +159,14 @@ public  class test extends OpMode
         if(gamepad1.left_bumper){
             DG.setPower(.4);
         }
+        else{
+            DG.setPower(0);
+        }
         if(gamepad1.right_bumper){
             DG.setPower(-.4);
+        }
+        else{
+            DG.setPower(0);
         }
 
         double power = 0;
