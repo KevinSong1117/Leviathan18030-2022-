@@ -134,7 +134,9 @@ public class redC extends LinearOpMode
 
         waitForStart();
 
-        waitForStart();
+        moveForward(200, -.5);
+        turn(120, .5);
+        deliverA("3");
 
         //String position = v.getTeamMarkerPos();
 
@@ -158,11 +160,6 @@ public class redC extends LinearOpMode
         else{
             telemetry.addData("pos", position);
         }*/
-        moveForward(1070, .5);
-        turn(52, .5);
-        moveForward(800, .8);
-
-
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -208,6 +205,13 @@ public class redC extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(150,.5);
+            turn(40,.5);
+            moveForward(500, .5);
+            spinDucks(.4,3500);
+            moveForward(500, -.5);
+            turn(-40,.5);
+            moveForward(500,5.);
         }
         else if(level.equals("2")){
             lift(700);
@@ -219,6 +223,13 @@ public class redC extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(150,.5);
+            turn(40,.5);
+            moveForward(500, .5);
+            spinDucks(.4,3500);
+            moveForward(500, -.5);
+            turn(-40,.5);
+            moveForward(500,5.);
         }
         else{
             lift(500);
@@ -230,6 +241,13 @@ public class redC extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(150,.5);
+            turn(40,.5);
+            moveForward(500, .5);
+            spinDucks(.4,3500);
+            moveForward(500, -.5);
+            turn(-40,.5);
+            moveForward(500,5.);
         }
     }
 
