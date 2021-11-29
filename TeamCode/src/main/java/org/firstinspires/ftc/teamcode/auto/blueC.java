@@ -118,6 +118,9 @@ public class blueC extends LinearOpMode
         imu.initialize(parameters);
         waitForStart();
 
+        moveForward(200, -.5);
+        turn(-120, .5);
+        deliverA("3");
         /*moveForward(1070, .5);
         turn(-57, .5);
         moveForward(800, .8);*/
@@ -173,6 +176,13 @@ public class blueC extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(-150,.5);
+            turn(-40,.5);
+            moveForward(500, .5);
+            spinDucks(.4,3500);
+            moveForward(500, -.5);
+            turn(40,.5);
+            moveForward(500,5.);
         }
         else if(level.equals("2")){
             lift(700);
@@ -184,6 +194,13 @@ public class blueC extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(-150,.5);
+            turn(-40,.5);
+            moveForward(500, .5);
+            spinDucks(.4,3500);
+            moveForward(500, -.5);
+            turn(40,.5);
+            moveForward(500,5.);
         }
         else{
             lift(500);
@@ -195,6 +212,13 @@ public class blueC extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(-150,.5);
+            turn(-40,.5);
+            moveForward(500, .5);
+            spinDucks(.4,3500);
+            moveForward(500, -.5);
+            turn(40,.5);
+            moveForward(500,5.);
         }
     }
 

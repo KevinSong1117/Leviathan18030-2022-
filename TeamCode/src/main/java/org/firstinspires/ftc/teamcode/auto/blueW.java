@@ -126,6 +126,8 @@ public class blueW extends LinearOpMode
         turn(90, .5);
         deliverA(position);
 
+        telemetry.addData("pos", position);
+
 
     }
 
@@ -172,6 +174,8 @@ public class blueW extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(150,.5);
+            moveForward(800,.9);
         }
         else if(level.equals("2")){
             lift(700);
@@ -183,6 +187,8 @@ public class blueW extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(150,.5);
+            moveForward(800,.9);
         }
         else{
             lift(500);
@@ -194,6 +200,8 @@ public class blueW extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            turn(150,.5);
+            moveForward(800,.9);
         }
     }
 
