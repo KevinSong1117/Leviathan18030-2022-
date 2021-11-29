@@ -61,13 +61,11 @@ public  class wristFix extends OpMode
     public DcMotor FR;
     public DcMotor BL;  // instantiates motor variables
     public DcMotor BR;
-    public DcMotor ER;  // lift extend right
-    public CRServo IR;
+    public DcMotor L;  // lift
+    public CRServo I;  // intake
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public DcMotor DG;
-
-
 
 
     /*
@@ -80,15 +78,15 @@ public  class wristFix extends OpMode
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "ER");
+        L = hardwareMap.get(DcMotor.class, "ER");
 
-        IR = hardwareMap.get(CRServo.class, "IR");
+        I = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         DG = hardwareMap.get(DcMotor.class, "DG");
 
 
-        IR.setDirection(CRServo.Direction.REVERSE);
+        I.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
@@ -96,7 +94,7 @@ public  class wristFix extends OpMode
         FL.setDirection(DcMotor.Direction.FORWARD);
         BR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.FORWARD);
-        ER.setDirection(DcMotor.Direction.FORWARD);
+        L.setDirection(DcMotor.Direction.FORWARD);
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
 
 
@@ -111,12 +109,11 @@ public  class wristFix extends OpMode
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        //WR.scaleRange(.36,.68);
-        //WL.scaleRange(.13,.38);
+
 
     }
 
@@ -190,15 +187,15 @@ public  class wristFix extends OpMode
 
         if(gamepad2.a){
             power = .5;
-            IR.setPower(power);
+            I.setPower(power);
 
         }
         if(gamepad2.b){
             power = -.5;
-            IR.setPower(power);
+            I.setPower(power);
         }
         if(gamepad2.x){
-            IR.setPower(0);
+            I.setPower(0);
         }
 
         double extendPower;
@@ -215,13 +212,11 @@ public  class wristFix extends OpMode
             staticPower = -.15;
             extendPower = gamepad2.left_stick_y;
         }
-        ER.setPower(staticPower + (extendPower * .35));
-        telemetry.addData("Lift position ", ER.getPower());
-        telemetry.addData("encoder", ER.getCurrentPosition());
+        L.setPower(staticPower + (extendPower * .35));
+        telemetry.addData("Lift position ", L.getPower());
+        telemetry.addData("encoder", L.getCurrentPosition());
         telemetry.update();
 
-        // moving the right motor towards the front of robot = retract
-        // moving the left motor towards the back of the robot = extend
 
     }
 
