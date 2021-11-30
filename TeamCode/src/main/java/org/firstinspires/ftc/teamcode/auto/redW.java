@@ -52,11 +52,15 @@ public class redW extends LinearOpMode
     public DcMotor fR;
     public DcMotor bL;  // instantiates motor variables
     public DcMotor bR;
-    public DcMotor L;  // lift
-    public CRServo I;
+    public DcMotor LTL; // lift turn left
+    public DcMotor LTR; // lift turn right
+    public DcMotor ER;  // lift extend right
+    public DcMotor EL;  // lift extend left
+    public CRServo IR;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
+    private vision vision;
     Orientation angles;
     float curHeading;
     public vision v;
@@ -65,20 +69,26 @@ public class redW extends LinearOpMode
     Sensors gyro;
     public DcMotor DG;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
+    static final double COUNTS_PER_MOTOR_REV = 537.6;
+    static final double DRIVE_GEAR_REDUCTION = 1.0;
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
     @Override
     public void runOpMode() throws InterruptedException  {
+        //throw new UnsupportedOperationException();
         timer = new ElapsedTime();
+        vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
         fR = hardwareMap.get(DcMotor.class, "FR");
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        L = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
-        I = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -87,13 +97,15 @@ public class redW extends LinearOpMode
         DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        I.setDirection(CRServo.Direction.REVERSE);
+        IR.setDirection(CRServo.Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        L.setDirection(DcMotor.Direction.REVERSE);
+        ER.setDirection(DcMotor.Direction.REVERSE);
+        WR.setDirection(CRServo.Direction.FORWARD);
+        WL.setDirection(CRServo.Direction.REVERSE);
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -104,9 +116,7 @@ public class redW extends LinearOpMode
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        WR.setDirection(DcMotorSimple.Direction.FORWARD);
-        WL.setDirection(DcMotorSimple.Direction.REVERSE);
+        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -114,21 +124,44 @@ public class redW extends LinearOpMode
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-        //vision v = new vision(this);
         imu.initialize(parameters);
+
+        String position = vision.getTeamMarkerPos();
+
+        while(!opModeIsActive()){
+            position = vision.getTeamMarkerPos();
+            telemetry.addData("position", position);
+            telemetry.update();
+        }
+
         waitForStart();
 
+        //String position = v.getTeamMarkerPos();
 
-        /*moveForward(1070, .5);
-        turn(-57, .5);
-        moveForward(800, .8);*/
-        String position = v.getTeamMarkerPos();
+        // see if the team element is in the 3 different positions
+        // if the camera dose not detect the team element it will only do other tasks
+        if(position.equals("1")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else if(position.equals("2")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else if(position.equals("3")){
+            telemetry.addData("pos", position);
+            moveForward(500, .5);
+        }
+
+        else{
+            telemetry.addData("pos", position);
+        }
+
         moveForward(200, -.5);
-        turn(90, .5);
-        deliverA(position);
-
-        telemetry.addData("pos", position);
-
+        turn(-120, .5);
+        deliverA("3");
 
 
     }
@@ -153,17 +186,17 @@ public class redW extends LinearOpMode
         }
     }
     public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
-        L.setPower(-.1 + (.7));
+        ER.setPower(-.1 + (.7));
         sleep(height);
-        L.setPower(-.2);
+        ER.setPower(-.2);
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        I.setPower(.5);
+        IR.setPower(.5);
         sleep(3000);
-        I.setPower(0);
+        IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        L.setPower(-.0005 + (-.1 * .35));
+        ER.setPower(-.0005 + (-.1 * .35));
     }
     public void deliverA(String level){
         if(level.equals("1")){
@@ -390,7 +423,7 @@ public class redW extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }
+    }*/
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -452,7 +485,5 @@ public class redW extends LinearOpMode
         }
         stopMotors();
     }
-
-     */
 
 }

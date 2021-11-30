@@ -42,8 +42,11 @@ public class blueCv2 extends LinearOpMode
     public DcMotor fR;
     public DcMotor bL;  // instantiates motor variables
     public DcMotor bR;
-    public DcMotor L;  // lift
-    public CRServo I;
+    public DcMotor LTL; // lift turn left
+    public DcMotor LTR; // lift turn right
+    public DcMotor ER;  // lift extend right
+    public DcMotor EL;  // lift extend left
+    public CRServo IR;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
@@ -66,9 +69,9 @@ public class blueCv2 extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        L = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
-        I = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -77,13 +80,13 @@ public class blueCv2 extends LinearOpMode
         DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        I.setDirection(CRServo.Direction.REVERSE);
+        IR.setDirection(CRServo.Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        L.setDirection(DcMotor.Direction.REVERSE);
+        ER.setDirection(DcMotor.Direction.REVERSE);
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -94,7 +97,7 @@ public class blueCv2 extends LinearOpMode
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WR.setDirection(DcMotorSimple.Direction.FORWARD);
         WL.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -138,17 +141,17 @@ public class blueCv2 extends LinearOpMode
         }
     }
     public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
-        L.setPower(-.1 + (.7));
+        ER.setPower(-.1 + (.7));
         sleep(height);
-        L.setPower(-.2);
+        ER.setPower(-.2);
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        I.setPower(.5);
+        IR.setPower(-.5);
         sleep(3000);
-        I.setPower(0);
+        IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        L.setPower(-.0005 + (-.1 * .35));
+        ER.setPower(-.0005 + (-.1 * .35));
     }
     public void deliverA(String level){
         if(level.equals("1")){
@@ -369,7 +372,7 @@ public class blueCv2 extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }
+    }*/
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -431,7 +434,5 @@ public class blueCv2 extends LinearOpMode
         }
         stopMotors();
     }
-
-     */
 
 }

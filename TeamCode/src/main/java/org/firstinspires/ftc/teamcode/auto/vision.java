@@ -60,20 +60,20 @@ public class vision {
         int spot1 = 0;
         int spot2 = 0;
         int spot3 = 0;
-        for(int i = 220; i < 360; i++){
-            if(isGreen(rgbImage.getPixel(7,i)))
+        for(int i = 98; i < 223; i++){
+            if(isGreen(rgbImage.getPixel(5,i)))
             {
                 spot1+=1;
             }
         }
-        for(int i = 220; i < 360; i++){
-            if(isGreen(rgbImage.getPixel(316,i)))
+        for(int i = 98; i < 223; i++){
+            if(isGreen(rgbImage.getPixel(322,i)))
             {
                 spot2+=1;
             }
         }
-        for(int i = 220; i < 360; i++){
-            if(isGreen(rgbImage.getPixel(625,i)))
+        for(int i = 98; i < 223; i++){
+            if(isGreen(rgbImage.getPixel(630,i)))
             {
                 spot3+=1;
             }

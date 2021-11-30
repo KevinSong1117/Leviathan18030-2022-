@@ -25,7 +25,7 @@ public class testing extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         vision = new vision(this);
         while(!isStarted()){
-            vision.getColor(318, 285);
+            vision.getColor(322, 200);
         }
 
 
