@@ -104,6 +104,8 @@ public class blueW extends LinearOpMode
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.REVERSE);
+        WR.setDirection(CRServo.Direction.FORWARD);
+        WL.setDirection(CRServo.Direction.REVERSE);
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -127,39 +129,16 @@ public class blueW extends LinearOpMode
         String position = vision.getTeamMarkerPos();
 
         while(!opModeIsActive()){
-            position = vision.getTeamMarkerPos();
             telemetry.addData("position", position);
             telemetry.update();
         }
 
         waitForStart();
-        waitForStart();
 
-        //String position = v.getTeamMarkerPos();
 
-        // see if the team element is in the 3 different positions
-        // if the camera dose not detect the team element it will only do other tasks
-        /*if(position.equals("1")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-
-        else if(position.equals("2")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-
-        else if(position.equals("3")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-
-        else{
-            telemetry.addData("pos", position);
-        }*/
         moveForward(200, -.5);
-        turn(150, .5);
-        deliverA("3");
+        turn(110, .5);
+        deliverA("1");
 
 
     }
@@ -186,35 +165,35 @@ public class blueW extends LinearOpMode
     public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
         ER.setPower(-.1 + (.7));
         sleep(height);
-        ER.setPower(-.2);
+        ER.setPower(.2);
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(.5);
+        IR.setPower(-.5);
         sleep(3000);
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 + (-.1 * .35));
+        ER.setPower(-.0005 );
     }
     public void deliverA(String level){
         if(level.equals("1")){
-            lift(300);
+            lift(250);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(300, .5);
+            moveForward(450, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(150,.5);
-            moveForward(800,.9);
+            turn(-120,.5);
+            moveForward(1200,.7);
         }
         else if(level.equals("2")){
-            lift(700);
+            lift(400);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(600, .5);
+            moveForward(450, .5);
             deliver();
             moveForward(600, -.5);
             down();
@@ -421,7 +400,7 @@ public class blueW extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -483,4 +462,6 @@ public class blueW extends LinearOpMode
         }
         stopMotors();
     }
+
+     */
 }

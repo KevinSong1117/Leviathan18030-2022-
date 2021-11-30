@@ -146,7 +146,7 @@ public class blueCv2 extends LinearOpMode
         ER.setPower(-.2);
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(.5);
+        IR.setPower(-.5);
         sleep(3000);
         IR.setPower(0);
     }

@@ -104,6 +104,8 @@ public class redC extends LinearOpMode
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.REVERSE);
+        WR.setDirection(CRServo.Direction.FORWARD);
+        WL.setDirection(CRServo.Direction.REVERSE);
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -434,7 +436,7 @@ public class redC extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -496,4 +498,6 @@ public class redC extends LinearOpMode
         }
         stopMotors();
     }
+
+     */
 }

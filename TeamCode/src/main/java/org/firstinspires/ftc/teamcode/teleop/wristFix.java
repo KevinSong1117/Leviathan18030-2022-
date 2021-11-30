@@ -170,10 +170,7 @@ public  class wristFix extends OpMode
             WR.setPower(-.5);
             WL.setPower(-.5);
         }
-        else {
-            WR.setPower(0);
-            WL.setPower(0);
-        }
+
         if(gamepad1.right_trigger > .5){
             DG.setPower(gamepad1.right_trigger * .5);
         }
