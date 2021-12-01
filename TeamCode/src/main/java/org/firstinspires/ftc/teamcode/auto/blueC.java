@@ -137,11 +137,8 @@ public class blueC extends LinearOpMode
         waitForStart();
 
         moveForward(200, -.5);
-        turn(-120, .5);
-        deliverA("3");
-        /*moveForward(1070, .5);
-        turn(-57, .5);
-        moveForward(800, .8);*/
+        turn(-110, .5);
+        deliverA(position);
 
 
     }
@@ -171,26 +168,25 @@ public class blueC extends LinearOpMode
         ER.setPower(-.2);
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(.5);
+        IR.setPower(-.5);
         sleep(3000);
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 + (-.1 * .35));
+        ER.setPower(-.0000005);
     }
     public void deliverA(String level){
         if(level.equals("1")){
-            lift(300);
+            lift(350);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(300, .5);
+            moveForward(650, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
             turn(-150,.5);
-            turn(-40,.5);
             moveForward(500, .5);
             spinDucks(.4,3500);
             moveForward(500, -.5);
@@ -198,17 +194,16 @@ public class blueC extends LinearOpMode
             moveForward(500,5.);
         }
         else if(level.equals("2")){
-            lift(700);
+            lift(600);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(600, .5);
+            moveForward(650, .5);
             deliver();
             moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
             turn(-150,.5);
-            turn(-40,.5);
             moveForward(500, .5);
             spinDucks(.4,3500);
             moveForward(500, -.5);
@@ -216,17 +211,16 @@ public class blueC extends LinearOpMode
             moveForward(500,5.);
         }
         else{
-            lift(500);
+            lift(650);
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(900, .5);
             deliver();
-            moveForward(900, -.5);
+            moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
             turn(-150,.5);
-            turn(-40,.5);
             moveForward(500, .5);
             spinDucks(.4,3500);
             moveForward(500, -.5);

@@ -126,8 +126,7 @@ public class redW extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.getTeamMarkerPos();
-
+        String position = v.getTeamMarkerPos();
         while(!opModeIsActive()){
             position = vision.getTeamMarkerPos();
             telemetry.addData("position", position);
@@ -136,32 +135,11 @@ public class redW extends LinearOpMode
 
         waitForStart();
 
-        //String position = v.getTeamMarkerPos();
 
-        // see if the team element is in the 3 different positions
-        // if the camera dose not detect the team element it will only do other tasks
-        if(position.equals("1")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-
-        else if(position.equals("2")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-
-        else if(position.equals("3")){
-            telemetry.addData("pos", position);
-            moveForward(500, .5);
-        }
-
-        else{
-            telemetry.addData("pos", position);
-        }
 
         moveForward(200, -.5);
-        turn(-120, .5);
-        deliverA("3");
+        turn(-110, .5);
+        deliverA(position);
 
 
     }
@@ -196,47 +174,47 @@ public class redW extends LinearOpMode
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 + (-.1 * .35));
+        ER.setPower(-.0005);
     }
     public void deliverA(String level){
         if(level.equals("1")){
-            lift(300);
+            lift(350);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(300, .5);
+            moveForward(650, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-150,.5);
-            moveForward(800,.9);
+            turn(120,.5);
+            moveForward(1500,.7);
         }
         else if(level.equals("2")){
-            lift(700);
+            lift(600);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(600, .5);
+            moveForward(650, .5);
             deliver();
             moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-150,.5);
-            moveForward(800,.9);
+            turn(120,.5);
+            moveForward(1500,.9);
         }
         else{
-            lift(500);
+            lift(650);
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(900, .5);
             deliver();
-            moveForward(900, -.5);
+            moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-150,.5);
-            moveForward(800,.9);
+            turn(120,.5);
+            moveForward(1600,.9);
         }
     }
 

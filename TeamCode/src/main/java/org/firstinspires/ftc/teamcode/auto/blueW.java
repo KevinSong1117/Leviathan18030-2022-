@@ -138,7 +138,7 @@ public class blueW extends LinearOpMode
 
         moveForward(200, -.5);
         turn(110, .5);
-        deliverA("1");
+        deliverA(position);
 
 
     }
@@ -177,43 +177,43 @@ public class blueW extends LinearOpMode
     }
     public void deliverA(String level){
         if(level.equals("1")){
-            lift(250);
+            lift(350);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(450, .5);
+            moveForward(650, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
             turn(-120,.5);
-            moveForward(1200,.7);
+            moveForward(1500,.7);
         }
         else if(level.equals("2")){
-            lift(400);
+            lift(600);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(450, .5);
+            moveForward(650, .5);
             deliver();
             moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(150,.5);
-            moveForward(800,.9);
+            turn(-120,.5);
+            moveForward(1500,.9);
         }
         else{
-            lift(500);
+            lift(650);
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(900, .5);
             deliver();
-            moveForward(900, -.5);
+            moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(150,.5);
-            moveForward(800,.9);
+            turn(-120,.5);
+            moveForward(1600,.9);
         }
     }
 
