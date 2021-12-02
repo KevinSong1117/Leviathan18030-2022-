@@ -126,9 +126,9 @@ public class redW extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = v.getTeamMarkerPos();
+        String position = vision.getTeamMarkerPos();
+
         while(!opModeIsActive()){
-            position = vision.getTeamMarkerPos();
             telemetry.addData("position", position);
             telemetry.update();
         }
@@ -136,10 +136,10 @@ public class redW extends LinearOpMode
         waitForStart();
 
 
-
         moveForward(200, -.5);
-        turn(-110, .5);
+        turn(-100, .5);
         deliverA(position);
+
 
 
     }
@@ -164,56 +164,56 @@ public class redW extends LinearOpMode
         }
     }
     public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
-        ER.setPower(-.1 + (.7));
+        ER.setPower(.6);
         sleep(height);
-        ER.setPower(-.2);
+        ER.setPower(.2);
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(.5);
+        IR.setPower(-.5);
         sleep(3000);
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005);
+        ER.setPower(-.0005 );
     }
     public void deliverA(String level){
-        if(level.equals("1")){
-            lift(350);
+        if(level.equals("3")){
+            lift(200);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(650, .5);
+            moveForward(570, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(120,.5);
-            moveForward(1500,.7);
+            turn(140,.5);
+            moveForward(1800,.9);
         }
         else if(level.equals("2")){
+            lift(435);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            moveForward(570, .5);
+            deliver();
+            moveForward(300, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            turn(140,.5);
+            moveForward(1800,.9);
+        }
+        else{
             lift(600);
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(650, .5);
             deliver();
-            moveForward(600, -.5);
+            moveForward(400, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(120,.5);
-            moveForward(1500,.9);
-        }
-        else{
-            lift(650);
-            WR.setPower(-.5);
-            WL.setPower(-.5);
-            moveForward(900, .5);
-            deliver();
-            moveForward(600, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(120,.5);
+            turn(140,.5);
             moveForward(1600,.9);
         }
     }
@@ -401,7 +401,7 @@ public class redW extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -464,4 +464,5 @@ public class redW extends LinearOpMode
         stopMotors();
     }
 
+     */
 }
