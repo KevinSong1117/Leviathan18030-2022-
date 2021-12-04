@@ -126,12 +126,13 @@ public class redC extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.getTeamMarkerPos();
+        String position = vision.redgetTeamMarkerPos();
 
-        while(!opModeIsActive()){
-            position = vision.getTeamMarkerPos();
-            telemetry.addData("position", position);
+        while(!isStarted()){
+            position = vision.redgetTeamMarkerPos();
+            telemetry.addData("redposition", position);
             telemetry.update();
+
         }
 
         waitForStart();

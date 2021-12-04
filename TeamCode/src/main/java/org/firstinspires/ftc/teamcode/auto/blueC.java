@@ -125,11 +125,11 @@ public class blueC extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.getTeamMarkerPos();
+        String position = vision.bluegetTeamMarkerPos();
 
         while(!isStarted()){
-            position = vision.getTeamMarkerPos();
-            telemetry.addData("position", position);
+            position = vision.bluegetTeamMarkerPos();
+            telemetry.addData("blueposition", position);
             telemetry.update();
         }
         
@@ -152,7 +152,7 @@ public class blueC extends LinearOpMode
     public void moveForward(double tics, double power) {
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (getTic() < tics) {
+            while ((getTic() < tics) && opModeIsActive()) {
                 fL.setPower(power);              // encoding start is less than the target
                 fR.setPower(power); // Sets the power of the motors to currently half the power
                 bL.setPower(power);

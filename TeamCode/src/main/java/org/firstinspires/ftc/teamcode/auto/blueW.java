@@ -126,10 +126,11 @@ public class blueW extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.getTeamMarkerPos();
+        String position = vision.bluegetTeamMarkerPos();
 
-        while(!opModeIsActive()){
-            telemetry.addData("position", position);
+        while(!isStarted()){
+            position = vision.bluegetTeamMarkerPos();
+            telemetry.addData("blueposition", position);
             telemetry.update();
         }
 
@@ -153,7 +154,7 @@ public class blueW extends LinearOpMode
     public void moveForward(double tics, double power) {
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (getTic() < tics) {
+            while ((getTic() < tics) && opModeIsActive()) {
                 fL.setPower(power);              // encoding start is less than the target
                 fR.setPower(power); // Sets the power of the motors to currently half the power
                 bL.setPower(power);
@@ -174,45 +175,50 @@ public class blueW extends LinearOpMode
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 );
+        ER.setPower(.001);
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            lift(200);
+            lift(275);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(570, .5);
+            sleep(1000);
+            moveForward(510, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            sleep(100);
             turn(-140,.5);
             moveForward(1800,.9);
         }
         else if(level.equals("2")){
-            lift(435);
+            lift(420);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(570, .5);
+            sleep(1000);
+            moveForward(550, .5);
             deliver();
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-140,.5);
+            turn(-140,.6);
             moveForward(1800,.9);
         }
         else{
-            lift(600);
+            lift(630);
             WR.setPower(-.5);
             WL.setPower(-.5);
+            sleep(1000);
             moveForward(650, .5);
             deliver();
             moveForward(400, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
+            sleep(100);
             turn(-140,.5);
             moveForward(1600,.9);
         }
@@ -221,7 +227,7 @@ public class blueW extends LinearOpMode
     public void turn(double degree, double power){
         while (opModeIsActive() && !isStopRequested()) {
             if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
-                while (angleWrapDeg(degree - gyro.getAngle()) > 0) {
+                while ((angleWrapDeg(degree - gyro.getAngle()) > 0) && opModeIsActive()) {
                     fL.setPower(-power);
                     fR.setPower(power);
                     bL.setPower(-power);
@@ -229,7 +235,7 @@ public class blueW extends LinearOpMode
                 }
 
             } else {
-                while (angleWrapDeg(degree - gyro.getAngle()) < 0) {
+                while ((angleWrapDeg(degree - gyro.getAngle()) < 0) && opModeIsActive()) {
                     fL.setPower(power);
                     fR.setPower(-power);
                     bL.setPower(power);
