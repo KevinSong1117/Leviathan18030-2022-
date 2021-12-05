@@ -204,7 +204,7 @@ public class blueW extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-140,.6);
+            turn(-140,.5);
             moveForward(1800,.9);
         }
         else{

@@ -206,7 +206,7 @@ public class redW extends LinearOpMode
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(140,.6);
+            turn(140,.5);
             moveForward(1800,.9);
         }
         else{
@@ -221,7 +221,7 @@ public class redW extends LinearOpMode
             WR.setPower(.5);
             WL.setPower(.5);
             sleep(100);
-            turn(140,.6);
+            turn(140,.5);
             moveForward(1600,.9);
         }
     }
