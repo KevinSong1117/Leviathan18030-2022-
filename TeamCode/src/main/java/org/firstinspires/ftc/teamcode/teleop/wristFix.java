@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static java.lang.Thread.sleep;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -132,6 +134,10 @@ public  class wristFix extends OpMode
         runtime.reset();
     }
 
+    public void timeTest(int waitTime) throws InterruptedException {
+        sleep(waitTime);
+    }
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -194,6 +200,57 @@ public  class wristFix extends OpMode
         if(gamepad2.x){
             I.setPower(0);
         }
+        if(gamepad2.dpad_up){
+            ElapsedTime current = new ElapsedTime();
+            double time = current.milliseconds();
+            while (time < 630){
+                L.setPower(-.6);
+                driveR = gamepad1.left_stick_y;
+                driveL  =  gamepad1.right_stick_x;
+                if(Math.abs(gamepad1.left_stick_y) > .1){
+                    BL.setPower(driveR);
+                    BR.setPower(driveR);
+                    FL.setPower(driveR);
+                    FR.setPower(driveR);
+                }
+                else{
+                    BL.setPower(driveL);
+                    BR.setPower(driveL * -1);
+                    FL.setPower(driveL);
+                    FR.setPower(driveL * -1);
+                }
+                time = current.milliseconds();
+            }
+
+            L.setPower(-.2);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+        }
+        if(gamepad2.dpad_down){
+            WR.setPower(.5);
+            WL.setPower(.5);
+            ElapsedTime current = new ElapsedTime();
+            double time = current.milliseconds();
+            while (time < 2500){
+                L.setPower(-.0001);
+                driveR = gamepad1.left_stick_y;
+                driveL  =  gamepad1.right_stick_x;
+                if(Math.abs(gamepad1.left_stick_y) > .1){
+                    BL.setPower(driveR);
+                    BR.setPower(driveR);
+                    FL.setPower(driveR);
+                    FR.setPower(driveR);
+                }
+                else{
+                    BL.setPower(driveL);
+                    BR.setPower(driveL * -1);
+                    FL.setPower(driveL);
+                    FR.setPower(driveL * -1);
+                }
+                time = current.milliseconds();
+            }
+            L.setPower(0);
+        }
 
         double extendPower;
         // some sort of sine function so that it is negative on the right and positive on the left
@@ -206,12 +263,13 @@ public  class wristFix extends OpMode
             extendPower = gamepad2.right_stick_y ;
         }
         else{
-            staticPower = -.15;
+            staticPower = -.2;
             extendPower = gamepad2.left_stick_y;
         }
         L.setPower(staticPower + (extendPower * .35));
         telemetry.addData("Lift position ", L.getPower());
         telemetry.addData("encoder", L.getCurrentPosition());
+        telemetry.addData("Time :", runtime);
         telemetry.update();
 
 
