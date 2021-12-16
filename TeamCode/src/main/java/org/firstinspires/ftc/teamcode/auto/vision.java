@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto;
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import static android.graphics.Color.red;
 import static android.graphics.Color.green;
@@ -92,30 +95,42 @@ public class vision {
         return pos;
     }
     public String bluegetTeamMarkerPos() throws InterruptedException {
-        Bitmap rgbImage = getImage();
-        pos = "3";
-        spot1 = 0;
-        spot2 = 0;
-        spot3 = 0;
-        for(int i = 80; i < 240; i++){
-            if(isGreen(rgbImage.getPixel(4,i))) {
-                spot3 += 1;
-            }
+        int total1 = 0;
+        int total2 = 0;
+        int total3 = 0;
 
-        }
-        for(int i = 80; i < 240; i++){
-            if(isGreen(rgbImage.getPixel(260,i))) {
-                spot2 += 1;
+        pos = "none";
+        for(int j = 0; j < 4; j++){
+            Bitmap rgbImage = getImage();
+            spot1 = 0;
+            spot2 = 0;
+            spot3 = 0;
+            for (int i = 80; i < 240; i++) {
+                if (isGreen(rgbImage.getPixel(4, i))) {
+                    spot3 += 1;
+                }
+
             }
-        }
-        for(int i = 80; i < 240; i++){
-            if(isGreen(rgbImage.getPixel(580,i))) {
-                spot1 += 1;
+            for (int i = 80; i < 240; i++) {
+                if (isGreen(rgbImage.getPixel(260, i))) {
+                    spot2 += 1;
+                }
             }
+            for (int i = 80; i < 240; i++) {
+                if (isGreen(rgbImage.getPixel(580, i))) {
+                    spot1 += 1;
+                }
+            }
+            if (spot1 > spot2 && spot1 > spot3)
+                total1++;
+            else if (spot2 > spot3)
+                total2++;
+            else
+                total3++;
         }
-        if(spot1 > spot2 && spot1 > spot3)
+        if (total1 > total2 && total1 > total3)
             pos = "1";
-        else if(spot2 > spot3)
+        else if (total2 > total3)
             pos = "2";
         else
             pos = "3";
@@ -123,6 +138,9 @@ public class vision {
         opMode.telemetry.addData("spot 1", spot1);
         opMode.telemetry.addData("spot 2", spot2);
         opMode.telemetry.addData("spot 3", spot3);
+        opMode.telemetry.addData("spot 1", total1);
+        opMode.telemetry.addData("spot 2", total2);
+        opMode.telemetry.addData("spot 3", total3);
 
         return pos;
     }
@@ -131,7 +149,8 @@ public class vision {
         boolean color = (green(pixel) <= 125) && (green(pixel) >= 70) && (red(pixel) <= 105) && (blue(pixel) <= 140);
         return color;
     }
-    public void getColor(int x, int y)throws InterruptedException{
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void gettrueColor(int x, int y)throws InterruptedException{
 
         Bitmap rgbImage = getImage();
 
@@ -145,6 +164,7 @@ public class vision {
         opMode.telemetry.addData("green", green(pixel));
 
         opMode.telemetry.addData("blue", blue(pixel));
+        opMode.telemetry.addData("Color", rgbImage.getColor(x, y));
 
         opMode.telemetry.update();
 

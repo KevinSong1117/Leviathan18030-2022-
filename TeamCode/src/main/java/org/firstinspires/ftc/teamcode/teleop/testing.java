@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -21,11 +25,12 @@ import org.firstinspires.ftc.teamcode.auto.vision;
 public class testing extends LinearOpMode {
     private vision vision;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void runOpMode() throws InterruptedException {
         vision = new vision(this);
         while(!isStarted()){
-            vision.getColor(322, 200);
+            vision.gettrueColor(322, 200);
         }
 
 
