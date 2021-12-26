@@ -28,7 +28,6 @@ public class testing extends LinearOpMode {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void runOpMode() throws InterruptedException {
-        vision = new vision(this);
         while(!isStarted()){
             vision.gettrueColor(322, 200);
         }
