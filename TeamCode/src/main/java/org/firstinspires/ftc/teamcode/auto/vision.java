@@ -105,19 +105,19 @@ public class vision {
             spot1 = 0;
             spot2 = 0;
             spot3 = 0;
-            for (int i = 80; i < 240; i++) {
-                if (isGreen(rgbImage.getPixel(4, i))) {
+            for (int i = 92; i < 222; i++) {
+                if (isGreen(rgbImage.getPixel(630, i))) {
                     spot3 += 1;
                 }
 
             }
-            for (int i = 80; i < 240; i++) {
-                if (isGreen(rgbImage.getPixel(260, i))) {
+            for (int i = 92; i < 222; i++) {
+                if (isGreen(rgbImage.getPixel(305, i))) {
                     spot2 += 1;
                 }
             }
-            for (int i = 80; i < 240; i++) {
-                if (isGreen(rgbImage.getPixel(580, i))) {
+            for (int i = 92; i < 222; i++) {
+                if (isGreen(rgbImage.getPixel(24, i))) {
                     spot1 += 1;
                 }
             }
