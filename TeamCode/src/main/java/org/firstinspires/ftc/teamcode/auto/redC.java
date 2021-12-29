@@ -86,9 +86,9 @@ public class redC extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "L");
+        ER = hardwareMap.get(DcMotor.class, "ER");
 
-        IR = hardwareMap.get(CRServo.class, "I");
+        IR = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);

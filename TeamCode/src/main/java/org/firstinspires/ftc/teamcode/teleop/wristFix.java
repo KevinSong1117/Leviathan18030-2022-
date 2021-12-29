@@ -80,9 +80,9 @@ public  class wristFix extends OpMode
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
 
-        L = hardwareMap.get(DcMotor.class, "L");
+        L = hardwareMap.get(DcMotor.class, "ER");
 
-        I = hardwareMap.get(CRServo.class, "I");
+        I = hardwareMap.get(CRServo.class, "IR");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         DG = hardwareMap.get(DcMotor.class, "DG");
