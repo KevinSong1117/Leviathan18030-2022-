@@ -22,8 +22,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Para
 import java.util.ArrayList;
 
 
-public class vision {
+public class vision extends LinearOpMode{
 
+    @Override
+    public void runOpMode() throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
 
     LinearOpMode opMode;
     VuforiaLocalizer vuforia;

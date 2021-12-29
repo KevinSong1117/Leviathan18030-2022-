@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -14,48 +15,52 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.auto.Sensors;
 import org.firstinspires.ftc.teamcode.auto.vision;
 
-public class Robot extends LinearOpMode
+public class Robot
 {
     private ElapsedTime runtime = new ElapsedTime();
-    public DcMotor FL;
-    public DcMotor FR;
-    public DcMotor BL;  // instantiates motor variables
-    public DcMotor BR;
-    public DcMotor L;  // lift
-    public CRServo I;  // intake
-    public CRServo WR;  // Wrist Right
-    public CRServo WL;  // Wrist Left
-    public DcMotor DG;
-    public BNO055IMU imu;
-    Orientation angles;
-    float curHeading;
+    HardwareMap hwMap = null;
+    public DcMotor FL = null;
+    public DcMotor FR = null;
+    public DcMotor BL = null;  // instantiates motor variables
+    public DcMotor BR = null;
+    public DcMotor L = null;  // lift
+    public CRServo I = null;  // intake
+    public CRServo WR = null;  // Wrist Right
+    public CRServo WL = null;  // Wrist Left
+    public DcMotor DG = null;
+    //public BNO055IMU imu;
+    LinearOpMode opmode;
     Sensors gyro;
-    private vision v;
 
-    public void init
+    public Robot(LinearOpMode opMode)throws InterruptedException
     {
-        FL = hardwareMap.get(DcMotor.class, "FL");
-        FR = hardwareMap.get(DcMotor.class, "FR");
-        BL = hardwareMap.get(DcMotor.class, "BL");
-        BR = hardwareMap.get(DcMotor.class, "BR");
+        //hwMap = hardwareMap;
 
-        L = hardwareMap.get(DcMotor.class, "ER");
 
-        I = hardwareMap.get(CRServo.class, "IR");
-        WR = hardwareMap.get(CRServo.class, "WR");
-        WL = hardwareMap.get(CRServo.class, "WL");
-        DG = hardwareMap.get(DcMotor.class, "DG");
+        FL = this.opmode.hardwareMap.get(DcMotor.class, "FL");
+        FR = this.opmode.hardwareMap.get(DcMotor.class, "FR");
+        BL = this.opmode.hardwareMap.get(DcMotor.class, "BL");
+        BR = this.opmode.hardwareMap.get(DcMotor.class, "BR");
 
+        L = this.opmode.hardwareMap.get(DcMotor.class, "L");
+
+        I = this.opmode.hardwareMap.get(CRServo.class, "I");
+        WR = this.opmode.hardwareMap.get(CRServo.class, "WR");
+        WL = this.opmode.hardwareMap.get(CRServo.class, "WL");
+        DG = this.opmode.hardwareMap.get(DcMotor.class, "DG");
+
+        gyro = new Sensors(opMode);
+        this.opmode = opMode;
 
         I.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
-        FR.setDirection(DcMotor.Direction.REVERSE);
-        FL.setDirection(DcMotor.Direction.FORWARD);
-        BR.setDirection(DcMotor.Direction.FORWARD);
-        BL.setDirection(DcMotor.Direction.FORWARD);
-        L.setDirection(DcMotor.Direction.FORWARD);
+        FR.setDirection(DcMotor.Direction.FORWARD);
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.REVERSE);
+        BL.setDirection(DcMotor.Direction.REVERSE);
+        L.setDirection(DcMotor.Direction.REVERSE);
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
 
 
@@ -72,152 +77,20 @@ public class Robot extends LinearOpMode
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        init;
-    }
+        /*
+        imu = opmode.hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+        imu.initialize(parameters);
 
-    public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
-        DG.setPower(power);
-        sleep(time);
-        DG.setPower(0);
-    }
-
-    public void moveForward(double tics, double power) {
-        while (!isStopRequested() && opModeIsActive()) {
-            resetEncoder();
-            while ((getTic() < tics) && opModeIsActive()) {
-                startMotors(power, power);
-            }
-            stopMotors();
-            break;
-        }
-    }
-    public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
-        L.setPower(.6);
-        sleep(height);
-        L.setPower(.2);
-    }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        I.setPower(-.5);
-        sleep(3000);
-        I.setPower(0);
-    }
-    public void down(){ //Sets power so that arm slowly goes down
-        I.setPower(.001);
-    }
-    public void deliverA(String level){
-        if(level.equals("3")){
-            lift(275);
-            WR.setPower(-.5);
-            WL.setPower(-.5);
-            sleep(1000);
-            moveForward(510, .5);
-            deliver();
-            moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            sleep(100);
-            turn(-140,.5);
-            moveForward(1800,.9);
-        }
-        else if(level.equals("2")){
-            lift(420);
-            WR.setPower(-.5);
-            WL.setPower(-.5);
-            sleep(1000);
-            moveForward(550, .5);
-            deliver();
-            moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(-140,.5);
-            moveForward(1800,.9);
-        }
-        else{
-            lift(630);
-            WR.setPower(-.5);
-            WL.setPower(-.5);
-            sleep(1000);
-            moveForward(650, .5);
-            deliver();
-            moveForward(400, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            sleep(100);
-            turn(-140,.5);
-            moveForward(1600,.9);
-        }
-    }
-
-    public void turn(double degree, double power){
-        while (opModeIsActive() && !isStopRequested()) {
-            if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
-                while ((angleWrapDeg(degree - gyro.getAngle()) > 0) && opModeIsActive()) {
-                   startMotors(power, -power);
-                }
-
-            } else {
-                while ((angleWrapDeg(degree - gyro.getAngle()) < 0) && opModeIsActive()) {
-                    startMotors(-power, power);
-                }
-            }
-            stopMotors();
-            break;
-        }
-    }
-
-    public double getEncoderAvg(){
-        double flEncoder = FL.getCurrentPosition();
-        double frEncoder = FR.getCurrentPosition();
-        double blEncoder = BL.getCurrentPosition();
-        double brEncoder = BR.getCurrentPosition();
-
-        double ret = flEncoder + frEncoder + blEncoder + brEncoder;
-        ret /= 4;
-
-        return ret;
-    }
-    private void checkOrientation() {
-        // read the orientation of the robot
-        angles = this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        this.imu.getPosition();
-        // and save the heading
-        curHeading = angles.firstAngle; //Gets the orientation of the robot
+         */
     }
 
 
-    public void resetEncoder() {
-        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-    public void startMotors(double right, double left) {
-        FR.setPower(right);
-        FL.setPower(left);
-        BL.setPower(left);
-        BR.setPower(right);
-        telemetry.addData("right power", right);
-        telemetry.addData("left power", left);
-        telemetry.update();
-    }
-    public void stopMotors() {
-        FR.setPower(0);
-        FL.setPower(0);
-        BR.setPower(0);
-        BL.setPower(0);
-    }
     public double getTic() {
         double count = 4;
         if (FR.getCurrentPosition() == 0) {
@@ -251,6 +124,183 @@ public class Robot extends LinearOpMode
         }
         return correctAngle;
     }
+
+    public void resetEncoder() {
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void startMotors(double right, double left) {
+        FR.setPower(right);
+        FL.setPower(left);
+        BL.setPower(left);
+        BR.setPower(right);
+        opmode.telemetry.addData("right power", right);
+        opmode.telemetry.addData("left power", left);
+        opmode.telemetry.update();
+    }
+    public void stopMotors() {
+        FR.setPower(0);
+        FL.setPower(0);
+        BR.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void moveForward(double tics, double power) {
+        while (!opmode.isStopRequested() && opmode.opModeIsActive()) {
+            resetEncoder();
+            while ((getTic() < tics) && opmode.opModeIsActive()) {
+                startMotors(power, power);
+            }
+            stopMotors();
+            break;
+        }
+    }
+
+    public void turn(double degree, double power){
+        while (opmode.opModeIsActive() && !opmode.isStopRequested()) {
+            if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
+                while ((angleWrapDeg(degree - gyro.getAngle()) > 0) && opmode.opModeIsActive()) {
+                    startMotors(power, -power);
+                }
+
+            } else {
+                while ((angleWrapDeg(degree - gyro.getAngle()) < 0) && opmode.opModeIsActive()) {
+                    startMotors(-power, power);
+                }
+            }
+            stopMotors();
+            break;
+        }
+    }
+
+    public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
+        DG.setPower(power);
+        opmode.sleep(time);
+        DG.setPower(0);
+    }
+
+    public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
+        L.setPower(.6);
+        opmode.sleep(height);
+        L.setPower(.2);
+    }
+    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        I.setPower(-.5);
+        opmode.sleep(3000);
+        I.setPower(0);
+    }
+    public void down(){ //Sets power so that arm slowly goes down
+        I.setPower(.001);
+    }
+
+    public void deliverBlue(String level){
+        moveForward(200, -.5);
+        turn(100, .5);
+        if(level.equals("3")){
+            lift(275);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            opmode.sleep(1000);
+            moveForward(510, .5);
+            deliver();
+            moveForward(300, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            opmode.sleep(100);
+            turn(-140,.5);
+            moveForward(1800,.9);
+        }
+        else if(level.equals("2")){
+            lift(420);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            opmode.sleep(1000);
+            moveForward(550, .5);
+            deliver();
+            moveForward(300, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            turn(-140,.5);
+            moveForward(1800,.9);
+        }
+        else{
+            lift(630);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            opmode.sleep(1000);
+            moveForward(650, .5);
+            deliver();
+            moveForward(400, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            opmode.sleep(100);
+            turn(-140,.5);
+            moveForward(1600,.9);
+        }
+    }
+
+    public void deliverRed(String level)
+    {
+        moveForward(200, -.5);
+        turn(-110, .5);
+        if(level.equals("3")){
+            lift(275);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            opmode.sleep(1000);
+            moveForward(500, .5);
+            deliver();
+            moveForward(300, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            opmode.sleep(100);
+            turn(140,.5);
+            moveForward(1800,.9);
+        }
+        else if(level.equals("2")){
+            lift(420);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            opmode.sleep(1000);
+            moveForward(550, .5);
+            deliver();
+            moveForward(300, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            turn(140,.5);
+            moveForward(1800,.9);
+        }
+        else{
+            lift(630);
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+            opmode.sleep(1000);
+            moveForward(650, .5);
+            deliver();
+            moveForward(400, -.5);
+            down();
+            WR.setPower(.5);
+            WL.setPower(.5);
+            opmode.sleep(100);
+            turn(140,.5);
+            moveForward(1600,.9);
+        }
+    }
+
+
 
     /* PID
 
