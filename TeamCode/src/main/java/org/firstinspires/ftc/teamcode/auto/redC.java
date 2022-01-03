@@ -276,17 +276,7 @@ public class redC extends LinearOpMode
         }
     }
 
-    public double getEncoderAvg(){
-        double flEncoder = fL.getCurrentPosition();
-        double frEncoder = fR.getCurrentPosition();
-        double blEncoder = bL.getCurrentPosition();
-        double brEncoder = bR.getCurrentPosition();
 
-        double ret = flEncoder + frEncoder + blEncoder + brEncoder;
-        ret /= 4;
-
-        return ret;
-    }
     private void checkOrientation() {
         // read the orientation of the robot
         angles = this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

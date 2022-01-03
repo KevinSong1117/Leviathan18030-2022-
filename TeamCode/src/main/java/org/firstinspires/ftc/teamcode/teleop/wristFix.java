@@ -98,20 +98,20 @@ public  class wristFix extends OpMode
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
 
 
-        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        DG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
 
 
@@ -123,6 +123,7 @@ public  class wristFix extends OpMode
     @Override
     public void init_loop() {
     }
+
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -180,7 +181,7 @@ public  class wristFix extends OpMode
         }
 
 
-        double power = 0;
+        double power;
 
         if(gamepad2.a){
             power = .5;
@@ -209,10 +210,24 @@ public  class wristFix extends OpMode
             staticPower = -.15;
             extendPower = gamepad2.left_stick_y;
         }
+        if(gamepad2.dpad_left){
+            L.setTargetPosition(1000);
+            L.setPower(-.5);
+
+            WR.setPower(-.5);
+            WL.setPower(-.5);
+        }
+        if(gamepad2.dpad_right){
+            WR.setPower(.5);
+            WL.setPower(.5);
+            extendPower = 1;
+        }
+
         L.setPower(staticPower + (extendPower * .35));
         telemetry.addData("Lift position ", L.getPower());
         telemetry.addData("encoder", L.getCurrentPosition());
         telemetry.update();
+
 
 
     }
