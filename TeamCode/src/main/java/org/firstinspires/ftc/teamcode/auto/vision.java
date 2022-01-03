@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto;
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import static android.graphics.Color.red;
 import static android.graphics.Color.green;
@@ -19,12 +22,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Para
 import java.util.ArrayList;
 
 
-public class vision {
+public class vision extends LinearOpMode{
 
+    @Override
+    public void runOpMode() throws InterruptedException {
+        throw new UnsupportedOperationException();
+    }
 
     LinearOpMode opMode;
     VuforiaLocalizer vuforia;
     String pos = "notFound";
+    int spot1 = 0;
+    int spot2 = 0;
+    int spot3 = 0;
 
     public vision(LinearOpMode opMode){
         this.opMode = opMode;
@@ -54,28 +64,25 @@ public class vision {
         return bm;
     }
 
-    public String getTeamMarkerPos() throws InterruptedException {
+    public String redgetTeamMarkerPos() throws InterruptedException {
         Bitmap rgbImage = getImage();
-
-        int spot1 = 0;
-        int spot2 = 0;
-        int spot3 = 0;
-        for(int i = 98; i < 223; i++){
-            if(isGreen(rgbImage.getPixel(5,i)))
-            {
-                spot1+=1;
+        pos = "1";
+        spot1 = 0;
+        spot2 = 0;
+        spot3 = 0;
+        for(int i = 95; i < 250; i++){
+            if(isGreen(rgbImage.getPixel(7,i))) {
+                spot3 += 1;
             }
         }
-        for(int i = 98; i < 223; i++){
-            if(isGreen(rgbImage.getPixel(322,i)))
-            {
-                spot2+=1;
+        for(int i = 95; i < 250; i++){
+            if(isGreen(rgbImage.getPixel(392,i))) {
+                spot2 += 1;
             }
         }
-        for(int i = 98; i < 223; i++){
-            if(isGreen(rgbImage.getPixel(630,i)))
-            {
-                spot3+=1;
+        for(int i = 95; i < 250; i++){
+            if(isGreen(rgbImage.getPixel(611,i))) {
+                spot1 += 1;
             }
         }
         if(spot1 > spot2 && spot1 > spot3)
@@ -85,13 +92,69 @@ public class vision {
         else
             pos = "3";
 
+        opMode.telemetry.addData("spot 1", spot1);
+        opMode.telemetry.addData("spot 2", spot2);
+        opMode.telemetry.addData("spot 3", spot3);
+
+        return pos;
+    }
+    public String bluegetTeamMarkerPos() throws InterruptedException {
+        int total1 = 0;
+        int total2 = 0;
+        int total3 = 0;
+
+        pos = "none";
+        for(int j = 0; j < 4; j++){
+            Bitmap rgbImage = getImage();
+            spot1 = 0;
+            spot2 = 0;
+            spot3 = 0;
+            for (int i = 92; i < 222; i++) {
+                if (isGreen(rgbImage.getPixel(630, i))) {
+                    spot3 += 1;
+                }
+
+            }
+            for (int i = 92; i < 222; i++) {
+                if (isGreen(rgbImage.getPixel(305, i))) {
+                    spot2 += 1;
+                }
+            }
+            for (int i = 92; i < 222; i++) {
+                if (isGreen(rgbImage.getPixel(24, i))) {
+                    spot1 += 1;
+                }
+            }
+            if (spot1 > spot2 && spot1 > spot3)
+                total1++;
+            else if (spot2 > spot3)
+                total2++;
+            else
+                total3++;
+        }
+        if (total1 > total2 && total1 > total3)
+            pos = "1";
+        else if (total2 > total3)
+            pos = "2";
+        else
+            pos = "3";
+
+        opMode.telemetry.addData("spot 1", spot1);
+        opMode.telemetry.addData("spot 2", spot2);
+        opMode.telemetry.addData("spot 3", spot3);
+        opMode.telemetry.addData("spot 1", total1);
+        opMode.telemetry.addData("spot 2", total2);
+        opMode.telemetry.addData("spot 3", total3);
+
         return pos;
     }
 
     public boolean isGreen(int pixel) {
-        return green(pixel) <= 125;
+        boolean color = (green(pixel) <= 125) && (green(pixel) >= 70) && (red(pixel) <= 105) && (blue(pixel) <= 140);
+        return color;
     }
-    public void getColor(int x, int y)throws InterruptedException{
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void gettrueColor(int x, int y)throws InterruptedException{
 
         Bitmap rgbImage = getImage();
 
@@ -105,6 +168,8 @@ public class vision {
         opMode.telemetry.addData("green", green(pixel));
 
         opMode.telemetry.addData("blue", blue(pixel));
+        opMode.telemetry.addData("Color", rgbImage.getColor(x, y));
+
         opMode.telemetry.update();
 
     }

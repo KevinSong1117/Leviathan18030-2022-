@@ -25,10 +25,13 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 @Disabled                            // Comment this out to add to the opmode list
 public class Sensors
 {
-    BNO055IMU imu;
+    public BNO055IMU gyro;
+    LinearOpMode opMode;
     Orientation angles;
+    BNO055IMU.Parameters parameters;
 
     public Sensors(LinearOpMode opMode){
+        this.opMode = opMode;
         opMode.telemetry.addLine("initializing imu, please wait");
         opMode.telemetry.speak("initializing imu, please wait");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -38,8 +41,8 @@ public class Sensors
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
-        boolean initialize = imu.initialize(parameters);
+        gyro = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        gyro.initialize(parameters);
         opMode.telemetry.addLine("initialization complete");
         opMode.telemetry.speak("initialization complete");
     }
@@ -52,11 +55,11 @@ public class Sensors
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        gyro = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        gyro.initialize(parameters);
     }
     public void updateAngle() {
-        angles = imu.getAngularOrientation();
+        angles = gyro.getAngularOrientation();
     }
 
     public double getAngle() {

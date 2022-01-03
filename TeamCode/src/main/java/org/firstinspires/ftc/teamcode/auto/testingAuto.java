@@ -26,7 +26,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-
 import static android.graphics.Color.green;
 
 /**
@@ -43,9 +42,9 @@ import static android.graphics.Color.green;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="blueC", group="blueC")
+@Autonomous(name="testingAuto", group="testAuto")
 
-public class blueC extends LinearOpMode
+public class testingAuto extends LinearOpMode
 {
     // Declare OpMode members.
     public DcMotor fL;
@@ -60,34 +59,33 @@ public class blueC extends LinearOpMode
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public BNO055IMU imu;
-    private vision vision;
     Orientation angles;
     float curHeading;
+    //public vision v;
     LinearOpMode opMode;
     ElapsedTime timer;
     Sensors gyro;
     public DcMotor DG;
-
-
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
+    /*
+     * Code to run ONCE when the driver hits INIT
+     */
     @Override
     public void runOpMode() throws InterruptedException  {
-        //throw new UnsupportedOperationException();
         timer = new ElapsedTime();
-        vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
         fR = hardwareMap.get(DcMotor.class, "FR");
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "L");
 
-        IR = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "I");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -103,8 +101,6 @@ public class blueC extends LinearOpMode
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
         ER.setDirection(DcMotor.Direction.REVERSE);
-        WR.setDirection(CRServo.Direction.FORWARD);
-        WL.setDirection(CRServo.Direction.REVERSE);
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -116,6 +112,8 @@ public class blueC extends LinearOpMode
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        WR.setDirection(DcMotorSimple.Direction.FORWARD);
+        WL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         imu = this.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -123,24 +121,20 @@ public class blueC extends LinearOpMode
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
+        //vision v = new vision(this);
         imu.initialize(parameters);
-
-        String position = vision.getTeamMarkerPos();
-
-        while(!isStarted()){
-            position = vision.getTeamMarkerPos();
-            telemetry.addData("position", position);
-            telemetry.update();
-        }
-        
 
         waitForStart();
 
-        moveForward(200, -.5);
-        turn(-110, .5);
-        deliverA(position);
+        /*moveForward(1070, .5);
+        turn(-57, .5);
+        moveForward(800, .8);*/
+        /*movePIDFGyro(-20,.3,0,0,.15,.2,.5);
+        sleep(2000);
+        turnHeading(-90, .1, 0, 0.5, .20, 1, .25);*/
 
-
+        turnHeading(89, .00000000001, 0, 0.1, .20, 1, .25);
+        turnHeading(-89, .00000000001, 0, 0, .20, 1, .25);
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -167,70 +161,61 @@ public class blueC extends LinearOpMode
         sleep(height);
         ER.setPower(-.2);
     }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
+    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(power);
         sleep(3000);
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0000005);
+        ER.setPower(-.0005 + (-.1 * .35));
     }
-    public void deliverA(String level){
+    /*public void deliverA(String level){
         if(level.equals("1")){
-            lift(350);
+            lift(300);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(650, .5);
-            deliver();
+            moveForward(300, .5);
+            deliver(.5);
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-150,.5);
-            moveForward(500, .5);
-            spinDucks(.4,3500);
-            moveForward(500, -.5);
-            turn(40,.5);
-            moveForward(500,5.);
         }
         else if(level.equals("2")){
-            lift(600);
+            lift(700);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(650, .5);
-            deliver();
+            moveForward(600, .5);
+            deliver(.5);
             moveForward(600, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-150,.5);
-            moveForward(500, .5);
-            spinDucks(.4,3500);
-            moveForward(500, -.5);
-            turn(40,.5);
-            moveForward(500,5.);
         }
         else{
-            lift(650);
+            lift(500);
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(900, .5);
-            deliver();
-            moveForward(600, -.5);
+            deliver(.5);
+            moveForward(900, -.5);
             down();
             WR.setPower(.5);
             WL.setPower(.5);
-            turn(-150,.5);
-            moveForward(500, .5);
-            spinDucks(.4,3500);
-            moveForward(500, -.5);
-            turn(40,.5);
-            moveForward(500,5.);
         }
-    }
+    }*/
 
     public void turn(double degree, double power){
         while (opModeIsActive() && !isStopRequested()) {
+            if(gyro.getAngle() == degree)
+            {
+                fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                stopMotors();
+                return;
+            }
             if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
                 while (angleWrapDeg(degree - gyro.getAngle()) > 0) {
                     fL.setPower(-power);
@@ -284,13 +269,10 @@ public class blueC extends LinearOpMode
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void startMotors(double right, double left) {
-        fR.setPower(right);
+        fR.setPower(right * .91);
         fL.setPower(left);
         bL.setPower(left);
-        bR.setPower(right);
-        telemetry.addData("right power", right);
-        telemetry.addData("left power", left);
-        telemetry.update();
+        bR.setPower(right * .91);
     }
     public void stopMotors() {
         fR.setPower(0);
@@ -331,7 +313,11 @@ public class blueC extends LinearOpMode
         return correctAngle;
     }
 
-    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         timer.reset();
         resetEncoder();
 
@@ -352,6 +338,9 @@ public class blueC extends LinearOpMode
 
 
         while (timeAtSetPoint < time) {
+            telemetry.addData("angle", gyro.getAngle());
+            telemetry.update();
+
             if (inches < 0){
                 error = inches + getTic() / COUNTS_PER_INCH;
             }
@@ -394,7 +383,6 @@ public class blueC extends LinearOpMode
                     startMotors(power - f,power - f);
                 }
             }
-
             if (Math.abs(error) < threshold){
                 if (!atSetpoint){
                     atSetpoint = true;
@@ -412,7 +400,7 @@ public class blueC extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -433,6 +421,8 @@ public class blueC extends LinearOpMode
         boolean atSetpoint = false;
 
         while (timeAtSetPoint < time) {
+            telemetry.addData("angle", gyro.getAngle());
+            telemetry.update();
             error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
 
             currentTime = timer.milliseconds();
@@ -468,6 +458,31 @@ public class blueC extends LinearOpMode
             else{
                 atSetpoint = false;
             }
+            if(gyro.getAngle() > 0){
+                if(gyro.getAngle() < (finalAngle + 1) && gyro.getAngle() < (finalAngle - 1))
+                {
+                    fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    stopMotors();
+                    sleep(1000);
+                    return;
+                }
+            }
+            else{
+                if(gyro.getAngle() < (finalAngle - 1) && gyro.getAngle() < (finalAngle + 1))
+                {
+                    fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    stopMotors();
+                    sleep(1000);
+                    return;
+                }
+            }
+
 
             pastTime = currentTime;
             pastError = error;

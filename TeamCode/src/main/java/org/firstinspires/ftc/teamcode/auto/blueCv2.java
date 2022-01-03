@@ -57,7 +57,11 @@ public class blueCv2 extends LinearOpMode
     ElapsedTime timer;
     Sensors gyro;
     public DcMotor DG;
-
+    static final double COUNTS_PER_MOTOR_REV = 537.6;
+    static final double DRIVE_GEAR_REDUCTION = 1.0;
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -69,9 +73,9 @@ public class blueCv2 extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "L");
 
-        IR = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "I");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -107,15 +111,12 @@ public class blueCv2 extends LinearOpMode
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-        //vision v = new vision(this);
+
         imu.initialize(parameters);
         waitForStart();
 
-        /*moveForward(1070, .5);
-        turn(-57, .5);
-        moveForward(800, .8);*/
         moveForward(200, -.5);
-        turn(90, .5);
+        turn(-85, .5);
         deliverA("3");
 
 
@@ -141,52 +142,51 @@ public class blueCv2 extends LinearOpMode
         }
     }
     public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
-        ER.setPower(-.1 + (.7));
+        ER.setPower(.6);
         sleep(height);
-        ER.setPower(-.2);
+        ER.setPower(.2);
     }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
+    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(power);
         sleep(3000);
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 + (-.1 * .35));
+        ER.setPower(.001);
     }
     public void deliverA(String level){
-        if(level.equals("1")){
-            lift(300);
+        if(level.equals("3")){
+            lift(275);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(300, .5);
-            deliver();
+            sleep(1000);
+            moveForward(500, .5);
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
         }
         else if(level.equals("2")){
-            lift(700);
+            lift(420);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(600, .5);
-            deliver();
-            moveForward(600, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
+            sleep(1000);
+            moveForward(550, .5);
+            deliver(.5);
+            moveForward(300, -.5);
         }
         else{
-            lift(500);
+            lift(630);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(900, .5);
-            deliver();
-            moveForward(900, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
+            sleep(1000);
+            moveForward(650, .5);
+            deliver(.5);
+            moveForward(300, -.5);
         }
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        turn(140,.5);
+        moveForward(1000,.9);
     }
 
     public void turn(double degree, double power){
@@ -291,7 +291,7 @@ public class blueCv2 extends LinearOpMode
         return correctAngle;
     }
 
-    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
         timer.reset();
         resetEncoder();
 
@@ -372,7 +372,7 @@ public class blueCv2 extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 

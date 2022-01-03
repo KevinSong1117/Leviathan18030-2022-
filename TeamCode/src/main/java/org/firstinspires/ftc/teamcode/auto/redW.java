@@ -26,7 +26,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-
 import static android.graphics.Color.green;
 
 /**
@@ -60,12 +59,9 @@ public class redW extends LinearOpMode
     private vision vision;
     Orientation angles;
     float curHeading;
-    public vision v;
-    LinearOpMode opMode;
-    ElapsedTime timer;
     Sensors gyro;
+    ElapsedTime timer;
     public DcMotor DG;
-
 
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
@@ -74,6 +70,7 @@ public class redW extends LinearOpMode
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
     @Override
+
     public void runOpMode() throws InterruptedException  {
         //throw new UnsupportedOperationException();
         timer = new ElapsedTime();
@@ -83,9 +80,9 @@ public class redW extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "L");
 
-        IR = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "I");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -123,18 +120,21 @@ public class redW extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.getTeamMarkerPos();
+        String position = vision.redgetTeamMarkerPos();
 
-        while(!opModeIsActive()){
-            telemetry.addData("position", position);
+        while(!isStarted()){
+            position = vision.redgetTeamMarkerPos();
+            telemetry.addData("redposition", position);
+            position = vision.bluegetTeamMarkerPos();
+            telemetry.addData("blueposition", position);
             telemetry.update();
         }
 
         waitForStart();
-
+        position = vision.redgetTeamMarkerPos();
 
         moveForward(200, -.5);
-        turn(-100, .5);
+        turn(-85, .5);
         deliverA(position);
 
 
@@ -150,7 +150,7 @@ public class redW extends LinearOpMode
     public void moveForward(double tics, double power) {
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (getTic() < tics) {
+            while ((getTic() < tics) && opModeIsActive()) {
                 fL.setPower(power);              // encoding start is less than the target
                 fR.setPower(power); // Sets the power of the motors to currently half the power
                 bL.setPower(power);
@@ -165,54 +165,68 @@ public class redW extends LinearOpMode
         sleep(height);
         ER.setPower(.2);
     }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
+    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(power);
         sleep(3000);
         IR.setPower(0);
     }
+
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 );
+        ER.setPower(.01 );
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            lift(200);
+            lift(275);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(570, .5);
-            deliver();
+            sleep(1000);
+            moveForward(500, .5);
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(140,.5);
-            moveForward(1800,.9);
         }
         else if(level.equals("2")){
-            lift(435);
+            lift(420);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(570, .5);
-            deliver();
+            sleep(1000);
+            moveForward(550, .5);
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(140,.5);
-            moveForward(1800,.9);
         }
         else{
-            lift(600);
+            lift(630);
             WR.setPower(-.5);
             WL.setPower(-.5);
+            sleep(1000);
             moveForward(650, .5);
-            deliver();
+            deliver(.5);
             moveForward(400, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(140,.5);
-            moveForward(1600,.9);
         }
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        turn(140,.5);
+        moveForward(1800,.9);
+        WR.setPower(-.5);
+        WL.setPower(-.5);
+        deliver(-.5);
+        WR.setPower(.5);
+        WL.setPower(.5);
+        moveForward(1900, -.8);
+        turn(-176,.5);
+        lift(630);
+        WR.setPower(-.5);
+        WL.setPower(-.5);
+        sleep(1000);
+        moveForward(400, .5);
+        deliver(.5);
+        moveForward(400, -.5);
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        sleep(100);
+        turn(135,.5);
+        moveForward(2100,.9);
     }
 
     public void turn(double degree, double power){
@@ -317,7 +331,7 @@ public class redW extends LinearOpMode
         return correctAngle;
     }
 
-    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
         timer.reset();
         resetEncoder();
 
@@ -460,6 +474,4 @@ public class redW extends LinearOpMode
         }
         stopMotors();
     }
-
-     */
 }

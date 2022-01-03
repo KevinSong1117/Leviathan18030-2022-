@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
@@ -8,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.auto.vision;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -26,6 +30,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import Hardware.Sensors;
 
 import static android.graphics.Color.green;
 
@@ -42,9 +47,7 @@ import static android.graphics.Color.green;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-
 @Autonomous(name="blueW", group="blueW")
-
 public class blueW extends LinearOpMode
 {
     // Declare OpMode members.
@@ -63,13 +66,9 @@ public class blueW extends LinearOpMode
     private vision vision;
     Orientation angles;
     float curHeading;
-    public vision v;
-    LinearOpMode opMode;
-    ElapsedTime timer;
     Sensors gyro;
     public DcMotor DG;
-
-
+    ElapsedTime timer;
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;
@@ -79,16 +78,16 @@ public class blueW extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException  {
         //throw new UnsupportedOperationException();
-        timer = new ElapsedTime();
+        ElapsedTime timer = new ElapsedTime();
         vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
         fR = hardwareMap.get(DcMotor.class, "FR");
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "L");
 
-        IR = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "I");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -126,10 +125,11 @@ public class blueW extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.getTeamMarkerPos();
+        String position = vision.bluegetTeamMarkerPos();
 
-        while(!opModeIsActive()){
-            telemetry.addData("position", position);
+        while(!isStarted()){
+            position = vision.bluegetTeamMarkerPos();
+            telemetry.addData("blueposition", position);
             telemetry.update();
         }
 
@@ -137,11 +137,8 @@ public class blueW extends LinearOpMode
 
 
         moveForward(200, -.5);
-        turn(100, .5);
+        turn(85, .5);
         deliverA(position);
-
-
-
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -153,7 +150,7 @@ public class blueW extends LinearOpMode
     public void moveForward(double tics, double power) {
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (getTic() < tics) {
+            while ((getTic() < tics) && opModeIsActive()) {
                 fL.setPower(power);              // encoding start is less than the target
                 fR.setPower(power); // Sets the power of the motors to currently half the power
                 bL.setPower(power);
@@ -168,68 +165,81 @@ public class blueW extends LinearOpMode
         sleep(height);
         ER.setPower(.2);
     }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
+    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(power);
         sleep(3000);
         IR.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(-.0005 );
+        ER.setPower(.001);
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            lift(200);
+            lift(290);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(570, .5);
-            deliver();
+            sleep(1000);
+            moveForward(510, .5);
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(-140,.5);
-            moveForward(1800,.9);
         }
         else if(level.equals("2")){
-            lift(435);
+            lift(420);
             WR.setPower(-.5);
             WL.setPower(-.5);
-            moveForward(570, .5);
-            deliver();
+            sleep(1000);
+            moveForward(550, .5);
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(-140,.5);
-            moveForward(1800,.9);
         }
         else{
-            lift(600);
+            lift(630);
             WR.setPower(-.5);
             WL.setPower(-.5);
+            sleep(1000);
             moveForward(650, .5);
-            deliver();
+            deliver(.5);
             moveForward(400, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(-140,.5);
-            moveForward(1600,.9);
         }
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        sleep(100);
+        turn(-140,.5);
+        moveForward(1800,.8);
+        WR.setPower(-.5);
+        WL.setPower(-.5);
+        deliver(-.5);
+        WR.setPower(.5);
+        WL.setPower(.5);
+        moveForward(1900, -.8);
+        turn(176,.5);
+        lift(630);
+        WR.setPower(-.5);
+        WL.setPower(-.5);
+        sleep(1000);
+        moveForward(500, .5);
+        deliver(.5);
+        moveForward(400, -.5);
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        sleep(100);
+        turn(-135,.5);
+        moveForward(2100,.9);
     }
 
     public void turn(double degree, double power){
         while (opModeIsActive() && !isStopRequested()) {
             if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
-                while (angleWrapDeg(degree - gyro.getAngle()) > 0) {
+                while ((angleWrapDeg(degree - gyro.getAngle()) > 0) && opModeIsActive()) {
                     fL.setPower(-power);
                     fR.setPower(power);
                     bL.setPower(-power);
                     bR.setPower(power);
                 }
-
             } else {
-                while (angleWrapDeg(degree - gyro.getAngle()) < 0) {
+                while ((angleWrapDeg(degree - gyro.getAngle()) < 0) && opModeIsActive()) {
                     fL.setPower(power);
                     fR.setPower(-power);
                     bL.setPower(power);
@@ -323,23 +333,16 @@ public class blueW extends LinearOpMode
     /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
         timer.reset();
         resetEncoder();
-
         double pastTime = 0;
         double currentTime = timer.milliseconds();
-
         double initialHeading = gyro.getAngle();
-
         double initialError = Math.abs(inches); //-20
         double error = initialError;
         double pastError = error;
-
         double integral = 0;
-
         double timeAtSetPoint = 0;
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
-
-
         while (timeAtSetPoint < time) {
             if (inches < 0){
                 error = inches + getTic() / COUNTS_PER_INCH;
@@ -347,18 +350,13 @@ public class blueW extends LinearOpMode
             else{
                 error = inches - getTic() / COUNTS_PER_INCH;
             }
-
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
-
             double proportional = error / initialError;
             integral += dt * ((error + pastError) / 2.0);
             double derivative = (error - pastError) / dt;
-
             double power = kp * proportional + ki * integral + kd * derivative;
-
             double difference = gyro.angleDiff(initialHeading);
-
             if (difference > .4){
                 if (power > 0) {
                     startMotors((power + f), (power + f) * .8);
@@ -383,7 +381,6 @@ public class blueW extends LinearOpMode
                     startMotors(power - f,power - f);
                 }
             }
-
             if (Math.abs(error) < threshold){
                 if (!atSetpoint){
                     atSetpoint = true;
@@ -396,7 +393,6 @@ public class blueW extends LinearOpMode
             else{
                 atSetpoint = false;
             }
-
             pastTime = currentTime;
             pastError = error;
         }
@@ -404,33 +400,24 @@ public class blueW extends LinearOpMode
     }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
-
         double pastTime = 0;
         double currentTime = timer.milliseconds();
-
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
-
         double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
         double error = initialAngleDiff;
         double pastError = error;
-
         double integral = 0;
-
         double timeAtSetPoint = 0;
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
-
         while (timeAtSetPoint < time) {
             error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
-
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
-
             double proportional = error / Math.abs(initialAngleDiff);
             integral += dt * ((error + pastError) / 2.0);
             double derivative = (error - pastError) / dt;
-
             double power = kp * proportional + ki * integral + kd * derivative;
             if (power > 0) {
                 if (Math.abs(kp) < .0001){
@@ -444,7 +431,6 @@ public class blueW extends LinearOpMode
                 }
                 startMotors(-power + f, power - f);
             }
-
             if (Math.abs(error) < threshold){
                 if (!atSetpoint){
                     atSetpoint = true;
@@ -457,12 +443,10 @@ public class blueW extends LinearOpMode
             else{
                 atSetpoint = false;
             }
-
             pastTime = currentTime;
             pastError = error;
         }
         stopMotors();
     }
-
      */
 }
