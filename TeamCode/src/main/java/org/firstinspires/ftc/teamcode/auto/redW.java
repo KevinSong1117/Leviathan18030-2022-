@@ -137,7 +137,7 @@ public class redW extends LinearOpMode
         position = vision.redgetTeamMarkerPos();
 
         moveForward(200, -.5);
-        turn(-110, .5);
+        turn(-85, .5);
         deliverA(position);
 
 
@@ -168,11 +168,12 @@ public class redW extends LinearOpMode
         sleep(height);
         ER.setPower(.2);
     }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
+    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(power);
         sleep(3000);
         IR.setPower(0);
     }
+
     public void down(){ //Sets power so that arm slowly goes down
         ER.setPower(.01 );
     }
@@ -183,14 +184,8 @@ public class redW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(500, .5);
-            deliver();
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            sleep(100);
-            turn(140,.5);
-            moveForward(1800,.9);
         }
         else if(level.equals("2")){
             lift(420);
@@ -198,13 +193,8 @@ public class redW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(550, .5);
-            deliver();
+            deliver(.5);
             moveForward(300, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            turn(140,.5);
-            moveForward(1800,.9);
         }
         else{
             lift(630);
@@ -212,15 +202,34 @@ public class redW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
-            deliver();
+            deliver(.5);
             moveForward(400, -.5);
-            down();
-            WR.setPower(.5);
-            WL.setPower(.5);
-            sleep(100);
-            turn(140,.5);
-            moveForward(1600,.9);
         }
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        turn(140,.5);
+        moveForward(1800,.9);
+        WR.setPower(-.5);
+        WL.setPower(-.5);
+        deliver(-.5);
+        WR.setPower(.5);
+        WL.setPower(.5);
+        moveForward(1900, -.8);
+        turn(-176,.5);
+        lift(630);
+        WR.setPower(-.5);
+        WL.setPower(-.5);
+        sleep(1000);
+        moveForward(400, .5);
+        deliver(.5);
+        moveForward(400, -.5);
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        sleep(100);
+        turn(135,.5);
+        moveForward(2100,.9);
     }
 
     public void turn(double degree, double power){

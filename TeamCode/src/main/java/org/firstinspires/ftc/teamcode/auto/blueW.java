@@ -180,7 +180,7 @@ public class blueW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(510, .5);
-            deliver(-.5);
+            deliver(.5);
             moveForward(300, -.5);
         }
         else if(level.equals("2")){
@@ -189,7 +189,7 @@ public class blueW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(550, .5);
-            deliver(-.5);
+            deliver(.5);
             moveForward(300, -.5);
         }
         else{
@@ -198,7 +198,7 @@ public class blueW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
-            deliver(-.5);
+            deliver(.5);
             moveForward(400, -.5);
         }
         down();
@@ -209,7 +209,7 @@ public class blueW extends LinearOpMode
         moveForward(1800,.8);
         WR.setPower(-.5);
         WL.setPower(-.5);
-        deliver(.5);
+        deliver(-.5);
         WR.setPower(.5);
         WL.setPower(.5);
         moveForward(1900, -.8);
@@ -219,8 +219,11 @@ public class blueW extends LinearOpMode
         WL.setPower(-.5);
         sleep(1000);
         moveForward(500, .5);
-        deliver(-.5);
+        deliver(.5);
         moveForward(400, -.5);
+        down();
+        WR.setPower(.5);
+        WL.setPower(.5);
         sleep(100);
         turn(-135,.5);
         moveForward(2100,.9);
