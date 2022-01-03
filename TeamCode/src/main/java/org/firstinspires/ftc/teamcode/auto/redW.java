@@ -334,7 +334,7 @@ public class redW extends LinearOpMode
         return correctAngle;
     }
 
-    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
         timer.reset();
         resetEncoder();
 
@@ -415,7 +415,7 @@ public class redW extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 

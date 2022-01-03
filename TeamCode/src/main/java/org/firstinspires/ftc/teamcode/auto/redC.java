@@ -66,6 +66,11 @@ public class redC extends LinearOpMode
     ElapsedTime timer;
     Sensors gyro;
     public DcMotor DG;
+    static final double COUNTS_PER_MOTOR_REV = 537.6;
+    static final double DRIVE_GEAR_REDUCTION = 1.0;
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -78,9 +83,9 @@ public class redC extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "ER");
+        ER = hardwareMap.get(DcMotor.class, "L");
 
-        IR = hardwareMap.get(CRServo.class, "IR");
+        IR = hardwareMap.get(CRServo.class, "I");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -154,8 +159,8 @@ public class redC extends LinearOpMode
         sleep(height);
         ER.setPower(-.2);
     }
-    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
+    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(power);
         sleep(3000);
         IR.setPower(0);
     }
@@ -168,7 +173,7 @@ public class redC extends LinearOpMode
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(300, .5);
-            deliver();
+            deliver(.5);
             moveForward(300, -.5);
             down();
             WR.setPower(.5);
@@ -179,7 +184,7 @@ public class redC extends LinearOpMode
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(600, .5);
-            deliver();
+            deliver(.5);
             moveForward(600, -.5);
             down();
             WR.setPower(.5);
@@ -190,7 +195,7 @@ public class redC extends LinearOpMode
             WR.setPower(-.5);
             WL.setPower(-.5);
             moveForward(900, .5);
-            deliver();
+            deliver(.5);
             moveForward(900, -.5);
             down();
             WR.setPower(.5);
@@ -300,7 +305,7 @@ public class redC extends LinearOpMode
         return correctAngle;
     }
 
-    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
         timer.reset();
         resetEncoder();
 
@@ -381,7 +386,7 @@ public class redC extends LinearOpMode
             pastError = error;
         }
         stopMotors();
-    }*/
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
