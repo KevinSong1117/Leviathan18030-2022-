@@ -105,7 +105,7 @@ public  class wristFix extends OpMode
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        L.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        L.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
