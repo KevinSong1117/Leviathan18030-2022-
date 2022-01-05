@@ -133,8 +133,8 @@ public class testingAuto extends LinearOpMode
         sleep(2000);
         turnHeading(-90, .1, 0, 0.5, .20, 1, .25);*/
 
-        turnHeading(89, .00000000001, 0, 0.1, .20, 1, .25);
-        turnHeading(-89, .00000000001, 0, 0, .20, 1, .25);
+
+        turnHeading(90, .005, 0, 0.47, .16, .5, .5);
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -421,10 +421,7 @@ public class testingAuto extends LinearOpMode
         boolean atSetpoint = false;
 
         while (timeAtSetPoint < time) {
-            telemetry.addData("angle", gyro.getAngle());
-            telemetry.update();
             error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
-
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
 
@@ -445,7 +442,6 @@ public class testingAuto extends LinearOpMode
                 }
                 startMotors(-power + f, power - f);
             }
-
             if (Math.abs(error) < threshold){
                 if (!atSetpoint){
                     atSetpoint = true;
@@ -458,32 +454,6 @@ public class testingAuto extends LinearOpMode
             else{
                 atSetpoint = false;
             }
-            if(gyro.getAngle() > 0){
-                if(gyro.getAngle() < (finalAngle + 1) && gyro.getAngle() < (finalAngle - 1))
-                {
-                    fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    stopMotors();
-                    sleep(1000);
-                    return;
-                }
-            }
-            else{
-                if(gyro.getAngle() < (finalAngle - 1) && gyro.getAngle() < (finalAngle + 1))
-                {
-                    fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    stopMotors();
-                    sleep(1000);
-                    return;
-                }
-            }
-
-
             pastTime = currentTime;
             pastError = error;
         }

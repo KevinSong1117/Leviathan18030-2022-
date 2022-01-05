@@ -184,11 +184,11 @@ public class blueW extends LinearOpMode
             moveForward(300, -.5);
         }
         else if(level.equals("2")){
-            lift(430);
+            lift(505);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
-            moveForward(540, .5);
+            moveForward(480  , .5);
             deliver(-.5);
             moveForward(300, -.5);
         }

@@ -176,21 +176,21 @@ public class redW extends LinearOpMode
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            lift(275);
+            lift(270);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
-            moveForward(500, .5);
-            deliver(.5);
+            moveForward(380, .5);
+            deliver(-.5);
             moveForward(300, -.5);
         }
         else if(level.equals("2")){
-            lift(420);
+            lift(505);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
-            moveForward(550, .5);
-            deliver(.5);
+            moveForward(540, .5);
+            deliver(-.5);
             moveForward(300, -.5);
         }
         else{
@@ -199,10 +199,16 @@ public class redW extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
-            deliver(.5);
+            deliver(-.5);
             moveForward(400, -.5);
         }
         down();
+        WR.setPower(.5);
+        WL.setPower(.5);
+        sleep(100);
+        turn(140,.5);
+        moveForward(1800,.8);
+        /*
         WR.setPower(.5);
         WL.setPower(.5);
         turn(140,.5);
@@ -227,6 +233,8 @@ public class redW extends LinearOpMode
         sleep(100);
         turn(135,.5);
         moveForward(2100,.9);
+
+         */
     }
 
     public void turn(double degree, double power){

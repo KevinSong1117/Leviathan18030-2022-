@@ -161,7 +161,7 @@ public class blueCv2 extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(500, .5);
-            deliver(.5);
+            deliver(-.5);
             moveForward(300, -.5);
         }
         else if(level.equals("2")){
@@ -170,7 +170,7 @@ public class blueCv2 extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(550, .5);
-            deliver(.5);
+            deliver(-.5);
             moveForward(300, -.5);
         }
         else{
@@ -179,7 +179,7 @@ public class blueCv2 extends LinearOpMode
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
-            deliver(.5);
+            deliver(-.5);
             moveForward(300, -.5);
         }
         down();
