@@ -262,22 +262,11 @@ public  class wristFix extends OpMode
         if(gamepad2.left_stick_y > .1){
             staticPower = -.0005;
             extendPower = gamepad2.right_stick_y ;
+            L.setPower(staticPower + (extendPower * .35));
         }
         else{
             staticPower = -.2;
             extendPower = gamepad2.left_stick_y;
-        }
-        if(gamepad2.dpad_left){
-            L.setTargetPosition(1000);
-            L.setPower(-.5);
-
-            WR.setPower(-.5);
-            WL.setPower(-.5);
-        }
-        if(gamepad2.dpad_right){
-            WR.setPower(.5);
-            WL.setPower(.5);
-            extendPower = 1;
         }
 
         L.setPower(staticPower + (extendPower * .35));
@@ -285,7 +274,6 @@ public  class wristFix extends OpMode
         telemetry.addData("encoder", L.getCurrentPosition());
         telemetry.addData("Time :", runtime);
         telemetry.update();
-
 
 
     }

@@ -106,6 +106,7 @@ public class redC extends LinearOpMode
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ER.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -127,12 +128,13 @@ public class redC extends LinearOpMode
 
         /*moveForward(1070, .5);
         turn(-57, .5);
-        moveForward(800, .8);*/
+        moveForward(800, .8);
         moveForward(200, -.5);
         turn(95, .5);
         deliverA("3");
         spinDucks(.5, 1000);
 
+         */
 
     }
 
@@ -314,7 +316,9 @@ public class redC extends LinearOpMode
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
 
-
+        telemetry.addData("Lift position ", ER.getPower());
+        telemetry.addData("encoder", ER.getCurrentPosition());
+        telemetry.update();
         while (timeAtSetPoint < time) {
             if (inches < 0){
                 error = inches + getTic() / COUNTS_PER_INCH;
