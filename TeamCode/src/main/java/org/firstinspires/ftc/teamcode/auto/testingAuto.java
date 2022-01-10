@@ -54,7 +54,6 @@ public class testingAuto extends LinearOpMode
     public DcMotor LTL; // lift turn left
     public DcMotor LTR; // lift turn right
     public DcMotor ER;  // lift extend right
-    public DcMotor EL;  // lift extend left
     public CRServo IR;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
@@ -169,6 +168,7 @@ public class testingAuto extends LinearOpMode
     public void down(){ //Sets power so that arm slowly goes down
         ER.setPower(-.0005 + (-.1 * .35));
     }
+
     /*public void deliverA(String level){
         if(level.equals("1")){
             lift(300);
@@ -256,6 +256,20 @@ public class testingAuto extends LinearOpMode
         curHeading = angles.firstAngle; //Gets the orientation of the robot
     }
 
+    public void liftPID(double pos, double tH, double time){
+        double currentTime = timer.milliseconds();
+        double encoderValue = 0.0001;
+        while(ER.getCurrentPosition() < pos){
+            ER.setPower(Math.max(.005, (1 / ER.getCurrentPosition())));
+            if(ER.getCurrentPosition() < encoderValue){
+                ER.setPower(.005);
+            }
+            else {
+                ER.setPower(.0001);
+            }
+        }
+    }
+
 
     public void resetEncoder() {
         fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -314,10 +328,6 @@ public class testingAuto extends LinearOpMode
     }
 
     public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
-        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         timer.reset();
         resetEncoder();
 
