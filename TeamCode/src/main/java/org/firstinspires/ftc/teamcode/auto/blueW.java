@@ -136,9 +136,14 @@ public class blueW extends LinearOpMode
         waitForStart();
 
 
-        moveForward(200, -.5);
-        turn(85, .5);
-        deliverA(position);
+        movePIDFGyro(20,.3,0,0,.15,.2,.5);
+        turnHeading(120, 0, 0, 0, .17, .25, .5);
+        movePIDFGyro(20,.3,0,0,.15,.2,.5);
+        turnHeading(120, 0, 0, 0, .17, .25, .5);
+        movePIDFGyro(20,.3,0,0,.15,.2,.5);
+        turnHeading(120, 0, 0, 0, .17, .25, .5);
+        //turn(85, .5);
+        //deliverA(position);
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -332,33 +337,52 @@ public class blueW extends LinearOpMode
         return correctAngle;
     }
 
-    /* public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+    public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
+        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         timer.reset();
         resetEncoder();
+
         double pastTime = 0;
         double currentTime = timer.milliseconds();
+
         double initialHeading = gyro.getAngle();
+
         double initialError = Math.abs(inches); //-20
         double error = initialError;
         double pastError = error;
+
         double integral = 0;
+
         double timeAtSetPoint = 0;
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
-        while (timeAtSetPoint < time) {
+
+
+        while (timeAtSetPoint < time && !isStopRequested() && opModeIsActive()) {
+            telemetry.addData("angle", gyro.getAngle());
+            telemetry.update();
+
             if (inches < 0){
                 error = inches + getTic() / COUNTS_PER_INCH;
             }
             else{
                 error = inches - getTic() / COUNTS_PER_INCH;
             }
+
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
+
             double proportional = error / initialError;
             integral += dt * ((error + pastError) / 2.0);
             double derivative = (error - pastError) / dt;
+
             double power = kp * proportional + ki * integral + kd * derivative;
+
             double difference = gyro.angleDiff(initialHeading);
+
             if (difference > .4){
                 if (power > 0) {
                     startMotors((power + f), (power + f) * .8);
@@ -395,6 +419,7 @@ public class blueW extends LinearOpMode
             else{
                 atSetpoint = false;
             }
+
             pastTime = currentTime;
             pastError = error;
         }
@@ -402,24 +427,32 @@ public class blueW extends LinearOpMode
     }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
+
         double pastTime = 0;
         double currentTime = timer.milliseconds();
+
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
+
         double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
         double error = initialAngleDiff;
         double pastError = error;
+
         double integral = 0;
+
         double timeAtSetPoint = 0;
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
-        while (timeAtSetPoint < time) {
+
+        while (timeAtSetPoint < time && !isStopRequested() && opModeIsActive()) {
             error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
+
             double proportional = error / Math.abs(initialAngleDiff);
             integral += dt * ((error + pastError) / 2.0);
             double derivative = (error - pastError) / dt;
+
             double power = kp * proportional + ki * integral + kd * derivative;
             if (power > 0) {
                 if (Math.abs(kp) < .0001){
@@ -450,5 +483,4 @@ public class blueW extends LinearOpMode
         }
         stopMotors();
     }
-     */
 }

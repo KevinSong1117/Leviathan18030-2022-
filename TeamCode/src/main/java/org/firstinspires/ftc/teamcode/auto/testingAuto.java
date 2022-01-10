@@ -134,7 +134,7 @@ public class testingAuto extends LinearOpMode
         turnHeading(-90, .1, 0, 0.5, .20, 1, .25);*/
 
 
-        turnHeading(90, .005, 0, 0.47, .16, .5, .5);
+        turnHeading(120, 0, 0, 0, .17, .25, .5);
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -337,7 +337,7 @@ public class testingAuto extends LinearOpMode
         boolean atSetpoint = false;
 
 
-        while (timeAtSetPoint < time) {
+        while (timeAtSetPoint < time && !isStopRequested() && opModeIsActive()) {
             telemetry.addData("angle", gyro.getAngle());
             telemetry.update();
 
@@ -420,7 +420,7 @@ public class testingAuto extends LinearOpMode
         double firstTimeAtSetPoint = 0;
         boolean atSetpoint = false;
 
-        while (timeAtSetPoint < time) {
+        while (timeAtSetPoint < time && !isStopRequested() && opModeIsActive()) {
             error = gyro.newAngleDiff(gyro.getAngle(), finalAngle);
             currentTime = timer.milliseconds();
             double dt = currentTime - pastTime;
