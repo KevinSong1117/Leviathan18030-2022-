@@ -146,8 +146,8 @@ public  class wristFix extends OpMode
     public void loop() {
 
         double limitPower = .8; // percent of power
-        double driveR = gamepad1.left_stick_y;
-        double driveL  =  gamepad1.right_stick_x;
+        double driveR = gamepad1.left_stick_y * .8;
+        double driveL  =  gamepad1.right_stick_x * .5;
         if(Math.abs(gamepad1.left_stick_y) > .1){
             BL.setPower(driveR);
             BR.setPower(driveR);
@@ -206,11 +206,11 @@ public  class wristFix extends OpMode
             double time = current.milliseconds();
             while (time < 630){
                 L.setPower(-.6);
-                driveR = gamepad1.left_stick_y;
-                driveL  =  gamepad1.right_stick_x;
+                driveR = gamepad1.left_stick_y * .8;
+                driveL  =  gamepad1.right_stick_x * .5;
                 if(Math.abs(gamepad1.left_stick_y) > .1){
                     BL.setPower(driveR);
-                    BR.setPower(driveR);
+                    BR.setPower(driveR );
                     FL.setPower(driveR);
                     FR.setPower(driveR);
                 }
@@ -234,19 +234,19 @@ public  class wristFix extends OpMode
             double time = current.milliseconds();
             while (time < 2500){
                 L.setPower(-.0001);
-                driveR = gamepad1.left_stick_y;
+                driveR = gamepad1.left_stick_y ;
                 driveL  =  gamepad1.right_stick_x;
                 if(Math.abs(gamepad1.left_stick_y) > .1){
                     BL.setPower(driveR);
-                    BR.setPower(driveR);
+                    BR.setPower(driveR * .9);
                     FL.setPower(driveR);
-                    FR.setPower(driveR);
+                    FR.setPower(driveR * .9);
                 }
                 else{
                     BL.setPower(driveL);
-                    BR.setPower(driveL * -1);
+                    BR.setPower(driveL * -.9);
                     FL.setPower(driveL);
-                    FR.setPower(driveL * -1);
+                    FR.setPower(driveL * -.9);
                 }
                 time = current.milliseconds();
             }
