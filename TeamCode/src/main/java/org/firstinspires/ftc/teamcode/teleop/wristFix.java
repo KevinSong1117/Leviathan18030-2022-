@@ -145,9 +145,9 @@ public  class wristFix extends OpMode
     @Override
     public void loop() {
 
-        double limitPower = .8; // percent of power
-        double driveR = gamepad1.left_stick_y * .8;
-        double driveL  =  gamepad1.right_stick_x * .5;
+
+        double driveR = gamepad1.left_stick_y * .9;
+        double driveL  =  gamepad1.right_stick_x * .6;
         if(Math.abs(gamepad1.left_stick_y) > .1){
             BL.setPower(driveR);
             BR.setPower(driveR);
