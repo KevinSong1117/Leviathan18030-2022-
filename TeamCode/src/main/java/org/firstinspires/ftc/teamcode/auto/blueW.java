@@ -77,7 +77,6 @@ public class blueW extends LinearOpMode
 
     @Override
     public void runOpMode() throws InterruptedException  {
-        //throw new UnsupportedOperationException();
         ElapsedTime timer = new ElapsedTime();
         vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
@@ -135,13 +134,10 @@ public class blueW extends LinearOpMode
 
         waitForStart();
 
+        movePIDFGyro(-20,.3,0,0,.15,.2,.5);
+        turnHeading(130, 0, 0, 0, .17, .25, .5);
+        movePIDFGyro(10,.3,0,0,.15,.2,.5);
 
-        movePIDFGyro(20,.3,0,0,.15,.2,.5);
-        turnHeading(120, 0, 0, 0, .17, .25, .5);
-        movePIDFGyro(20,.3,0,0,.15,.2,.5);
-        turnHeading(120, 0, 0, 0, .17, .25, .5);
-        movePIDFGyro(20,.3,0,0,.15,.2,.5);
-        turnHeading(120, 0, 0, 0, .17, .25, .5);
         //turn(85, .5);
         //deliverA(position);
     }
@@ -180,39 +176,39 @@ public class blueW extends LinearOpMode
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            lift(270);
+            /*lift(270);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(380, .5);
             deliver(-.5);
-            moveForward(300, -.5);
+            moveForward(300, -.5);*/
         }
         else if(level.equals("2")){
-            lift(505);
+            /*lift(505);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(480  , .5);
             deliver(-.5);
-            moveForward(300, -.5);
+            moveForward(300, -.5);*/
         }
         else{
-            lift(630);
+            /*lift(630);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
             deliver(-.5);
-            moveForward(400, -.5);
+            moveForward(400, -.5);*/
         }
-        down();
+        /*down();
         WR.setPower(.5);
-        WL.setPower(.5);
-        sleep(100);
-        turn(-140,.5);
-        moveForward(1800,.8);
-       /* WR.setPower(-.5);
+        WL.setPower(.5);*/
+        movePIDFGyro(-10,.3,0,0,.15,.2,.5);
+        turnHeading(140, 0, 0, 0, .17, .25, .5);
+        moveForward(900,.7);
+        /* WR.setPower(-.5);
         WL.setPower(-.5);
         deliver(-.5);
         WR.setPower(.5);

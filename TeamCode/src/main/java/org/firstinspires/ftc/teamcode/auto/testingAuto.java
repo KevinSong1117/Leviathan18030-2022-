@@ -257,12 +257,18 @@ public class testingAuto extends LinearOpMode
     }
 
     public void liftPID(double pos, double tH, double time){
-        double currentTime = timer.milliseconds();
+        double timers = timer.milliseconds();
+        double currentTime = timers/1000;
         double encoderValue = 0.0001;
-        while(ER.getCurrentPosition() < pos){
-            ER.setPower(Math.max(.005, (1 / ER.getCurrentPosition())));
-            if(ER.getCurrentPosition() < encoderValue){
-                ER.setPower(.005);
+        while((ER.getCurrentPosition() < (pos-tH)) && ER.getCurrentPosition() > (pos+tH) && currentTime < time && opModeIsActive() && !isStopRequested()){
+
+            if(ER.getCurrentPosition() < (pos-tH)){
+                ER.setPower(Math.max(.005, (1 / ER.getCurrentPosition())));
+                telemetry.addData("Up power", 1 / ER.getCurrentPosition());
+            }
+            else if(ER.getCurrentPosition() > (pos+tH)){
+                ER.setPower(Math.max(-.005, ER.getCurrentPosition())); // this power need to adjustments
+                telemetry.addData("down power", 1 / ER.getCurrentPosition());
             }
             else {
                 ER.setPower(.0001);
