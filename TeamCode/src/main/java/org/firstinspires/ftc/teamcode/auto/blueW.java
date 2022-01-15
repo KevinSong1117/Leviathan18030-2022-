@@ -77,7 +77,7 @@ public class blueW extends LinearOpMode
 
     @Override
     public void runOpMode() throws InterruptedException  {
-        ElapsedTime timer = new ElapsedTime();
+        timer = new ElapsedTime();
         vision = new vision(this);
         fL = hardwareMap.get(DcMotor.class, "FL");
         fR = hardwareMap.get(DcMotor.class, "FR");
@@ -134,12 +134,11 @@ public class blueW extends LinearOpMode
 
         waitForStart();
 
-        movePIDFGyro(-20,.3,0,0,.15,.2,.5);
-        turnHeading(130, 0, 0, 0, .17, .25, .5);
-        movePIDFGyro(10,.3,0,0,.15,.2,.5);
-
+        movePIDFGyro(-14,.3,0,0,.15,.2,.5);
+        turnHeading(133, 0, 0, 0, .16, .25, .5);
+        movePIDFGyro(12,.3,0,0,.15,.2,.5);
         //turn(85, .5);
-        //deliverA(position);
+        deliverA(position);
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -176,38 +175,40 @@ public class blueW extends LinearOpMode
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            /*lift(270);
-            WR.setPower(-.5);
+            //lift(270);
+            /*WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(380, .5);
-            deliver(-.5);
-            moveForward(300, -.5);*/
+            deliver(-.5);*/
+            sleep(1000);
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
         else if(level.equals("2")){
             /*lift(505);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
-            moveForward(480  , .5);
-            deliver(-.5);
-            moveForward(300, -.5);*/
+            moveForward(480  , .5);*/
+            //deliver(-.5);
+            sleep(1000);
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
         else{
-            /*lift(630);
-            WR.setPower(-.5);
+            //lift(630);
+            /*WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
-            deliver(-.5);
-            moveForward(400, -.5);*/
+            deliver(-.5);*/
+            sleep(1000);
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
         /*down();
         WR.setPower(.5);
         WL.setPower(.5);*/
-        movePIDFGyro(-10,.3,0,0,.15,.2,.5);
-        turnHeading(140, 0, 0, 0, .17, .25, .5);
-        moveForward(900,.7);
+        turnHeading(270, 0, 0, 0, .17, .25, .5);
+        moveForward(1000, .9);
         /* WR.setPower(-.5);
         WL.setPower(-.5);
         deliver(-.5);

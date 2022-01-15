@@ -133,11 +133,11 @@ public class redW extends LinearOpMode
         waitForStart();
         position = vision.redgetTeamMarkerPos();
 
-        moveForward(200, -.5);
-        turn(-85, .5);
-        deliverA(position);
+        movePIDFGyro(-14,.3,0,0,.15,.2,.5);
+        turnHeading(-133, 0, 0, 0, .16, .25, .5);
+        movePIDFGyro(12,.3,0,0,.15,.2,.5);
 
-
+        deliverA("3");
 
     }
 
@@ -176,65 +176,40 @@ public class redW extends LinearOpMode
     }
     public void deliverA(String level){
         if(level.equals("3")){
-            lift(270);
-            WR.setPower(-.5);
+            //lift(270);
+            /*WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(380, .5);
-            deliver(-.5);
-            moveForward(300, -.5);
+            deliver(-.5);*/
+            sleep(1000);
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
         else if(level.equals("2")){
-            lift(505);
+            /*lift(505);
             WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
-            moveForward(540, .5);
-            deliver(-.5);
-            moveForward(300, -.5);
+            moveForward(480  , .5);*/
+            //deliver(-.5);
+            sleep(1000);
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
         else{
-            lift(630);
-            WR.setPower(-.5);
+            //lift(630);
+            /*WR.setPower(-.5);
             WL.setPower(-.5);
             sleep(1000);
             moveForward(650, .5);
-            deliver(-.5);
-            moveForward(400, -.5);
+            deliver(-.5);*/
+            sleep(1000);
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
-        down();
+        /*down();
         WR.setPower(.5);
-        WL.setPower(.5);
-        sleep(100);
-        turn(140,.5);
-        moveForward(1800,.8);
-        /*
-        WR.setPower(.5);
-        WL.setPower(.5);
-        turn(140,.5);
-        moveForward(1800,.9);
-        WR.setPower(-.5);
-        WL.setPower(-.5);
-        deliver(-.5);
-        WR.setPower(.5);
-        WL.setPower(.5);
-        moveForward(1900, -.8);
-        turn(-176,.5);
-        lift(630);
-        WR.setPower(-.5);
-        WL.setPower(-.5);
-        sleep(1000);
-        moveForward(400, .5);
-        deliver(.5);
-        moveForward(400, -.5);
-        down();
-        WR.setPower(.5);
-        WL.setPower(.5);
-        sleep(100);
-        turn(135,.5);
-        moveForward(2100,.9);
-
-         */
+        WL.setPower(.5);*/
+        turnHeading(90, 0, 0, 0, .17, .25, .5);
+        moveForward(1000, .9);
     }
 
     public void turn(double degree, double power){

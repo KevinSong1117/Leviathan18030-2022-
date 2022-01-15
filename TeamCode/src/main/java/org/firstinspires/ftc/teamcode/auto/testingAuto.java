@@ -99,7 +99,7 @@ public class testingAuto extends LinearOpMode
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        ER.setDirection(DcMotor.Direction.REVERSE);
+        ER.setDirection(DcMotor.Direction.FORWARD);
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -133,7 +133,8 @@ public class testingAuto extends LinearOpMode
         turnHeading(-90, .1, 0, 0.5, .20, 1, .25);*/
 
 
-        turnHeading(120, 0, 0, 0, .17, .25, .5);
+        //turnHeading(120, 0, 0, 0, .17, .25, .5);
+        lifttest(1500, 50000, 10);
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -255,20 +256,38 @@ public class testingAuto extends LinearOpMode
         // and save the heading
         curHeading = angles.firstAngle; //Gets the orientation of the robot
     }
-
-    public void liftPID(double pos, double tH, double time){
+    public void lifttest(double pos, double time, double tH){
         double timers = timer.milliseconds();
-        double currentTime = timers/1000;
-        double encoderValue = 0.0001;
+        while(timers < time && opModeIsActive() && !isStopRequested()){
+            if((ER.getCurrentPosition() < (pos-tH))){
+                ER.setPower(Math.log10(1/(1560 - ER.getCurrentPosition())) * .07);
+            }
+            else if((ER.getCurrentPosition() > (pos-tH))){
+                ER.setPower(-300/ER.getCurrentPosition());
+            }
+            else{
+                ER.setPower(.1);
+            }
+            telemetry.addData("Lift power",(-10 / (ER.getCurrentPosition() + 100)));
+            telemetry.addData("Time",(timers));
+            telemetry.update();
+        }
+        ER.setPower(.1);
+    }
+    public void liftPID(double pos, double tH, double time){
+        //1500
+        //900
+        //430
+        double timers = timer.milliseconds();
+        double currentTime = timers;
         while((ER.getCurrentPosition() < (pos-tH)) && ER.getCurrentPosition() > (pos+tH) && currentTime < time && opModeIsActive() && !isStopRequested()){
-
             if(ER.getCurrentPosition() < (pos-tH)){
-                ER.setPower(Math.max(.005, (1 / ER.getCurrentPosition())));
-                telemetry.addData("Up power", 1 / ER.getCurrentPosition());
+                ER.setPower(Math.max(-.005, -(1 / (ER.getCurrentPosition() + 4))));
+                telemetry.addData("Up power", -1 / -ER.getCurrentPosition());
             }
             else if(ER.getCurrentPosition() > (pos+tH)){
-                ER.setPower(Math.max(-.005, ER.getCurrentPosition())); // this power need to adjustments
-                telemetry.addData("down power", 1 / ER.getCurrentPosition());
+                ER.setPower(Math.max(.005, (-1 / ER.getCurrentPosition()))); // this power need to adjustments
+                telemetry.addData("down power", -1 / -ER.getCurrentPosition());
             }
             else {
                 ER.setPower(.0001);
