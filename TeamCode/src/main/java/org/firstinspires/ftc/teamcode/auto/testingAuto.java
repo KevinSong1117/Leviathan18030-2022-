@@ -51,8 +51,6 @@ public class testingAuto extends LinearOpMode
     public DcMotor fR;
     public DcMotor bL;  // instantiates motor variables
     public DcMotor bR;
-    public DcMotor LTL; // lift turn left
-    public DcMotor LTR; // lift turn right
     public DcMotor ER;  // lift extend right
     public CRServo IR;
     public CRServo WR;  // Wrist Right

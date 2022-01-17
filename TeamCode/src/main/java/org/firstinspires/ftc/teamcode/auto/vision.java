@@ -66,7 +66,6 @@ public class vision extends LinearOpMode{
 
     public String redgetTeamMarkerPos() throws InterruptedException {
         Bitmap rgbImage = getImage();
-        pos = "1";
         spot1 = 0;
         spot2 = 0;
         spot3 = 0;
@@ -95,46 +94,35 @@ public class vision extends LinearOpMode{
         opMode.telemetry.addData("spot 1", spot1);
         opMode.telemetry.addData("spot 2", spot2);
         opMode.telemetry.addData("spot 3", spot3);
-
+        telemetry.update();
         return pos;
     }
     public String bluegetTeamMarkerPos() throws InterruptedException {
-        int total1 = 0;
-        int total2 = 0;
-        int total3 = 0;
-
+        Bitmap rgbImage = getImage();
         pos = "none";
-        for(int j = 0; j < 4; j++){
-            Bitmap rgbImage = getImage();
-            spot1 = 0;
-            spot2 = 0;
-            spot3 = 0;
-            for (int i = 92; i < 222; i++) {
-                if (isGreen(rgbImage.getPixel(630, i))) {
-                    spot3 += 1;
-                }
+        spot1 = 0;
+        spot2 = 0;
+        spot3 = 0;
+        for (int i = 92; i < 222; i++) {
+            if (isGreen(rgbImage.getPixel(630, i))) {
+                spot3 += 1;
+            }
 
-            }
-            for (int i = 92; i < 222; i++) {
-                if (isGreen(rgbImage.getPixel(305, i))) {
-                    spot2 += 1;
-                }
-            }
-            for (int i = 92; i < 222; i++) {
-                if (isGreen(rgbImage.getPixel(24, i))) {
-                    spot1 += 1;
-                }
-            }
-            if (spot1 > spot2 && spot1 > spot3)
-                total1++;
-            else if (spot2 > spot3)
-                total2++;
-            else
-                total3++;
         }
-        if (total1 > total2 && total1 > total3)
+        for (int i = 92; i < 222; i++) {
+            if (isGreen(rgbImage.getPixel(305, i))) {
+                spot2 += 1;
+            }
+        }
+        for (int i = 92; i < 222; i++) {
+            if (isGreen(rgbImage.getPixel(24, i))) {
+                spot1 += 1;
+            }
+        }
+
+        if (spot1 > spot2 && spot1 > spot3)
             pos = "1";
-        else if (total2 > total3)
+        else if (spot2 > spot3)
             pos = "2";
         else
             pos = "3";
@@ -142,10 +130,7 @@ public class vision extends LinearOpMode{
         opMode.telemetry.addData("spot 1", spot1);
         opMode.telemetry.addData("spot 2", spot2);
         opMode.telemetry.addData("spot 3", spot3);
-        opMode.telemetry.addData("spot 1", total1);
-        opMode.telemetry.addData("spot 2", total2);
-        opMode.telemetry.addData("spot 3", total3);
-
+        telemetry.update();
         return pos;
     }
 

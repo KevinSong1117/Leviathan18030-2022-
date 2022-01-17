@@ -124,20 +124,14 @@ public class blueW extends LinearOpMode
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
 
-        String position = vision.bluegetTeamMarkerPos();
+        String position = "1";//vision.bluegetTeamMarkerPos();
 
         while(!isStarted()){
-            position = vision.bluegetTeamMarkerPos();
             telemetry.addData("blueposition", position);
             telemetry.update();
         }
 
         waitForStart();
-
-        movePIDFGyro(-14,.3,0,0,.15,.2,.5);
-        turnHeading(133, 0, 0, 0, .16, .25, .5);
-        movePIDFGyro(12,.3,0,0,.15,.2,.5);
-        //turn(85, .5);
         deliverA(position);
     }
 
@@ -160,13 +154,20 @@ public class blueW extends LinearOpMode
             break;
         }
     }
-    public void lift(long height){ //Lifts the arm up to height value which is the milisec amount for sleep()
-        ER.setPower(.6);
-        sleep(height);
-        ER.setPower(.2);
+    public void lift(double tics){ //Lifts the arm up to height value which is the milisec amount for sleep()
+        while (!isStopRequested() && opModeIsActive()) {
+            resetEncoder();
+            while (ER.getCurrentPosition() > tics && opModeIsActive()) {
+                ER.setPower(.3);
+                telemetry.addData("encoder", ER.getCurrentPosition());
+                telemetry.update();// encoding start is less than the target
+            }
+            ER.setPower(.2);
+            break;
+        }
     }
-    public void deliver(double power){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(power);
+    public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
+        IR.setPower(-.5);
         sleep(3000);
         IR.setPower(0);
     }
@@ -174,63 +175,27 @@ public class blueW extends LinearOpMode
         ER.setPower(.001);
     }
     public void deliverA(String level){
+        movePIDFGyro(-12,.3,0,0,.15,.2,.5);
+        turnHeading(135, 0, 0, 0, .16, .25, .5);
         if(level.equals("3")){
-            //lift(270);
-            /*WR.setPower(-.5);
-            WL.setPower(-.5);
-            sleep(1000);
-            moveForward(380, .5);
-            deliver(-.5);*/
-            sleep(1000);
-            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
+            lift(-350);
         }
         else if(level.equals("2")){
-            /*lift(505);
-            WR.setPower(-.5);
-            WL.setPower(-.5);
-            sleep(1000);
-            moveForward(480  , .5);*/
-            //deliver(-.5);
-            sleep(1000);
-            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
+            lift(-700);
         }
         else{
-            //lift(630);
-            /*WR.setPower(-.5);
-            WL.setPower(-.5);
-            sleep(1000);
-            moveForward(650, .5);
-            deliver(-.5);*/
-            sleep(1000);
-            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
+            lift(-1050);
         }
-        /*down();
-        WR.setPower(.5);
-        WL.setPower(.5);*/
-        turnHeading(270, 0, 0, 0, .17, .25, .5);
-        moveForward(1000, .9);
-        /* WR.setPower(-.5);
-        WL.setPower(-.5);
-        deliver(-.5);
-        WR.setPower(.5);
-        WL.setPower(.5);
-        moveForward(1900, -.8);
-        turn(176,.5);
-        lift(630);
         WR.setPower(-.5);
         WL.setPower(-.5);
-        sleep(1000);
-        moveForward(500, .5);
-        deliver(.5);
-        moveForward(400, -.5);
-        down();
-        WR.setPower(.5);
+        movePIDFGyro(12,.3,0,0,.15,.2,.5);
+        deliver();
+        movePIDFGyro(-10,.3,0,0,.15,.2,.5);
         WL.setPower(.5);
-        sleep(100);
-        turn(-135,.5);
-        moveForward(2100,.9);
-
-        */
+        WR.setPower(.5);
+        down();
+        turnHeading(265, 0, 0, 0, .16, .25, .5);
+        movePIDFGyro(40,.9,0,0,.15,.2,.5);
     }
 
     public void turn(double degree, double power){
