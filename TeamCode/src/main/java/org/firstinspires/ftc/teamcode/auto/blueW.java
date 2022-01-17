@@ -55,17 +55,11 @@ public class blueW extends LinearOpMode
     public DcMotor fR;
     public DcMotor bL;  // instantiates motor variables
     public DcMotor bR;
-    public DcMotor LTL; // lift turn left
-    public DcMotor LTR; // lift turn right
-    public DcMotor ER;  // lift extend right
-    public DcMotor EL;  // lift extend left
-    public CRServo IR;
+    public DcMotor L;  // lift extend right
+    public CRServo I;
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
-    public BNO055IMU imu;
     private vision vision;
-    Orientation angles;
-    float curHeading;
     Sensors gyro;
     public DcMotor DG;
     ElapsedTime timer;
@@ -84,9 +78,9 @@ public class blueW extends LinearOpMode
         bL = hardwareMap.get(DcMotor.class, "BL");
         bR = hardwareMap.get(DcMotor.class, "BR");
 
-        ER = hardwareMap.get(DcMotor.class, "L");
+        L = hardwareMap.get(DcMotor.class, "L");
 
-        IR = hardwareMap.get(CRServo.class, "I");
+        I = hardwareMap.get(CRServo.class, "I");
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
@@ -95,13 +89,13 @@ public class blueW extends LinearOpMode
         DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        IR.setDirection(CRServo.Direction.REVERSE);
+        I.setDirection(CRServo.Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        ER.setDirection(DcMotor.Direction.REVERSE);
+        L.setDirection(DcMotor.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
@@ -114,15 +108,7 @@ public class blueW extends LinearOpMode
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        ER.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        imu = this.hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
-        imu.initialize(parameters);
+        L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         String position = "1";//vision.bluegetTeamMarkerPos();
 
@@ -141,38 +127,25 @@ public class blueW extends LinearOpMode
         DG.setPower(0);
     }
 
-    public void moveForward(double tics, double power) {
-        while (!isStopRequested() && opModeIsActive()) {
-            resetEncoder();
-            while ((getTic() < tics) && opModeIsActive()) {
-                fL.setPower(power);              // encoding start is less than the target
-                fR.setPower(power); // Sets the power of the motors to currently half the power
-                bL.setPower(power);
-                bR.setPower(power);
-            }
-            stopMotors();
-            break;
-        }
-    }
     public void lift(double tics){ //Lifts the arm up to height value which is the milisec amount for sleep()
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (ER.getCurrentPosition() > tics && opModeIsActive()) {
-                ER.setPower(.3);
-                telemetry.addData("encoder", ER.getCurrentPosition());
+            while (L.getCurrentPosition() > tics && opModeIsActive()) {
+                L.setPower(.3);
+                telemetry.addData("encoder", L.getCurrentPosition());
                 telemetry.update();// encoding start is less than the target
             }
-            ER.setPower(.2);
+            L.setPower(.2);
             break;
         }
     }
     public void deliver(){  // Sets the power to outtake wheels fo 3 seconds and stops them
-        IR.setPower(-.5);
-        sleep(3000);
-        IR.setPower(0);
+        I.setPower(-.5);
+        sleep(2000);
+        I.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        ER.setPower(.001);
+        L.setPower(.001);
     }
     public void deliverA(String level){
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
@@ -197,48 +170,6 @@ public class blueW extends LinearOpMode
         turnHeading(265, 0, 0, 0, .16, .25, .5);
         movePIDFGyro(40,.9,0,0,.15,.2,.5);
     }
-
-    public void turn(double degree, double power){
-        while (opModeIsActive() && !isStopRequested()) {
-            if (angleWrapDeg(degree - gyro.getAngle()) > 0) {
-                while ((angleWrapDeg(degree - gyro.getAngle()) > 0) && opModeIsActive()) {
-                    fL.setPower(-power);
-                    fR.setPower(power);
-                    bL.setPower(-power);
-                    bR.setPower(power);
-                }
-            } else {
-                while ((angleWrapDeg(degree - gyro.getAngle()) < 0) && opModeIsActive()) {
-                    fL.setPower(power);
-                    fR.setPower(-power);
-                    bL.setPower(power);
-                    bR.setPower(-power);
-                }
-            }
-            stopMotors();
-            break;
-        }
-    }
-
-    public double getEncoderAvg(){
-        double flEncoder = fL.getCurrentPosition();
-        double frEncoder = fR.getCurrentPosition();
-        double blEncoder = bL.getCurrentPosition();
-        double brEncoder = bR.getCurrentPosition();
-
-        double ret = flEncoder + frEncoder + blEncoder + brEncoder;
-        ret /= 4;
-
-        return ret;
-    }
-    private void checkOrientation() {
-        // read the orientation of the robot
-        angles = this.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        this.imu.getPosition();
-        // and save the heading
-        curHeading = angles.firstAngle; //Gets the orientation of the robot
-    }
-
 
     public void resetEncoder() {
         fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
