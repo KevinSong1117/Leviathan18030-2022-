@@ -154,13 +154,13 @@ public class redC extends LinearOpMode
         movePIDFGyro(-25,.3,0,0,.15,.2,.5);
         turnHeading(160, 0, 0, 0, .16, .25, .5);
         if(level.equals("3")){
-            lift(-350);
+            lift(500);
         }
         else if(level.equals("2")){
-            lift(-700);
+            lift(850);
         }
         else{
-            lift(-1050);
+            lift(1350);
         }
         WR.setPower(-.5);
         WL.setPower(-.5);

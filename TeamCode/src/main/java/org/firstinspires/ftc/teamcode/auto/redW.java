@@ -150,17 +150,17 @@ public class redW extends LinearOpMode
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
         turnHeading(225, 0, 0, 0, .16, .25, .5);
         if(level.equals("3")){
-            lift(-350);
+            lift(500);
+            movePIDFGyro(8,.3,0,0,.15,.2,.5);
         }
         else if(level.equals("2")){
-            lift(-700);
+            lift(850);
+            movePIDFGyro(10,.3,0,0,.15,.2,.5);
         }
         else{
-            lift(-1050);
+            lift(1350);
+            movePIDFGyro(12,.3,0,0,.15,.2,.5);
         }
-        WR.setPower(-.5);
-        WL.setPower(-.5);
-        movePIDFGyro(12,.3,0,0,.15,.2,.5);
         deliver();
         movePIDFGyro(-10,.3,0,0,.15,.2,.5);
         WL.setPower(.5);
