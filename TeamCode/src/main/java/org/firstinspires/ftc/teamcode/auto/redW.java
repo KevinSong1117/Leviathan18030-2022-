@@ -109,7 +109,7 @@ public class redW extends LinearOpMode
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        String position = "1";//vision.bluegetTeamMarkerPos();
+        String position = redWTSE();//vision.bluegetTeamMarkerPos();
 
         while(!isStarted()){
             telemetry.addData("blueposition", position);

@@ -63,24 +63,55 @@ public class vision extends LinearOpMode{
         bm.copyPixelsFromBuffer(rgb.getPixels());
         return bm;
     }
-
-    public String redgetTeamMarkerPos() throws InterruptedException {
+    public String redCTSE() throws InterruptedException {
         Bitmap rgbImage = getImage();
         spot1 = 0;
         spot2 = 0;
         spot3 = 0;
-        for(int i = 95; i < 250; i++){
-            if(isGreen(rgbImage.getPixel(7,i))) {
+        for(int i = 88; i < 140; i++){
+            if(isGreen(rgbImage.getPixel(29,i))) {
                 spot3 += 1;
             }
         }
-        for(int i = 95; i < 250; i++){
-            if(isGreen(rgbImage.getPixel(392,i))) {
+        for(int i = 88; i < 140; i++){
+            if(isGreen(rgbImage.getPixel(312,i))) {
                 spot2 += 1;
             }
         }
-        for(int i = 95; i < 250; i++){
-            if(isGreen(rgbImage.getPixel(611,i))) {
+        for(int i = 88; i < 140; i++){
+            if(isGreen(rgbImage.getPixel(612,i))) {
+                spot1 += 1;
+            }
+        }
+        if(spot1 > spot2 && spot1 > spot3)
+            pos = "1";
+        else if(spot2 > spot3)
+            pos = "2";
+        else
+            pos = "3";
+        opMode.telemetry.addData("spot 1", spot1);
+        opMode.telemetry.addData("spot 2", spot2);
+        opMode.telemetry.addData("spot 3", spot3);
+        telemetry.update();
+        return pos;
+    }
+    public String redWTSE() throws InterruptedException {
+        Bitmap rgbImage = getImage();
+        spot1 = 0;
+        spot2 = 0;
+        spot3 = 0;
+        for(int i = 76; i < 123; i++){
+            if(isGreen(rgbImage.getPixel(10,i))) {
+                spot3 += 1;
+            }
+        }
+        for(int i = 76;i < 123; i++){
+            if(isGreen(rgbImage.getPixel(295,i))) {
+                spot2 += 1;
+            }
+        }
+        for(int i = 76; i < 123; i++){
+            if(isGreen(rgbImage.getPixel(593,i))) {
                 spot1 += 1;
             }
         }
@@ -97,29 +128,63 @@ public class vision extends LinearOpMode{
         telemetry.update();
         return pos;
     }
-    public String bluegetTeamMarkerPos() throws InterruptedException {
+    public String blueWTSE() throws InterruptedException {
         Bitmap rgbImage = getImage();
         pos = "none";
         spot1 = 0;
         spot2 = 0;
         spot3 = 0;
-        for (int i = 92; i < 222; i++) {
-            if (isGreen(rgbImage.getPixel(630, i))) {
+        for (int i = 92; i < 155; i++) {
+            if (isGreen(rgbImage.getPixel(627, i))) {
                 spot3 += 1;
             }
 
         }
-        for (int i = 92; i < 222; i++) {
-            if (isGreen(rgbImage.getPixel(305, i))) {
+        for (int i = 92; i < 155; i++) {
+            if (isGreen(rgbImage.getPixel(301, i))) {
                 spot2 += 1;
             }
         }
-        for (int i = 92; i < 222; i++) {
+        for (int i = 92; i < 155; i++) {
             if (isGreen(rgbImage.getPixel(24, i))) {
                 spot1 += 1;
             }
         }
+        if (spot1 > spot2 && spot1 > spot3)
+            pos = "1";
+        else if (spot2 > spot3)
+            pos = "2";
+        else
+            pos = "3";
+        opMode.telemetry.addData("spot 1", spot1);
+        opMode.telemetry.addData("spot 2", spot2);
+        opMode.telemetry.addData("spot 3", spot3);
+        telemetry.update();
+        return pos;
+    }
 
+    public String blueCTSE() throws InterruptedException {
+        Bitmap rgbImage = getImage();
+        pos = "none";
+        spot1 = 0;
+        spot2 = 0;
+        spot3 = 0;
+        for (int i = 66; i < 133; i++) {
+            if (isGreen(rgbImage.getPixel(598, i))) {
+                spot3 += 1;
+            }
+
+        }
+        for (int i = 66; i < 133; i++) {
+            if (isGreen(rgbImage.getPixel(285, i))) {
+                spot2 += 1;
+            }
+        }
+        for (int i = 66; i < 133; i++) {
+            if (isGreen(rgbImage.getPixel(0, i))) {
+                spot1 += 1;
+            }
+        }
         if (spot1 > spot2 && spot1 > spot3)
             pos = "1";
         else if (spot2 > spot3)
