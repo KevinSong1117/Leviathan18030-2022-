@@ -150,9 +150,9 @@ public  class wristFix extends OpMode
         double driveL  =  gamepad1.right_stick_x * .6;
         if(Math.abs(gamepad1.left_stick_y) > .1){
             BL.setPower(driveR);
-            BR.setPower(driveR);
+            BR.setPower(driveR * .85);
             FL.setPower(driveR);
-            FR.setPower(driveR);
+            FR.setPower(driveR * .85);
         }
         else{
             BL.setPower(driveL);
@@ -273,6 +273,8 @@ public  class wristFix extends OpMode
         telemetry.addData("Lift position ", L.getPower());
         telemetry.addData("encoder", L.getCurrentPosition());
         telemetry.addData("Time :", runtime);
+        telemetry.addData("FR", FR.getCurrentPosition());
+        telemetry.addData("BR", BR.getCurrentPosition());
         telemetry.update();
 
 

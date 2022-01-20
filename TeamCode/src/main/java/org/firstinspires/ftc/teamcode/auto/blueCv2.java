@@ -99,7 +99,7 @@ public class blueCv2 extends LinearOpMode
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        String position = blueCTSE();//vision.bluegetTeamMarkerPos();
+        String position = vision.blueCTSE();//vision.bluegetTeamMarkerPos();
 
         while(!isStarted()){
             telemetry.addData("blueposition", position);

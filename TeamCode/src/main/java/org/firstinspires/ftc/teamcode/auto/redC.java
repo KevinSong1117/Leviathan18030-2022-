@@ -109,7 +109,7 @@ public class redC extends LinearOpMode
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        String position = redCTSE();//vision.bluegetTeamMarkerPos();
+        String position = vision.redCTSE();//vision.bluegetTeamMarkerPos();
 
         while(!isStarted()){
             telemetry.addData("blueposition", position);
