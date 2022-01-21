@@ -68,6 +68,7 @@ public  class wristFix extends OpMode
     public CRServo WR;  // Wrist Right
     public CRServo WL;  // Wrist Left
     public DcMotor DG;
+    public DcMotor DG1;
 
 
     /*
@@ -86,7 +87,7 @@ public  class wristFix extends OpMode
         WR = hardwareMap.get(CRServo.class, "WR");
         WL = hardwareMap.get(CRServo.class, "WL");
         DG = hardwareMap.get(DcMotor.class, "DG");
-
+        DG1 = hardwareMap.get(DcMotor.class, "DG1");
 
         I.setDirection(CRServo.Direction.REVERSE);
         WR.setDirection(CRServo.Direction.FORWARD);
@@ -98,6 +99,7 @@ public  class wristFix extends OpMode
         BL.setDirection(DcMotor.Direction.FORWARD);
         L.setDirection(DcMotor.Direction.FORWARD);
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
+        DG1.setDirection((DcMotorSimple.Direction.FORWARD));
 
 
         FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -105,15 +107,17 @@ public  class wristFix extends OpMode
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DG.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        DG1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         L.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         L.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        DG1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
 
@@ -142,19 +146,23 @@ public  class wristFix extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+    double driveL;
+    double driveR;
+    int checker = 0;
     @Override
     public void loop() {
 
 
-        double driveR = gamepad1.left_stick_y * .9;
-        double driveL  =  gamepad1.right_stick_x * .6;
+
         if(Math.abs(gamepad1.left_stick_y) > .1){
+            driveR = gamepad1.left_stick_y * .9;
             BL.setPower(driveR);
             BR.setPower(driveR * .85);
             FL.setPower(driveR);
             FR.setPower(driveR * .85);
         }
         else{
+            driveL  =  gamepad1.right_stick_x * .6;
             BL.setPower(driveL);
             BR.setPower(driveL * -1);
             FL.setPower(driveL);
@@ -176,16 +184,16 @@ public  class wristFix extends OpMode
         }
 
         if(gamepad1.right_trigger > .5){
-            DG.setPower(gamepad1.right_trigger * .5);
+            DG.setPower(gamepad1.right_trigger * -.5);
         }
 
         if(gamepad1.left_trigger > .5){
-            DG.setPower(gamepad1.left_trigger * -.5);
+            DG1.setPower(gamepad1.left_trigger * .5);
         }
         if(gamepad1.right_bumper){
             DG.setPower(0);
+            DG1.setPower(0);
         }
-
 
         double power;
 
@@ -200,6 +208,19 @@ public  class wristFix extends OpMode
         }
         if(gamepad2.x){
             I.setPower(0);
+        }
+
+        if(gamepad1.left_bumper){
+            if(checker == 0){
+                driveR *= .5;
+                checker += 1;
+            }
+
+            else{
+                driveR *= 2;
+                checker -= 1;
+            }
+
         }
         if(gamepad2.dpad_up){
             ElapsedTime current = new ElapsedTime();
