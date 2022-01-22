@@ -150,6 +150,8 @@ public class blueW extends LinearOpMode
     public void deliverA(String level){
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
         turnHeading(135, 0, 0, 0, .16, .25, .5);
+        /* WL.setPower(-.5);
+        WR.setPower(-.5);
         if(level.equals("3")){
             lift(500);
             movePIDFGyro(8,.3,0,0,.15,.2,.5);
@@ -167,6 +169,8 @@ public class blueW extends LinearOpMode
         WL.setPower(.5);
         WR.setPower(.5);
         down();
+
+         */
         turnHeading(265, 0, 0, 0, .16, .25, .5);
         movePIDFGyro(40,.9,0,0,.15,.2,.5);
     }
