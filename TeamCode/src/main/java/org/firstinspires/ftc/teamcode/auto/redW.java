@@ -148,8 +148,8 @@ public class redW extends LinearOpMode
     }
     public void deliverA(String level){
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
-        turnHeading(225, 0, 0, 0, .16, .25, .5);
-        if(level.equals("3")){
+        turnHeading(-135, 0, 0, 0, .16, .25, .5);
+        /* if(level.equals("3")){
             lift(500);
             movePIDFGyro(8,.3,0,0,.15,.2,.5);
         }
@@ -166,7 +166,9 @@ public class redW extends LinearOpMode
         WL.setPower(.5);
         WR.setPower(.5);
         down();
-        turnHeading(95, 0, 0, 0, .16, .25, .5);
+
+         */
+        turnHeading(-265, 0, 0, 0, .16, .25, .5);
         movePIDFGyro(40,.9,0,0,.15,.2,.5);
     }
 
