@@ -94,7 +94,7 @@ public class redC extends LinearOpMode
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        L.setDirection(DcMotor.Direction.REVERSE);
+        L.setDirection(DcMotor.Direction.FORWARD);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
@@ -220,17 +220,21 @@ public class redC extends LinearOpMode
         }
         return totaldis / count;
     }
-    double angleWrapDeg(double angle) {
-        double correctAngle = angle;
-        while (correctAngle > 180)
+    public double angleDiffSigma(double angle1, double angle2)
+    {
+        return angleWrapDeg(angle2 - angle1);
+    }
+
+    public double angleWrapDeg(double angle)
+    {
+        double zeroTo360 = angle + 180;      //convert to 0-360
+        double start = (zeroTo360 % 360); //will work for positive angles
+        //angle is (-360, 0), add 360 to make it from 0-360
+        if (start < 0)
         {
-            correctAngle -= 360;
+            start += 360;
         }
-        while (correctAngle < -180)
-        {
-            correctAngle += 360;
-        }
-        return correctAngle;
+        return start - 180; //bring it back to -180 to 180
     }
 
     public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
@@ -321,6 +325,7 @@ public class redC extends LinearOpMode
         }
         stopMotors();
     }
+
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -330,7 +335,7 @@ public class redC extends LinearOpMode
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
 
-        double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
+        double initialAngleDiff = angleDiffSigma(finalAngle, initialHeading);
         double error = initialAngleDiff;
         double pastError = error;
 
@@ -357,7 +362,7 @@ public class redC extends LinearOpMode
                 startMotors(-power - f, power + f);
             }
             else{
-                if (Math.abs(kp) < .0001){
+                if (Math.abs(kp) > .0001){
                     power = 0 * proportional + ki * integral + kd * derivative;
                 }
                 startMotors(-power + f, power - f);
@@ -379,4 +384,5 @@ public class redC extends LinearOpMode
         }
         stopMotors();
     }
+
 }

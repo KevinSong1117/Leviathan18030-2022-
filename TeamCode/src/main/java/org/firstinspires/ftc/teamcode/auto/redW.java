@@ -94,7 +94,7 @@ public class redW extends LinearOpMode
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        L.setDirection(DcMotor.Direction.REVERSE);
+        L.setDirection(DcMotor.Direction.FORWARD);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
 
@@ -113,11 +113,12 @@ public class redW extends LinearOpMode
 
         while(!isStarted()){
             telemetry.addData("blueposition", position);
+            telemetry.addData("encoder", L.getCurrentPosition());
             telemetry.update();
         }
 
         waitForStart();
-        deliverA(position);
+        deliverA("1       ");
     }
 
     public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -129,12 +130,12 @@ public class redW extends LinearOpMode
     public void lift(double tics){ //Lifts the arm up to height value which is the milisec amount for sleep()
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (L.getCurrentPosition() > tics && opModeIsActive()) {
-                L.setPower(.3);
+            while (L.getCurrentPosition() < tics && opModeIsActive()) {
+                L.setPower(-.4);
                 telemetry.addData("encoder", L.getCurrentPosition());
                 telemetry.update();// encoding start is less than the target
             }
-            L.setPower(.2);
+            L.setPower(-.13);
             break;
         }
     }
@@ -147,29 +148,32 @@ public class redW extends LinearOpMode
         L.setPower(.001);
     }
     public void deliverA(String level){
+
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
-        turnHeading(-135, 0, 0, 0, .16, .25, .5);
-        /* if(level.equals("3")){
-            lift(500);
-            movePIDFGyro(8,.3,0,0,.15,.2,.5);
+        turnHeading(-140, 0, 0, 0, -.16, 2, .5);
+        WL.setPower(-.5);
+        WR.setPower(-.5);
+        if(level.equals("3")){
+            lift(510   );
+            movePIDFGyro(10 ,.3,0,0,.15,.2,.5);
         }
         else if(level.equals("2")){
             lift(850);
-            movePIDFGyro(10,.3,0,0,.15,.2,.5);
+            movePIDFGyro(11,.3,0,0,.15,.2,.5);
         }
         else{
-            lift(1350);
-            movePIDFGyro(12,.3,0,0,.15,.2,.5);
+            lift(1300);
+            movePIDFGyro(13,.3,0,0,.15,.2,.5);
         }
         deliver();
-        movePIDFGyro(-10,.3,0,0,.15,.2,.5);
+        movePIDFGyro(-8 ,.3,0,0,.15,.2,.5);
         WL.setPower(.5);
         WR.setPower(.5);
         down();
 
-         */
-        turnHeading(-265, 0, 0, 0, .16, .25, .5);
-        movePIDFGyro(40,.9,0,0,.15,.2,.5);
+
+        turnHeading(-255, 0, 0, 0, -.16, 2, .5);
+        movePIDFGyro(41,.9,0,0,.15,.2,.5);
     }
 
     public void resetEncoder() {
@@ -217,18 +221,6 @@ public class redW extends LinearOpMode
             return 1;
         }
         return totaldis / count;
-    }
-    double angleWrapDeg(double angle) {
-        double correctAngle = angle;
-        while (correctAngle > 180)
-        {
-            correctAngle -= 360;
-        }
-        while (correctAngle < -180)
-        {
-            correctAngle += 360;
-        }
-        return correctAngle;
     }
 
     public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
@@ -319,6 +311,22 @@ public class redW extends LinearOpMode
         }
         stopMotors();
     }
+    public double angleDiffSigma(double angle1, double angle2)
+    {
+        return angleWrapDeg(angle2 - angle1);
+    }
+
+    public double angleWrapDeg(double angle)
+    {
+        double zeroTo360 = angle + 180;      //convert to 0-360
+        double start = (zeroTo360 % 360); //will work for positive angles
+        //angle is (-360, 0), add 360 to make it from 0-360
+        if (start < 0)
+        {
+            start += 360;
+        }
+        return start - 180; //bring it back to -180 to 180
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -328,7 +336,7 @@ public class redW extends LinearOpMode
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
 
-        double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
+        double initialAngleDiff = angleDiffSigma(finalAngle, initialHeading);
         double error = initialAngleDiff;
         double pastError = error;
 
@@ -355,7 +363,7 @@ public class redW extends LinearOpMode
                 startMotors(-power - f, power + f);
             }
             else{
-                if (Math.abs(kp) < .0001){
+                if (Math.abs(kp) > .0001){
                     power = 0 * proportional + ki * integral + kd * derivative;
                 }
                 startMotors(-power + f, power - f);

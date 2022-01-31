@@ -100,19 +100,21 @@ public class vision extends LinearOpMode{
         spot1 = 0;
         spot2 = 0;
         spot3 = 0;
-        for(int i = 76; i < 123; i++){
-            if(isGreen(rgbImage.getPixel(10,i))) {
-                spot3 += 1;
+        for (int i = 330; i < 380; i++) {
+            for (int j = 5; j < 21; j++) {
+                if (isGreen(rgbImage.getPixel(j, i))) {
+                    spot3 += 1;
+                }
             }
-        }
-        for(int i = 76;i < 123; i++){
-            if(isGreen(rgbImage.getPixel(295,i))) {
-                spot2 += 1;
+            for (int j = 300; j < 316; j++) {
+                if (isGreen(rgbImage.getPixel(j, i))) {
+                    spot2 += 1;
+                }
             }
-        }
-        for(int i = 76; i < 123; i++){
-            if(isGreen(rgbImage.getPixel(593,i))) {
-                spot1 += 1;
+            for (int j = 580; j < 596; j++) {
+                if (isGreen(rgbImage.getPixel(j, i))) {
+                    spot1 += 1;
+                }
             }
         }
         if(spot1 > spot2 && spot1 > spot3)

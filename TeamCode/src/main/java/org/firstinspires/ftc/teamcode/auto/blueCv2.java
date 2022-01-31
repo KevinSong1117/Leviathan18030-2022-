@@ -51,6 +51,7 @@ public class blueCv2 extends LinearOpMode
     private vision vision;
     Hardware.Sensors gyro;
     public DcMotor DG;
+    public DcMotor DG1;
     ElapsedTime timer;
     static final double COUNTS_PER_MOTOR_REV = 537.6;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
@@ -74,19 +75,23 @@ public class blueCv2 extends LinearOpMode
         WL = hardwareMap.get(CRServo.class, "WL");
         gyro = new Sensors(this);
         DG = hardwareMap.get(DcMotor.class, "DG");
+        DG1 = hardwareMap.get(DcMotor.class, "DG1");
         DG.setDirection((DcMotorSimple.Direction.FORWARD));
         DG.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        DG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        DG1.setDirection((DcMotorSimple.Direction.FORWARD));
+        DG1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DG1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         I.setDirection(CRServo.Direction.REVERSE);
 
         fR.setDirection(DcMotor.Direction.FORWARD);
         fL.setDirection(DcMotor.Direction.REVERSE);
         bR.setDirection(DcMotor.Direction.REVERSE);
         bL.setDirection(DcMotor.Direction.REVERSE);
-        L.setDirection(DcMotor.Direction.REVERSE);
+        L.setDirection(DcMotor.Direction.FORWARD);
         WR.setDirection(CRServo.Direction.FORWARD);
         WL.setDirection(CRServo.Direction.REVERSE);
+        DG1.setDirection((DcMotorSimple.Direction.FORWARD));
 
         fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -107,24 +112,26 @@ public class blueCv2 extends LinearOpMode
         }
 
         waitForStart();
-        deliverA(position);
+        deliverA("1" +
+                "");
     }
 
-    public void spinDucks(double power, long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
-        DG.setPower(power);
+    public void spinDucks(long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
+        DG1.setPower(.35);
         sleep(time);
-        DG.setPower(0);
+        DG1.setPower(0);
     }
 
     public void lift(double tics){ //Lifts the arm up to height value which is the milisec amount for sleep()
+
         while (!isStopRequested() && opModeIsActive()) {
             resetEncoder();
-            while (L.getCurrentPosition() > tics && opModeIsActive()) {
-                L.setPower(.3);
+            while (L.getCurrentPosition() < tics && opModeIsActive()) {
+                L.setPower(-.4);
                 telemetry.addData("encoder", L.getCurrentPosition());
                 telemetry.update();// encoding start is less than the target
             }
-            L.setPower(.2);
+            L.setPower(-.13);
             break;
         }
     }
@@ -134,36 +141,41 @@ public class blueCv2 extends LinearOpMode
         I.setPower(0);
     }
     public void down(){ //Sets power so that arm slowly goes down
-        L.setPower(.001);
+        L.setPower(.05);
     }
     public void deliverA(String level){
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
-        turnHeading(225, 0, 0, 0, .16, .25, .5);
+        turnHeading(-135, 0, 0, 0, -.2, 2, .5);
         WR.setPower(-.5);
         WL.setPower(-.5);
         if(level.equals("3")){
-            lift(500);
-            movePIDFGyro(8,.3,0,0,.15,.2,.5);
+            lift(525);
+            movePIDFGyro(9,.3,0,0,.15,.2,.5);
+            deliver();
+            movePIDFGyro(-5.4,.3,0,0,.15,.2,.5);
         }
         else if(level.equals("2")){
-            lift(850);
-            movePIDFGyro(10,.3,0,0,.15,.2,.5);
+            lift(860);
+            movePIDFGyro(9.5,.3,0,0,.15,.2,.5);
+            deliver();
+            movePIDFGyro(-6.5,.3,0,0,.15,.2,.5);
         }
         else{
-            lift(1350);
+            lift(1300);
             movePIDFGyro(12,.3,0,0,.15,.2,.5);
+            deliver();
+            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
         }
-        deliver();
-        movePIDFGyro(-6,.3,0,0,.15,.2,.5);
+
         WL.setPower(.5);
         WR.setPower(.5);
-        down();
-        turnHeading(95, 0, 0, 0, .16, .25, .5);
-        movePIDFGyro(25,.3,0,0,.15,.2,.5);
-        turnHeading(0, 0, 0, 0, .16, .25, .5);
-        movePIDFGyro(15,.3,0,0,.15,.2,.5);
-        spinDucks(.5, 3);
-        movePIDFGyro(-15,.3,0,0,.15,.2,.5);
+        L.setPower(-.01);
+        turnHeading(-285 , 0, 0, 0, -.2, 2, .5);
+        movePIDFGyro(28,.3,0,0,.15,.2,.5);
+        spinDucks(3000);
+        turnHeading(-198, 0, 0, 0, .2, 2, .5);
+        movePIDFGyro(20.5,.3,0,0,.15,.2,.5);
+        //turnHeading(-204, 0, 0, 0, -.15, 2, .5);
     }
 
     public void resetEncoder() {
@@ -211,18 +223,6 @@ public class blueCv2 extends LinearOpMode
             return 1;
         }
         return totaldis / count;
-    }
-    double angleWrapDeg(double angle) {
-        double correctAngle = angle;
-        while (correctAngle > 180)
-        {
-            correctAngle -= 360;
-        }
-        while (correctAngle < -180)
-        {
-            correctAngle += 360;
-        }
-        return correctAngle;
     }
 
     public void movePIDFGyro(double inches, double kp, double ki, double kd, double f, double threshold, double time){
@@ -313,6 +313,20 @@ public class blueCv2 extends LinearOpMode
         }
         stopMotors();
     }
+    public double angleDiffSigma(double angle1, double angle2)
+    {
+        return angleWrapDeg(angle2 - angle1);
+    }
+
+    public double angleWrapDeg(double angle) {
+        double zeroTo360 = angle + 180;      //convert to 0-360
+        double start = (zeroTo360 % 360); //will work for positive angles
+        //angle is (-360, 0), add 360 to make it from 0-360
+        if (start < 0) {
+            start += 360;
+        }
+        return start - 180; //bring it back to -180 to 180
+    }
     public void turnHeading(double finalAngle, double kp, double ki, double kd, double f, double threshold, double time) {
         timer.reset();
 
@@ -322,7 +336,7 @@ public class blueCv2 extends LinearOpMode
         double initialHeading = gyro.getAngle();
         finalAngle = angleWrapDeg(finalAngle);
 
-        double initialAngleDiff = angleWrapDeg(finalAngle - initialHeading);
+        double initialAngleDiff = angleDiffSigma(finalAngle, initialHeading);
         double error = initialAngleDiff;
         double pastError = error;
 
@@ -349,7 +363,7 @@ public class blueCv2 extends LinearOpMode
                 startMotors(-power - f, power + f);
             }
             else{
-                if (Math.abs(kp) < .0001){
+                if (Math.abs(kp) > .0001){
                     power = 0 * proportional + ki * integral + kd * derivative;
                 }
                 startMotors(-power + f, power - f);
@@ -371,4 +385,5 @@ public class blueCv2 extends LinearOpMode
         }
         stopMotors();
     }
+
 }
