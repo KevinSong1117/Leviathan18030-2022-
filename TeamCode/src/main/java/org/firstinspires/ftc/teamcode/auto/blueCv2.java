@@ -112,8 +112,7 @@ public class blueCv2 extends LinearOpMode
         }
 
         waitForStart();
-        deliverA("1" +
-                "");
+        deliverA("3");
     }
 
     public void spinDucks(long time) { // Sets power to rubber duck spinner for a set amount of time and then stops
@@ -145,7 +144,7 @@ public class blueCv2 extends LinearOpMode
     }
     public void deliverA(String level){
         movePIDFGyro(-12,.3,0,0,.15,.2,.5);
-        turnHeading(-135, 0, 0, 0, -.2, 2, .5);
+        turnHeading(-135, 0, 0, 0, -.2, 3, .5);
         WR.setPower(-.5);
         WL.setPower(-.5);
         if(level.equals("3")){
@@ -158,13 +157,13 @@ public class blueCv2 extends LinearOpMode
             lift(860);
             movePIDFGyro(9.5,.3,0,0,.15,.2,.5);
             deliver();
-            movePIDFGyro(-6.5,.3,0,0,.15,.2,.5);
+            movePIDFGyro(-6.8,.3,0,0,.15,.2,.5);
         }
         else{
             lift(1300);
             movePIDFGyro(12,.3,0,0,.15,.2,.5);
             deliver();
-            movePIDFGyro(-8,.3,0,0,.15,.2,.5);
+            movePIDFGyro(-9,.3,0,0,.15,.2,.5);
         }
 
         WL.setPower(.5);
